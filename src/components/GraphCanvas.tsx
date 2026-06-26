@@ -1,37 +1,59 @@
-import { useRef, useEffect } from "react";
-import * as d3 from "d3";
 import type { Node } from "./graph";
 
-export function GraphCanvas({ nodes }: { nodes: Node[] }) {
-  const svgRef = useRef<SVGSVGElement | null>(null);
+interface GraphCanvasProps {
+  nodes: Node[];
+  onAddNode: (x: number, y: number) => void;
+  onDeleteNode: (id: string) => void;
+}
 
-  useEffect(() => {
-    const w = 600;
-    const h = 400;
-    const svg = d3.select(svgRef.current).attr("width", w).attr("height", h);
-    const xScale = d3.scaleLinear().domain([0, 400]).range([0, w]);
-    const yScale = d3.scaleLinear().domain([0, 400]).range([0, h]);
+export function GraphCanvas({
+  nodes,
+  onAddNode,
+  onDeleteNode,
+}: GraphCanvasProps) {
+  const width = 600;
+  const height = 400;
 
-    svg
-      .append("g")
-      .selectAll("circle")
-      .data(nodes)
-      .enter()
-      .append("circle")
-      .attr("cx", (d) => xScale(d.x))
-      .attr("cy", (d) => yScale(d.y))
-      .attr("r", 20)
-      .attr("fill", "steelblue");
-  }, [nodes]);
+  const handleCanvasClick = (event: React.MouseEvent<SVGSVGElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    onAddNode(event.clientX - bounds.left, event.clientY - bounds.top);
+  };
 
   return (
     <svg
-      ref={svgRef}
-      width="600"
-      height="400"
+      width={width}
+      height={height}
+      onClick={handleCanvasClick}
       style={{
         border: "1px solid #ccc",
+        cursor: "crosshair",
       }}
-    ></svg>
+    >
+      {nodes.map((node) => (
+        <g
+          key={node.id}
+          onClick={(event) => event.stopPropagation()}
+          onContextMenu={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            onDeleteNode(node.id);
+          }}
+          style={{ cursor: "pointer" }}
+        >
+          <circle cx={node.x} cy={node.y} r={20} fill="steelblue" />
+          <text
+            x={node.x}
+            y={node.y}
+            dy="0.35em"
+            fill="white"
+            fontSize="14"
+            textAnchor="middle"
+            pointerEvents="none"
+          >
+            {node.id}
+          </text>
+        </g>
+      ))}
+    </svg>
   );
 }
