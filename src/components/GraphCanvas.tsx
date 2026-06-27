@@ -1,10 +1,12 @@
 import { useState } from "react";
-import type { Node } from "./graph";
+import type { Edge, Node } from "./graph";
 
 interface GraphCanvasProps {
   nodes: Node[];
+  edges: Edge[];
   onAddNode: (x: number, y: number) => void;
   onDeleteNode: (id: string) => void;
+  onAddEdge: (firstNodeId: string, secondNodeId: string) => void;
 }
 
 interface Point {
@@ -14,11 +16,14 @@ interface Point {
 
 export function GraphCanvas({
   nodes,
+  edges,
   onAddNode,
   onDeleteNode,
+  onAddEdge,
 }: GraphCanvasProps) {
   const width = 600;
   const height = 400;
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
   const [draftEdge, setDraftEdge] = useState<{
     from: Node;
     to: Point;
@@ -64,6 +69,26 @@ export function GraphCanvas({
         cursor: "crosshair",
       }}
     >
+      {edges.map((edge) => {
+        const nodeA = nodeById.get(edge.nodeA);
+        const nodeB = nodeById.get(edge.nodeB);
+
+        if (!nodeA || !nodeB) {
+          return null;
+        }
+
+        return (
+          <line
+            key={edge.id}
+            x1={nodeA.x}
+            y1={nodeA.y}
+            x2={nodeB.x}
+            y2={nodeB.y}
+            stroke="#000000"
+            strokeWidth={2}
+          />
+        );
+      })}
       {draftEdge && (
         <line
           x1={draftEdge.from.x}
@@ -80,6 +105,13 @@ export function GraphCanvas({
           key={node.id}
           onClick={(event) => {
             event.stopPropagation();
+
+            if (draftEdge) {
+              onAddEdge(draftEdge.from.id, node.id);
+              setDraftEdge(null);
+              return;
+            }
+
             setDraftEdge({
               from: node,
               to: { x: node.x, y: node.y },

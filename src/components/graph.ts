@@ -4,3 +4,9 @@ export interface Node {
   y: number;
 }
 
+export interface Edge {
+  id: string;
+  nodeA: string;
+  nodeB: string;
+}
+
