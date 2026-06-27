@@ -21,11 +21,15 @@ function App() {
   };
 
   const addNode = (x: number, y: number) => {
+    const id = generateNodeId(nextNodeIndex);
+
     setNodes((currentNodes) => [
       ...currentNodes,
-      { id: generateNodeId(nextNodeIndex), x, y },
+      { id, x, y },
     ]);
     setNextNodeIndex((currentIndex) => currentIndex + 1);
+
+    return id;
   };
 
   const deleteNode = (id: string) => {

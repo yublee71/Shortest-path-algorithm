@@ -4,7 +4,7 @@ import type { Edge, Node } from "./graph";
 interface GraphCanvasProps {
   nodes: Node[];
   edges: Edge[];
-  onAddNode: (x: number, y: number) => void;
+  onAddNode: (x: number, y: number) => string;
   onDeleteNode: (id: string) => void;
   onAddEdge: (firstNodeId: string, secondNodeId: string) => void;
 }
@@ -38,12 +38,15 @@ export function GraphCanvas({
   };
 
   const handleCanvasClick = (event: React.MouseEvent<SVGSVGElement>) => {
+    const point = getCanvasPoint(event);
+
     if (draftEdge) {
+      const newNodeId = onAddNode(point.x, point.y);
+      onAddEdge(draftEdge.from.id, newNodeId);
       setDraftEdge(null);
       return;
     }
 
-    const point = getCanvasPoint(event);
     onAddNode(point.x, point.y);
   };
 
