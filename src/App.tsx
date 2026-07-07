@@ -39,6 +39,12 @@ function App() {
     );
   };
 
+  const moveNode = (id: string, x: number, y: number) => {
+    setNodes((currentNodes) =>
+      currentNodes.map((node) => (node.id === id ? { ...node, x, y } : node))
+    );
+  };
+
   const addEdge = (firstNodeId: string, secondNodeId: string) => {
     if (firstNodeId === secondNodeId) {
       return;
@@ -69,6 +75,7 @@ function App() {
         edges={edges}
         onAddNode={addNode}
         onDeleteNode={deleteNode}
+        onMoveNode={moveNode}
         onAddEdge={addEdge}
       />
     </>
