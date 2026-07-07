@@ -1,6 +1,10 @@
 import "./App.css";
 import { useState } from "react";
-import type { Edge, Node } from "./components/graph";
+import {
+  calculateDistanceWeight,
+  type Edge,
+  type Node,
+} from "./components/graph";
 import { GraphCanvas } from "./components/GraphCanvas";
 
 function App() {
@@ -40,12 +44,33 @@ function App() {
   };
 
   const moveNode = (id: string, x: number, y: number) => {
-    setNodes((currentNodes) =>
-      currentNodes.map((node) => (node.id === id ? { ...node, x, y } : node))
+    const updatedNodes = nodes.map((node) =>
+      node.id === id ? { ...node, x, y } : node
+    );
+    const nodeById = new Map(updatedNodes.map((node) => [node.id, node]));
+
+    setNodes(updatedNodes);
+    setEdges((currentEdges) =>
+      currentEdges.map((edge) => {
+        const nodeA = nodeById.get(edge.nodeA);
+        const nodeB = nodeById.get(edge.nodeB);
+
+        if (!nodeA || !nodeB) {
+          return edge;
+        }
+
+        const weight = calculateDistanceWeight(nodeA, nodeB);
+
+        return { ...edge, weight };
+      })
     );
   };
 
-  const addEdge = (firstNodeId: string, secondNodeId: string) => {
+  const addEdge = (
+    firstNodeId: string,
+    secondNodeId: string,
+    weight: number
+  ) => {
     if (firstNodeId === secondNodeId) {
       return;
     }
@@ -62,7 +87,7 @@ function App() {
 
       return [
         ...currentEdges,
-        { id: edgeId, nodeA, nodeB },
+        { id: edgeId, nodeA, nodeB, weight },
       ];
     });
   };

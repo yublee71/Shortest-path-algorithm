@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import type { Edge, Node } from "./graph";
+import { calculateDistanceWeight, type Edge, type Node } from "./graph";
 
 interface GraphCanvasProps {
   nodes: Node[];
@@ -7,7 +7,11 @@ interface GraphCanvasProps {
   onAddNode: (x: number, y: number) => string;
   onDeleteNode: (id: string) => void;
   onMoveNode: (id: string, x: number, y: number) => void;
-  onAddEdge: (firstNodeId: string, secondNodeId: string) => void;
+  onAddEdge: (
+    firstNodeId: string,
+    secondNodeId: string,
+    weight: number
+  ) => void;
   onDeleteEdge: (id: string) => void;
 }
 
@@ -66,7 +70,16 @@ export function GraphCanvas({
 
     if (draftEdge) {
       const newNodeId = onAddNode(point.x, point.y);
-      onAddEdge(draftEdge.fromNodeId, newNodeId);
+      const fromNode = nodeById.get(draftEdge.fromNodeId);
+
+      if (fromNode) {
+        onAddEdge(
+          draftEdge.fromNodeId,
+          newNodeId,
+          calculateDistanceWeight(fromNode, { id: newNodeId, ...point })
+        );
+      }
+
       setDraftEdge(null);
       return;
     }
@@ -219,7 +232,16 @@ export function GraphCanvas({
             }
 
             if (draftEdge) {
-              onAddEdge(draftEdge.fromNodeId, node.id);
+              const fromNode = nodeById.get(draftEdge.fromNodeId);
+
+              if (fromNode) {
+                onAddEdge(
+                  draftEdge.fromNodeId,
+                  node.id,
+                  calculateDistanceWeight(fromNode, node)
+                );
+              }
+
               setDraftEdge(null);
               return;
             }
@@ -261,9 +283,6 @@ export function GraphCanvas({
           return null;
         }
 
-        const weight = Math.round(
-          Math.hypot(nodeA.x - nodeB.x, nodeA.y - nodeB.y)
-        );
         const midX = (nodeA.x + nodeB.x) / 2;
         const midY = (nodeA.y + nodeB.y) / 2;
         const edgeAngle = Math.atan2(nodeB.y - nodeA.y, nodeB.x - nodeA.x);
@@ -294,7 +313,7 @@ export function GraphCanvas({
               textAnchor="middle"
               dominantBaseline="middle"
             >
-              {weight}
+              {edge.weight}
             </text>
           </g>
         );
