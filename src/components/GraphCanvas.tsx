@@ -232,6 +232,45 @@ export function GraphCanvas({
           </text>
         </g>
       ))}
+      {edges.map((edge) => {
+        const nodeA = nodeById.get(edge.nodeA);
+        const nodeB = nodeById.get(edge.nodeB);
+
+        if (!nodeA || !nodeB) {
+          return null;
+        }
+
+        const weight = Math.round(
+          Math.hypot(nodeA.x - nodeB.x, nodeA.y - nodeB.y)
+        );
+        const midX = (nodeA.x + nodeB.x) / 2;
+        const midY = (nodeA.y + nodeB.y) / 2;
+        const edgeAngle = Math.atan2(nodeB.y - nodeA.y, nodeB.x - nodeA.x);
+        const labelAngle =
+          edgeAngle > Math.PI / 2 || edgeAngle < -Math.PI / 2
+            ? edgeAngle + Math.PI
+            : edgeAngle;
+        const labelAngleDegrees = (labelAngle * 180) / Math.PI;
+
+        return (
+          <g
+            key={`${edge.id}-weight`}
+            transform={`translate(${midX}, ${midY}) rotate(${labelAngleDegrees})`}
+          >
+            <text
+              x={0}
+              y={-10}
+              fill="#111827"
+              fontSize="12"
+              fontWeight={400}
+              textAnchor="middle"
+              dominantBaseline="middle"
+            >
+              {weight}
+            </text>
+          </g>
+        );
+      })}
     </svg>
   );
 }
