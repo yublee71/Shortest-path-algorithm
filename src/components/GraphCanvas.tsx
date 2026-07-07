@@ -15,6 +15,11 @@ interface Point {
   y: number;
 }
 
+interface DraftEdge {
+  fromNodeId: string;
+  to: Point;
+}
+
 interface DragState {
   nodeId: string;
   offsetX: number;
@@ -36,10 +41,7 @@ export function GraphCanvas({
   const height = 400;
   const nodeRadius = 20;
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
-  const [draftEdge, setDraftEdge] = useState<{
-    from: Node;
-    to: Point;
-  } | null>(null);
+  const [draftEdge, setDraftEdge] = useState<DraftEdge | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const dragStateRef = useRef<DragState | null>(null);
   const suppressNextClickRef = useRef(false);
@@ -62,7 +64,7 @@ export function GraphCanvas({
 
     if (draftEdge) {
       const newNodeId = onAddNode(point.x, point.y);
-      onAddEdge(draftEdge.from.id, newNodeId);
+      onAddEdge(draftEdge.fromNodeId, newNodeId);
       setDraftEdge(null);
       return;
     }
@@ -150,17 +152,24 @@ export function GraphCanvas({
           />
         );
       })}
-      {draftEdge && (
-        <line
-          x1={draftEdge.from.x}
-          y1={draftEdge.from.y}
-          x2={draftEdge.to.x}
-          y2={draftEdge.to.y}
-          stroke="#64748b"
-          strokeWidth={2}
-          pointerEvents="none"
-        />
-      )}
+      {draftEdge &&
+        (() => {
+          const fromNode = nodeById.get(draftEdge.fromNodeId);
+          if (!fromNode) {
+            return null;
+          }
+          return (
+            <line
+              x1={fromNode.x}
+              y1={fromNode.y}
+              x2={draftEdge.to.x}
+              y2={draftEdge.to.y}
+              stroke="#64748b"
+              strokeWidth={2}
+              pointerEvents="none"
+            />
+          );
+        })()}
       {nodes.map((node) => (
         <g
           key={node.id}
@@ -189,13 +198,13 @@ export function GraphCanvas({
             }
 
             if (draftEdge) {
-              onAddEdge(draftEdge.from.id, node.id);
+              onAddEdge(draftEdge.fromNodeId, node.id);
               setDraftEdge(null);
               return;
             }
 
             setDraftEdge({
-              from: node,
+              fromNodeId: node.id,
               to: { x: node.x, y: node.y },
             });
           }}
@@ -203,7 +212,7 @@ export function GraphCanvas({
             event.preventDefault();
             event.stopPropagation();
             setDraftEdge((currentDraftEdge) =>
-              currentDraftEdge?.from.id === node.id ? null : currentDraftEdge
+              currentDraftEdge?.fromNodeId === node.id ? null : currentDraftEdge
             );
             onDeleteNode(node.id);
           }}
