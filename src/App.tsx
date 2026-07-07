@@ -67,6 +67,10 @@ function App() {
     });
   };
 
+  const deleteEdge = (id: string) => {
+    setEdges((currentEdges) => currentEdges.filter((edge) => edge.id !== id));
+  };
+
   return (
     <>
       <h1>Shortest Path Algorithm</h1>
@@ -77,6 +81,7 @@ function App() {
         onDeleteNode={deleteNode}
         onMoveNode={moveNode}
         onAddEdge={addEdge}
+        onDeleteEdge={deleteEdge}
       />
     </>
   );

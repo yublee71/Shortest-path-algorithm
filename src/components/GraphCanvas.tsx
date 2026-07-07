@@ -8,6 +8,7 @@ interface GraphCanvasProps {
   onDeleteNode: (id: string) => void;
   onMoveNode: (id: string, x: number, y: number) => void;
   onAddEdge: (firstNodeId: string, secondNodeId: string) => void;
+  onDeleteEdge: (id: string) => void;
 }
 
 interface Point {
@@ -36,6 +37,7 @@ export function GraphCanvas({
   onDeleteNode,
   onMoveNode,
   onAddEdge,
+  onDeleteEdge,
 }: GraphCanvasProps) {
   const width = 600;
   const height = 400;
@@ -141,15 +143,34 @@ export function GraphCanvas({
         }
 
         return (
-          <line
+          <g
             key={edge.id}
-            x1={nodeA.x}
-            y1={nodeA.y}
-            x2={nodeB.x}
-            y2={nodeB.y}
-            stroke="#000000"
-            strokeWidth={2}
-          />
+            onClick={(event) => event.stopPropagation()}
+            onContextMenu={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onDeleteEdge(edge.id);
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            <line
+              x1={nodeA.x}
+              y1={nodeA.y}
+              x2={nodeB.x}
+              y2={nodeB.y}
+              stroke="transparent"
+              strokeWidth={12}
+            />
+            <line
+              x1={nodeA.x}
+              y1={nodeA.y}
+              x2={nodeB.x}
+              y2={nodeB.y}
+              stroke="#000000"
+              strokeWidth={2}
+              pointerEvents="none"
+            />
+          </g>
         );
       })}
       {draftEdge &&
@@ -256,6 +277,13 @@ export function GraphCanvas({
           <g
             key={`${edge.id}-weight`}
             transform={`translate(${midX}, ${midY}) rotate(${labelAngleDegrees})`}
+            onClick={(event) => event.stopPropagation()}
+            onContextMenu={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onDeleteEdge(edge.id);
+            }}
+            style={{ cursor: "pointer" }}
           >
             <text
               x={0}
