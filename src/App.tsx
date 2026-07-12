@@ -1,6 +1,7 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  buildAdjacencyList,
   calculateDistanceWeight,
   type Edge,
   type Node,
@@ -11,6 +12,10 @@ function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [nextNodeIndex, setNextNodeIndex] = useState(0);
+
+  useEffect(() => {
+    console.log("Adjacency list:", buildAdjacencyList(nodes, edges));
+  }, [nodes, edges]);
 
   const generateNodeId = (index: number) => {
     let label = "";
