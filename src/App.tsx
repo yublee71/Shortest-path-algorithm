@@ -6,7 +6,7 @@ import {
   type Edge,
   type Node,
 } from "./models/Graph";
-import { GraphCanvas } from "./components/GraphCanvas";
+import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
 
 function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
