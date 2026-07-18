@@ -5,7 +5,7 @@ import {
   calculateDistanceWeight,
   type Edge,
   type Node,
-} from "./components/graph";
+} from "./models/Graph";
 import { GraphCanvas } from "./components/GraphCanvas";
 
 function App() {
@@ -32,10 +32,7 @@ function App() {
   const addNode = (x: number, y: number) => {
     const id = generateNodeId(nextNodeIndex);
 
-    setNodes((currentNodes) => [
-      ...currentNodes,
-      { id, x, y },
-    ]);
+    setNodes((currentNodes) => [...currentNodes, { id, x, y }]);
     setNextNodeIndex((currentIndex) => currentIndex + 1);
 
     return id;
@@ -90,10 +87,7 @@ function App() {
         return currentEdges;
       }
 
-      return [
-        ...currentEdges,
-        { id: edgeId, nodeA, nodeB, weight },
-      ];
+      return [...currentEdges, { id: edgeId, nodeA, nodeB, weight }];
     });
   };
 

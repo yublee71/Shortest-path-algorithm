@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { calculateDistanceWeight, type Edge, type Node } from "./graph";
+import { calculateDistanceWeight, type Edge, type Node } from "../models/Graph";
 
 interface GraphCanvasProps {
   nodes: Node[];
