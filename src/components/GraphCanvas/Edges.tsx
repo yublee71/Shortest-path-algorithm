@@ -3,10 +3,16 @@ import type { Edge, Node } from "../../models/Graph";
 interface EdgesProps {
   edges: Edge[];
   nodeById: Map<string, Node>;
+  isEditable: boolean;
   onDeleteEdge: (id: string) => void;
 }
 
-export function Edges({ edges, nodeById, onDeleteEdge }: EdgesProps) {
+export function Edges({
+  edges,
+  nodeById,
+  isEditable,
+  onDeleteEdge,
+}: EdgesProps) {
   return (
     <>
       {edges.map((edge) => {
@@ -24,9 +30,14 @@ export function Edges({ edges, nodeById, onDeleteEdge }: EdgesProps) {
             onContextMenu={(event) => {
               event.preventDefault();
               event.stopPropagation();
+
+              if (!isEditable) {
+                return;
+              }
+
               onDeleteEdge(edge.id);
             }}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: isEditable ? "pointer" : "default" }}
           >
             <line
               x1={nodeA.x}

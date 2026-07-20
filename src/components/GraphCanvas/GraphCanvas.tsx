@@ -12,6 +12,7 @@ import { Nodes } from "./Nodes";
 interface GraphCanvasProps {
   nodes: Node[];
   edges: Edge[];
+  isEditable: boolean;
   onAddNode: (x: number, y: number) => string;
   onDeleteNode: (id: string) => void;
   onMoveNode: (id: string, x: number, y: number) => void;
@@ -45,6 +46,7 @@ interface DragState {
 export function GraphCanvas({
   nodes,
   edges,
+  isEditable,
   onAddNode,
   onDeleteNode,
   onMoveNode,
@@ -74,6 +76,10 @@ export function GraphCanvas({
   };
 
   const handleCanvasClick = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (!isEditable) {
+      return;
+    }
+
     const point = getCanvasPoint(event);
 
     if (draftEdge) {
@@ -96,6 +102,10 @@ export function GraphCanvas({
   };
 
   const handleCanvasMouseMove = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (!isEditable) {
+      return;
+    }
+
     const point = getCanvasPoint(event);
     const dragState = dragStateRef.current;
 
@@ -145,6 +155,10 @@ export function GraphCanvas({
     event: React.MouseEvent<SVGGElement>,
     node: Node
   ) => {
+    if (!isEditable) {
+      return;
+    }
+
     if (event.button !== 0) {
       return;
     }
@@ -166,6 +180,10 @@ export function GraphCanvas({
     node: Node
   ) => {
     event.stopPropagation();
+
+    if (!isEditable) {
+      return;
+    }
 
     if (suppressNextClickRef.current) {
       suppressNextClickRef.current = false;
@@ -199,6 +217,11 @@ export function GraphCanvas({
   ) => {
     event.preventDefault();
     event.stopPropagation();
+
+    if (!isEditable) {
+      return;
+    }
+
     setDraftEdge((currentDraftEdge) =>
       currentDraftEdge?.fromNodeId === node.id ? null : currentDraftEdge
     );
@@ -216,10 +239,15 @@ export function GraphCanvas({
       onMouseLeave={handleCanvasMouseUp}
       style={{
         border: "1px solid #ccc",
-        cursor: "crosshair",
+        cursor: isEditable ? "crosshair" : "default",
       }}
     >
-      <Edges edges={edges} nodeById={nodeById} onDeleteEdge={onDeleteEdge} />
+      <Edges
+        edges={edges}
+        nodeById={nodeById}
+        isEditable={isEditable}
+        onDeleteEdge={onDeleteEdge}
+      />
       {draftEdge && (
         <DraftEdge
           fromNode={nodeById.get(draftEdge.fromNodeId)}
@@ -236,6 +264,7 @@ export function GraphCanvas({
       <EdgeWeightLabels
         edges={edges}
         nodeById={nodeById}
+        isEditable={isEditable}
         onDeleteEdge={onDeleteEdge}
       />
     </svg>

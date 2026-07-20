@@ -7,11 +7,13 @@ import {
   type Node,
 } from "./models/Graph";
 import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
+import { Button } from "@mantine/core";
 
 function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [nextNodeIndex, setNextNodeIndex] = useState(0);
+  const [isAlgorithmMode, setIsAlgorithmMode] = useState(false);
 
   useEffect(() => {
     console.log("Adjacency list:", buildAdjacencyList(nodes, edges));
@@ -97,10 +99,22 @@ function App() {
 
   return (
     <>
-      <h1>Shortest Path Algorithm</h1>
+      <h1 style={{ marginBottom: "0px" }}>Shortest Path Algorithm</h1>
+      <div
+        style={{
+          marginBottom: "10px",
+          display: "flex",
+          justifyContent: "end",
+        }}
+      >
+        <Button onClick={() => setIsAlgorithmMode(true)}>
+          {isAlgorithmMode ? "Running" : "Run"}
+        </Button>
+      </div>
       <GraphCanvas
         nodes={nodes}
         edges={edges}
+        isEditable={!isAlgorithmMode}
         onAddNode={addNode}
         onDeleteNode={deleteNode}
         onMoveNode={moveNode}

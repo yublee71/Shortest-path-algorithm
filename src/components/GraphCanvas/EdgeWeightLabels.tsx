@@ -3,12 +3,14 @@ import type { Edge, Node } from "../../models/Graph";
 interface EdgeWeightLabelsProps {
   edges: Edge[];
   nodeById: Map<string, Node>;
+  isEditable: boolean;
   onDeleteEdge: (id: string) => void;
 }
 
 export function EdgeWeightLabels({
   edges,
   nodeById,
+  isEditable,
   onDeleteEdge,
 }: EdgeWeightLabelsProps) {
   return (
@@ -38,9 +40,14 @@ export function EdgeWeightLabels({
             onContextMenu={(event) => {
               event.preventDefault();
               event.stopPropagation();
+
+              if (!isEditable) {
+                return;
+              }
+
               onDeleteEdge(edge.id);
             }}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: isEditable ? "pointer" : "default" }}
           >
             <text
               x={0}
