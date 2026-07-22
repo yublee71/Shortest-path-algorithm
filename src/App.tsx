@@ -110,7 +110,10 @@ function App() {
           alignItems: "center",
         }}
       >
-        <Button onClick={() => setIsAlgorithmMode(true)}>
+        <Button
+          onClick={() => setIsAlgorithmMode(true)}
+          disabled={isAlgorithmMode}
+        >
           {isAlgorithmMode ? "Running" : "Run"}
         </Button>
         {isAlgorithmMode && (
