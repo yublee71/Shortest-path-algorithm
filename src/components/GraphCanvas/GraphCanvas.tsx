@@ -22,6 +22,10 @@ interface GraphCanvasProps {
     weight: number
   ) => void;
   onDeleteEdge: (id: string) => void;
+  sourceNodeId: string | null;
+  targetNodeId: string | null;
+  onSelectSourceNode: (id: string) => void;
+  onSelectTargetNode: (id: string) => void;
 }
 
 interface Point {
@@ -52,6 +56,10 @@ export function GraphCanvas({
   onMoveNode,
   onAddEdge,
   onDeleteEdge,
+  sourceNodeId,
+  targetNodeId,
+  onSelectSourceNode,
+  onSelectTargetNode,
 }: GraphCanvasProps) {
   const width = 600;
   const height = 400;
@@ -182,6 +190,11 @@ export function GraphCanvas({
     event.stopPropagation();
 
     if (!isEditable) {
+      if (sourceNodeId === null) {
+        onSelectSourceNode(node.id);
+      } else if (sourceNodeId !== node.id && targetNodeId === null) {
+        onSelectTargetNode(node.id);
+      }
       return;
     }
 
@@ -260,6 +273,8 @@ export function GraphCanvas({
         onMouseDown={handleNodeMouseDown}
         onClick={handleNodeClick}
         onContextMenu={handleNodeContextMenu}
+        sourceNodeId={sourceNodeId}
+        targetNodeId={targetNodeId}
       />
       <EdgeWeightLabels
         edges={edges}

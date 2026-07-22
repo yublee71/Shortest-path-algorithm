@@ -14,6 +14,8 @@ function App() {
   const [edges, setEdges] = useState<Edge[]>([]);
   const [nextNodeIndex, setNextNodeIndex] = useState(0);
   const [isAlgorithmMode, setIsAlgorithmMode] = useState(false);
+  const [sourceNodeId, setSourceNodeId] = useState<string | null>(null);
+  const [targetNodeId, setTargetNodeId] = useState<string | null>(null);
 
   useEffect(() => {
     console.log("Adjacency list:", buildAdjacencyList(nodes, edges));
@@ -104,12 +106,23 @@ function App() {
         style={{
           marginBottom: "10px",
           display: "flex",
-          justifyContent: "end",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <Button onClick={() => setIsAlgorithmMode(true)}>
           {isAlgorithmMode ? "Running" : "Run"}
         </Button>
+        {isAlgorithmMode && (
+          <div>
+            <span style={{ marginRight: "10px" }}>
+              {sourceNodeId ? `Source: ${sourceNodeId}` : "Select source node"}
+            </span>
+            <span>
+              {targetNodeId ? `Target: ${targetNodeId}` : "Select target node"}
+            </span>
+          </div>
+        )}
       </div>
       <GraphCanvas
         nodes={nodes}
@@ -120,6 +133,10 @@ function App() {
         onMoveNode={moveNode}
         onAddEdge={addEdge}
         onDeleteEdge={deleteEdge}
+        sourceNodeId={sourceNodeId}
+        targetNodeId={targetNodeId}
+        onSelectSourceNode={(id) => setSourceNodeId(id)}
+        onSelectTargetNode={(id) => setTargetNodeId(id)}
       />
     </>
   );
