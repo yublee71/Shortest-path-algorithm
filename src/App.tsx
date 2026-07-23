@@ -143,6 +143,19 @@ function App() {
             </span>
           </div>
         )}
+        <Button
+          color="orange"
+          onClick={() => {
+            setNodes([]);
+            setEdges([]);
+            setSourceNodeId(null);
+            setTargetNodeId(null);
+            setIsAlgorithmMode(false);
+            setNextNodeIndex(0);
+          }}
+        >
+          Reset
+        </Button>
       </div>
       <GraphCanvas
         nodes={nodes}
