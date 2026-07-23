@@ -99,6 +99,18 @@ function App() {
     setEdges((currentEdges) => currentEdges.filter((edge) => edge.id !== id));
   };
 
+  const onRunButtonClick = () => {
+    if (nodes.length < 2) {
+      alert("Please add at least two nodes to run the algorithm.");
+      return;
+    }
+    if (edges.length === 0) {
+      alert("Please add at least one edge to run the algorithm.");
+      return;
+    }
+    setIsAlgorithmMode(true);
+  };
+
   return (
     <>
       <h1 style={{ marginBottom: "0px" }}>Shortest Path Algorithm</h1>
@@ -110,10 +122,7 @@ function App() {
           alignItems: "center",
         }}
       >
-        <Button
-          onClick={() => setIsAlgorithmMode(true)}
-          disabled={isAlgorithmMode}
-        >
+        <Button onClick={onRunButtonClick} disabled={isAlgorithmMode}>
           {isAlgorithmMode ? "Running" : "Run"}
         </Button>
         {isAlgorithmMode && (
