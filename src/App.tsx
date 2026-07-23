@@ -122,9 +122,17 @@ function App() {
           alignItems: "center",
         }}
       >
-        <Button onClick={onRunButtonClick} disabled={isAlgorithmMode}>
-          {isAlgorithmMode ? "Running" : "Run"}
-        </Button>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <Button onClick={onRunButtonClick} disabled={isAlgorithmMode}>
+            {isAlgorithmMode ? "Running" : "Run"}
+          </Button>
+          {sourceNodeId && targetNodeId && (
+            <>
+              <Button>❮</Button>
+              <Button>❯</Button>
+            </>
+          )}
+        </div>
         {isAlgorithmMode && (
           <div>
             <span style={{ marginRight: "10px" }}>
