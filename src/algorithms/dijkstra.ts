@@ -7,7 +7,7 @@ interface DijkstraProps {
   targetNodeId: string;
 }
 
-interface DijkstraResult {
+export interface DijkstraResult {
   distance: number;
   path: string[];
 }

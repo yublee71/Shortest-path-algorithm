@@ -8,6 +8,7 @@ import {
 } from "./models/Graph";
 import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
 import { Button } from "@mantine/core";
+import { dijkstra, type DijkstraResult } from "./algorithms/dijkstra";
 
 function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -16,6 +17,9 @@ function App() {
   const [isAlgorithmMode, setIsAlgorithmMode] = useState(false);
   const [sourceNodeId, setSourceNodeId] = useState<string | null>(null);
   const [targetNodeId, setTargetNodeId] = useState<string | null>(null);
+  const [dijkstraResult, setDijkstraResult] = useState<DijkstraResult | null>(
+    null
+  );
 
   useEffect(() => {
     console.log("Adjacency list:", buildAdjacencyList(nodes, edges));
@@ -111,6 +115,16 @@ function App() {
     setIsAlgorithmMode(true);
   };
 
+  const onResultButtonClick = () => {
+    const result = dijkstra({
+      nodes,
+      adjacencyList: buildAdjacencyList(nodes, edges),
+      sourceNodeId: sourceNodeId!,
+      targetNodeId: targetNodeId!,
+    });
+    setDijkstraResult(result);
+  };
+
   return (
     <>
       <h1 style={{ marginBottom: "0px" }}>Shortest Path Algorithm</h1>
@@ -130,6 +144,7 @@ function App() {
             <>
               <Button>❮</Button>
               <Button>❯</Button>
+              <Button onClick={onResultButtonClick}>⏭︎</Button>
             </>
           )}
         </div>
@@ -152,6 +167,7 @@ function App() {
             setTargetNodeId(null);
             setIsAlgorithmMode(false);
             setNextNodeIndex(0);
+            setDijkstraResult(null);
           }}
         >
           Reset
@@ -171,6 +187,15 @@ function App() {
         onSelectSourceNode={(id) => setSourceNodeId(id)}
         onSelectTargetNode={(id) => setTargetNodeId(id)}
       />
+      {dijkstraResult && (
+        <div style={{ marginTop: "10px" }}>
+          <p>
+            Shortest path from {sourceNodeId} to {targetNodeId}:{" "}
+            {dijkstraResult.path.join(" → ")}
+          </p>
+          <p>Total distance: {dijkstraResult.distance}</p>
+        </div>
+      )}
     </>
   );
 }
