@@ -7,20 +7,28 @@ interface DijkstraProps {
   targetNodeId: string;
 }
 
-export interface DijkstraResult {
-  distance: number;
-  path: string[];
+export interface DijkstraStep {
+  currentNodeId: string;
+  distances: Record<string, number>;
+  totalDistance?: number;
+  path?: string[];
 }
+
+// export interface DijkstraResult {
+//   distance: number;
+//   path: string[];
+// }
 
 export function dijkstra({
   nodes,
   adjacencyList,
   sourceNodeId,
   targetNodeId,
-}: DijkstraProps): DijkstraResult {
+}: DijkstraProps): DijkstraStep[] {
   const dist: Record<string, number> = {};
   const prev: Record<string, string | null> = {};
   const queue: Set<string> = new Set();
+  const dijkstraSteps: DijkstraStep[] = [];
 
   for (const v of nodes) {
     dist[v.id] = Infinity;
@@ -29,6 +37,11 @@ export function dijkstra({
   }
 
   dist[sourceNodeId] = 0;
+
+  dijkstraSteps.push({
+    currentNodeId: sourceNodeId,
+    distances: { ...dist },
+  });
 
   while (queue.size > 0) {
     const u = getClosestNode(queue, dist);
@@ -75,10 +88,14 @@ export function dijkstra({
     dist[targetNodeId]
   );
 
-  return {
-    distance: dist[targetNodeId],
+  dijkstraSteps.push({
+    currentNodeId: targetNodeId,
+    distances: { ...dist },
+    totalDistance: dist[targetNodeId],
     path: path,
-  };
+  });
+
+  return dijkstraSteps;
 }
 
 function getClosestNode(

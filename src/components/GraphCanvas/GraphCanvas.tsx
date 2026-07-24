@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import {
+  buildAdjacencyList,
   calculateDistanceWeight,
   type Edge,
   type Node,
@@ -8,6 +9,7 @@ import { DraftEdge } from "./DraftEdge";
 import { Edges } from "./Edges";
 import { EdgeWeightLabels } from "./EdgeWeightLabels";
 import { Nodes } from "./Nodes";
+import { dijkstra, type DijkstraStep } from "../../algorithms/dijkstra";
 
 interface GraphCanvasProps {
   nodes: Node[];
@@ -26,6 +28,7 @@ interface GraphCanvasProps {
   targetNodeId: string | null;
   onSelectSourceNode: (id: string) => void;
   onSelectTargetNode: (id: string) => void;
+  setDijkstraSteps: (steps: DijkstraStep[]) => void;
 }
 
 interface Point {
@@ -60,6 +63,7 @@ export function GraphCanvas({
   targetNodeId,
   onSelectSourceNode,
   onSelectTargetNode,
+  setDijkstraSteps,
 }: GraphCanvasProps) {
   const width = 600;
   const height = 400;
@@ -196,6 +200,13 @@ export function GraphCanvas({
       } else if (sourceNodeId !== node.id && targetNodeId === null) {
         onSelectTargetNode(node.id);
         node.label = "target";
+        const dijkstraSteps = dijkstra({
+          nodes,
+          adjacencyList: buildAdjacencyList(nodes, edges),
+          sourceNodeId: sourceNodeId!,
+          targetNodeId: targetNodeId!,
+        });
+        setDijkstraSteps(dijkstraSteps);
       }
       return;
     }

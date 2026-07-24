@@ -8,7 +8,7 @@ import {
 } from "./models/Graph";
 import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
 import { Button } from "@mantine/core";
-import { dijkstra, type DijkstraResult } from "./algorithms/dijkstra";
+import { type DijkstraStep } from "./algorithms/dijkstra";
 
 function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -17,9 +17,11 @@ function App() {
   const [isAlgorithmMode, setIsAlgorithmMode] = useState(false);
   const [sourceNodeId, setSourceNodeId] = useState<string | null>(null);
   const [targetNodeId, setTargetNodeId] = useState<string | null>(null);
-  const [dijkstraResult, setDijkstraResult] = useState<DijkstraResult | null>(
-    null
-  );
+  //   const [dijkstraResult, setDijkstraResult] = useState<DijkstraResult | null>(
+  // null
+  //   );
+  const [dijkstraSteps, setDijkstraSteps] = useState<DijkstraStep[]>([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
 
   useEffect(() => {
     console.log("Adjacency list:", buildAdjacencyList(nodes, edges));
@@ -115,16 +117,6 @@ function App() {
     setIsAlgorithmMode(true);
   };
 
-  const onResultButtonClick = () => {
-    const result = dijkstra({
-      nodes,
-      adjacencyList: buildAdjacencyList(nodes, edges),
-      sourceNodeId: sourceNodeId!,
-      targetNodeId: targetNodeId!,
-    });
-    setDijkstraResult(result);
-  };
-
   return (
     <>
       <h1 style={{ marginBottom: "0px" }}>Shortest Path Algorithm</h1>
@@ -142,9 +134,34 @@ function App() {
           </Button>
           {sourceNodeId && targetNodeId && (
             <>
-              <Button>❮</Button>
-              <Button>❯</Button>
-              <Button onClick={onResultButtonClick}>⏭︎</Button>
+              <Button
+                disabled={currentStepIndex === 0}
+                onClick={() => {
+                  setCurrentStepIndex((currentStepIndex) =>
+                    Math.max(0, currentStepIndex - 1)
+                  );
+                }}
+              >
+                ❮
+              </Button>
+              <Button
+                disabled={currentStepIndex === dijkstraSteps.length - 1}
+                onClick={() => {
+                  setCurrentStepIndex((currentStepIndex) =>
+                    Math.min(dijkstraSteps.length - 1, currentStepIndex + 1)
+                  );
+                }}
+              >
+                ❯
+              </Button>
+              <Button
+                disabled={currentStepIndex === dijkstraSteps.length - 1}
+                onClick={() => {
+                  setCurrentStepIndex(dijkstraSteps.length - 1);
+                }}
+              >
+                ⏭︎
+              </Button>
             </>
           )}
         </div>
@@ -167,7 +184,8 @@ function App() {
             setTargetNodeId(null);
             setIsAlgorithmMode(false);
             setNextNodeIndex(0);
-            setDijkstraResult(null);
+            setDijkstraSteps([]);
+            setCurrentStepIndex(0);
           }}
         >
           Reset
@@ -186,16 +204,17 @@ function App() {
         targetNodeId={targetNodeId}
         onSelectSourceNode={(id) => setSourceNodeId(id)}
         onSelectTargetNode={(id) => setTargetNodeId(id)}
+        setDijkstraSteps={setDijkstraSteps}
       />
-      {dijkstraResult && (
+      {/* {dijkstraSteps && (
         <div style={{ marginTop: "10px" }}>
           <p>
             Shortest path from {sourceNodeId} to {targetNodeId}:{" "}
-            {dijkstraResult.path.join(" → ")}
+            {dijkstraSteps.path.join(" → ")}
           </p>
-          <p>Total distance: {dijkstraResult.distance}</p>
+          <p>Total distance: {dijkstraSteps.distance}</p>
         </div>
-      )}
+      )} */}
     </>
   );
 }
