@@ -45,6 +45,17 @@ export function Nodes({
             onContextMenu={(event) => onContextMenu(event, node)}
             style={{ cursor: "pointer" }}
           >
+            <text
+              x={node.x}
+              y={node.y}
+              dy="-2em"
+              textAnchor="middle"
+              pointerEvents="none"
+              fill="black"
+              fontSize="14"
+            >
+              {node.label}
+            </text>
             <circle
               cx={node.x}
               cy={node.y}

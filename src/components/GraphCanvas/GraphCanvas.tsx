@@ -192,8 +192,10 @@ export function GraphCanvas({
     if (!isEditable) {
       if (sourceNodeId === null) {
         onSelectSourceNode(node.id);
+        node.label = "source";
       } else if (sourceNodeId !== node.id && targetNodeId === null) {
         onSelectTargetNode(node.id);
+        node.label = "target";
       }
       return;
     }
