@@ -1,3 +1,4 @@
+import type { DijkstraStep } from "../../algorithms/dijkstra";
 import type { Node } from "../../models/Graph";
 
 interface NodesProps {
@@ -8,6 +9,8 @@ interface NodesProps {
   onContextMenu: (event: React.MouseEvent<SVGGElement>, node: Node) => void;
   sourceNodeId: string | null;
   targetNodeId: string | null;
+  dijkstraSteps: DijkstraStep[];
+  currentStepIndex: number;
 }
 
 export function Nodes({
@@ -18,7 +21,13 @@ export function Nodes({
   onContextMenu,
   sourceNodeId,
   targetNodeId,
+  dijkstraSteps,
+  currentStepIndex,
 }: NodesProps) {
+  const distances = dijkstraSteps[currentStepIndex]?.distances || {};
+  const prevDistances = dijkstraSteps[currentStepIndex]?.prevDistances || {};
+  const altDistances = dijkstraSteps[currentStepIndex]?.altDistances || {};
+
   return (
     <>
       {nodes.map((node) => {
@@ -27,6 +36,12 @@ export function Nodes({
             ? "darkblue"
             : node.id === targetNodeId
             ? "green"
+            : dijkstraSteps[currentStepIndex]?.visitedNodesId?.includes(node.id)
+            ? "gray"
+            : dijkstraSteps[currentStepIndex]?.currentVisitingNodesId?.includes(
+                node.id
+              )
+            ? "orange"
             : "steelblue";
 
         const stroke =
@@ -36,6 +51,25 @@ export function Nodes({
 
         const strokeWidth =
           node.id === sourceNodeId || node.id === targetNodeId ? 2 : 0;
+
+        const label =
+          node.id === sourceNodeId
+            ? "Source"
+            : node.id === targetNodeId
+            ? "Target"
+            : "";
+
+        const distance = distances[node.id];
+
+        const prevDistance =
+          prevDistances[node.id] !== undefined
+            ? prevDistances[node.id] + " → "
+            : "";
+
+        const altDistance =
+          altDistances[node.id] !== undefined
+            ? " < " + altDistances[node.id]
+            : "";
 
         return (
           <g
@@ -54,7 +88,7 @@ export function Nodes({
               fill="black"
               fontSize="14"
             >
-              {node.label}
+              {label}
             </text>
             <circle
               cx={node.x}
@@ -74,6 +108,15 @@ export function Nodes({
               pointerEvents="none"
             >
               {node.id}
+            </text>
+            <text x={node.x} y={node.y} dx="0.35em" dy="2.5em" fill="blue">
+              <tspan style={{ textDecoration: "line-through" }}>
+                {prevDistance}
+              </tspan>
+              {distance}
+              <tspan style={{ textDecoration: "line-through" }}>
+                {altDistance}
+              </tspan>
             </text>
           </g>
         );

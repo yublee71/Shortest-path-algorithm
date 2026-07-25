@@ -204,7 +204,9 @@ function App() {
         targetNodeId={targetNodeId}
         onSelectSourceNode={(id) => setSourceNodeId(id)}
         onSelectTargetNode={(id) => setTargetNodeId(id)}
+        dijkstraSteps={dijkstraSteps}
         setDijkstraSteps={setDijkstraSteps}
+        currentStepIndex={currentStepIndex}
       />
       {/* {dijkstraSteps && (
         <div style={{ marginTop: "10px" }}>

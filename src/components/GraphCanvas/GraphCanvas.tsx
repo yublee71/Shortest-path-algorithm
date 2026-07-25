@@ -28,7 +28,9 @@ interface GraphCanvasProps {
   targetNodeId: string | null;
   onSelectSourceNode: (id: string) => void;
   onSelectTargetNode: (id: string) => void;
+  dijkstraSteps: DijkstraStep[];
   setDijkstraSteps: (steps: DijkstraStep[]) => void;
+  currentStepIndex: number;
 }
 
 interface Point {
@@ -63,7 +65,9 @@ export function GraphCanvas({
   targetNodeId,
   onSelectSourceNode,
   onSelectTargetNode,
+  dijkstraSteps,
   setDijkstraSteps,
+  currentStepIndex,
 }: GraphCanvasProps) {
   const width = 600;
   const height = 400;
@@ -196,15 +200,13 @@ export function GraphCanvas({
     if (!isEditable) {
       if (sourceNodeId === null) {
         onSelectSourceNode(node.id);
-        node.label = "source";
       } else if (sourceNodeId !== node.id && targetNodeId === null) {
         onSelectTargetNode(node.id);
-        node.label = "target";
         const dijkstraSteps = dijkstra({
           nodes,
           adjacencyList: buildAdjacencyList(nodes, edges),
-          sourceNodeId: sourceNodeId!,
-          targetNodeId: targetNodeId!,
+          sourceNodeId: sourceNodeId,
+          targetNodeId: node.id,
         });
         setDijkstraSteps(dijkstraSteps);
       }
@@ -288,6 +290,8 @@ export function GraphCanvas({
         onContextMenu={handleNodeContextMenu}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
+        dijkstraSteps={dijkstraSteps}
+        currentStepIndex={currentStepIndex}
       />
       <EdgeWeightLabels
         edges={edges}
