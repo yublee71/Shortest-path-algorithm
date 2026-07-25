@@ -58,19 +58,6 @@ export function Nodes({
             : node.id === targetNodeId
             ? "Target"
             : "";
-
-        const distance = distances[node.id];
-
-        const prevDistance =
-          prevDistances[node.id] !== undefined
-            ? prevDistances[node.id] + " → "
-            : "";
-
-        const altDistance =
-          altDistances[node.id] !== undefined
-            ? " < " + altDistances[node.id]
-            : "";
-
         return (
           <g
             key={node.id}
@@ -109,16 +96,32 @@ export function Nodes({
             >
               {node.id}
             </text>
-            <text x={node.x} y={node.y} dx="0.35em" dy="2.5em" fill="blue">
-              <tspan style={{ textDecoration: "line-through" }}>
-                {prevDistance}
-              </tspan>
-              {distance}
-              <tspan style={{ textDecoration: "line-through" }}>
-                {altDistance}
-              </tspan>
-            </text>
           </g>
+        );
+      })}
+      {nodes.map((node) => {
+        const distance = distances[node.id];
+
+        const prevDistance =
+          prevDistances[node.id] !== undefined
+            ? prevDistances[node.id] + " → "
+            : "";
+
+        const altDistance =
+          altDistances[node.id] !== undefined
+            ? " < " + altDistances[node.id]
+            : "";
+
+        return (
+          <text x={node.x} y={node.y} dx="0.35em" dy="2.5em" fill="blue">
+            <tspan style={{ textDecoration: "line-through" }}>
+              {prevDistance}
+            </tspan>
+            {distance}
+            <tspan style={{ textDecoration: "line-through" }}>
+              {altDistance}
+            </tspan>
+          </text>
         );
       })}
     </>

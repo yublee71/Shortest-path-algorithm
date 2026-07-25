@@ -268,6 +268,7 @@ export function GraphCanvas({
       style={{
         border: "1px solid #ccc",
         cursor: isEditable ? "crosshair" : "default",
+        overflow: "visible",
       }}
     >
       <Edges
