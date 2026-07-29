@@ -9,6 +9,7 @@ import {
 import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
 import { Button } from "@mantine/core";
 import { type DijkstraStep } from "./algorithms/dijkstra";
+import { AlgorithmExplanation } from "./components/AlgorithmExplanation";
 
 function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -118,16 +119,9 @@ function App() {
   };
 
   return (
-    <>
-      <h1 style={{ marginBottom: "0px" }}>Shortest Path Algorithm</h1>
-      <div
-        style={{
-          marginBottom: "10px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+    <div className="app-grid">
+      <h1 className="app-heading">Shortest Path Algorithm</h1>
+      <div className="app-buttons">
         <div style={{ display: "flex", gap: "10px" }}>
           <Button onClick={onRunButtonClick} disabled={isAlgorithmMode}>
             {isAlgorithmMode ? "Running" : "Run"}
@@ -191,23 +185,28 @@ function App() {
           Reset
         </Button>
       </div>
-      <GraphCanvas
-        nodes={nodes}
-        edges={edges}
-        isEditable={!isAlgorithmMode}
-        onAddNode={addNode}
-        onDeleteNode={deleteNode}
-        onMoveNode={moveNode}
-        onAddEdge={addEdge}
-        onDeleteEdge={deleteEdge}
-        sourceNodeId={sourceNodeId}
-        targetNodeId={targetNodeId}
-        onSelectSourceNode={(id) => setSourceNodeId(id)}
-        onSelectTargetNode={(id) => setTargetNodeId(id)}
-        dijkstraSteps={dijkstraSteps}
-        setDijkstraSteps={setDijkstraSteps}
-        currentStepIndex={currentStepIndex}
-      />
+      <div className="app-canvas">
+        <GraphCanvas
+          nodes={nodes}
+          edges={edges}
+          isEditable={!isAlgorithmMode}
+          onAddNode={addNode}
+          onDeleteNode={deleteNode}
+          onMoveNode={moveNode}
+          onAddEdge={addEdge}
+          onDeleteEdge={deleteEdge}
+          sourceNodeId={sourceNodeId}
+          targetNodeId={targetNodeId}
+          onSelectSourceNode={(id) => setSourceNodeId(id)}
+          onSelectTargetNode={(id) => setTargetNodeId(id)}
+          dijkstraSteps={dijkstraSteps}
+          setDijkstraSteps={setDijkstraSteps}
+          currentStepIndex={currentStepIndex}
+        />
+      </div>
+      <div className="app-explanation">
+        {isAlgorithmMode && <AlgorithmExplanation nodes={nodes} />}
+      </div>
       {/* {dijkstraSteps && (
         <div style={{ marginTop: "10px" }}>
           <p>
@@ -217,7 +216,7 @@ function App() {
           <p>Total distance: {dijkstraSteps.distance}</p>
         </div>
       )} */}
-    </>
+    </div>
   );
 }
 
