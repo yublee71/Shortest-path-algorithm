@@ -11,6 +11,7 @@ interface NodesProps {
   targetNodeId: string | null;
   dijkstraSteps: DijkstraStep[];
   currentStepIndex: number;
+  isEditable: boolean;
 }
 
 export function Nodes({
@@ -23,6 +24,7 @@ export function Nodes({
   targetNodeId,
   dijkstraSteps,
   currentStepIndex,
+  isEditable,
 }: NodesProps) {
   const distances = dijkstraSteps[currentStepIndex]?.distances || {};
   const prevDistances = dijkstraSteps[currentStepIndex]?.prevDistances || {};
@@ -70,7 +72,12 @@ export function Nodes({
             onMouseDown={(event) => onMouseDown(event, node)}
             onClick={(event) => onClick(event, node)}
             onContextMenu={(event) => onContextMenu(event, node)}
-            style={{ cursor: "pointer" }}
+            style={{
+              cursor:
+                !isEditable && sourceNodeId && targetNodeId
+                  ? "default"
+                  : "pointer",
+            }}
           >
             <text
               x={node.x}

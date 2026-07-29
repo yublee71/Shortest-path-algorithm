@@ -298,6 +298,7 @@ export function GraphCanvas({
         targetNodeId={targetNodeId}
         dijkstraSteps={dijkstraSteps}
         currentStepIndex={currentStepIndex}
+        isEditable={isEditable}
       />
       <EdgeWeightLabels
         edges={edges}
