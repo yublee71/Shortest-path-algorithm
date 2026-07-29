@@ -276,6 +276,8 @@ export function GraphCanvas({
         nodeById={nodeById}
         isEditable={isEditable}
         onDeleteEdge={onDeleteEdge}
+        dijkstraSteps={dijkstraSteps}
+        currentStepIndex={currentStepIndex}
       />
       {draftEdge && (
         <DraftEdge

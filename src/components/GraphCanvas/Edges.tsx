@@ -1,3 +1,4 @@
+import type { DijkstraStep } from "../../algorithms/dijkstra";
 import type { Edge, Node } from "../../models/Graph";
 
 interface EdgesProps {
@@ -5,6 +6,8 @@ interface EdgesProps {
   nodeById: Map<string, Node>;
   isEditable: boolean;
   onDeleteEdge: (id: string) => void;
+  dijkstraSteps: DijkstraStep[];
+  currentStepIndex: number;
 }
 
 export function Edges({
@@ -12,6 +15,8 @@ export function Edges({
   nodeById,
   isEditable,
   onDeleteEdge,
+  dijkstraSteps,
+  currentStepIndex,
 }: EdgesProps) {
   return (
     <>
@@ -53,7 +58,14 @@ export function Edges({
               x2={nodeB.x}
               y2={nodeB.y}
               stroke="#000000"
-              strokeWidth={2}
+              strokeWidth={
+                !isEditable &&
+                dijkstraSteps[
+                  currentStepIndex
+                ]?.currentlyVisitingEdgesId?.includes(edge.id)
+                  ? 4
+                  : 2
+              }
               pointerEvents="none"
             />
           </g>

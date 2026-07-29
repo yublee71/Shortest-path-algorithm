@@ -37,7 +37,7 @@ export function Nodes({
             : node.id === targetNodeId
             ? "green"
             : dijkstraSteps[currentStepIndex]?.visitedNodesId?.includes(node.id)
-            ? "gray"
+            ? "rgb(11, 14, 19)"
             : dijkstraSteps[currentStepIndex]?.currentVisitingNodesId?.includes(
                 node.id
               )
@@ -45,12 +45,18 @@ export function Nodes({
             : "steelblue";
 
         const stroke =
-          node.id === sourceNodeId || node.id === targetNodeId
+          node.id === sourceNodeId ||
+          node.id === targetNodeId ||
+          dijkstraSteps[currentStepIndex]?.visitedNodesId?.includes(node.id)
             ? "black"
             : "none";
 
         const strokeWidth =
-          node.id === sourceNodeId || node.id === targetNodeId ? 2 : 0;
+          node.id === sourceNodeId ||
+          node.id === targetNodeId ||
+          dijkstraSteps[currentStepIndex]?.visitedNodesId?.includes(node.id)
+            ? 2
+            : 0;
 
         const label =
           node.id === sourceNodeId
@@ -102,24 +108,42 @@ export function Nodes({
       {nodes.map((node) => {
         const distance = distances[node.id];
 
-        const prevDistance =
-          prevDistances[node.id] !== undefined
-            ? prevDistances[node.id] + " → "
-            : "";
+        // const prevDistance =
+        //   prevDistances[node.id] !== undefined
+        //     ? prevDistances[node.id] + " → "
+        //     : "";
 
-        const altDistance =
-          altDistances[node.id] !== undefined
-            ? " < " + altDistances[node.id]
-            : "";
+        // const altDistance =
+        //   altDistances[node.id] !== undefined
+        //     ? " < " + altDistances[node.id]
+        //     : "";
 
         return (
-          <text x={node.x} y={node.y} dx="0.35em" dy="2.5em" fill="blue">
+          <text
+            x={node.x}
+            y={node.y}
+            dx="0.35em"
+            dy="2.5em"
+            fill="black"
+            fontWeight="bold"
+          >
             <tspan style={{ textDecoration: "line-through" }}>
-              {prevDistance}
+              {prevDistances[node.id]}
             </tspan>
-            {distance}
+            {prevDistances[node.id] !== undefined ? " → " : ""}
+            <tspan
+              fill={
+                prevDistances[node.id] !== undefined ||
+                altDistances[node.id] !== undefined
+                  ? "blue"
+                  : "black"
+              }
+            >
+              {distance}
+            </tspan>
+            {altDistances[node.id] !== undefined ? " < " : ""}
             <tspan style={{ textDecoration: "line-through" }}>
-              {altDistance}
+              {altDistances[node.id]}
             </tspan>
           </text>
         );

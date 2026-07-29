@@ -15,6 +15,7 @@ export interface DijkstraStep {
   altDistances?: Record<string, number>;
   totalDistance?: number;
   path?: string[];
+  currentlyVisitingEdgesId?: string[];
 }
 
 // export interface DijkstraResult {
@@ -65,6 +66,7 @@ export function dijkstra({
     const currentVisitingNodesId = adjacencyList[u].map(
       (neighbor) => neighbor.nodeId
     );
+    const currentlyVisitingEdgesId: string[] = [];
 
     const prevDist: Record<string, number> = {};
     const altDist: Record<string, number> = {};
@@ -74,6 +76,10 @@ export function dijkstra({
         continue;
       }
       const alt = dist[u] + neighbor.weight;
+      const [nodeA, nodeB] = [u, neighbor.nodeId].sort();
+      const edgeId = `${nodeA}-${nodeB}`;
+
+      currentlyVisitingEdgesId.push(edgeId);
       if (alt < dist[neighbor.nodeId]) {
         prevDist[neighbor.nodeId] = dist[neighbor.nodeId];
         dist[neighbor.nodeId] = alt;
@@ -88,6 +94,7 @@ export function dijkstra({
       prevDistances: { ...prevDist },
       altDistances: { ...altDist },
       distances: { ...dist },
+      currentlyVisitingEdgesId: [...currentlyVisitingEdgesId],
     });
   }
 
