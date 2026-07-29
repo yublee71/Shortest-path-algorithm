@@ -120,6 +120,7 @@ export function Nodes({
 
         return (
           <text
+            key={node.id + "-distance"}
             x={node.x}
             y={node.y}
             dx="0.35em"
