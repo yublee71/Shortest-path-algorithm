@@ -12,6 +12,7 @@ import { Nodes } from "./Nodes";
 import { dijkstra, type DijkstraStep } from "../../algorithms/dijkstra";
 
 interface GraphCanvasProps {
+  className?: string;
   nodes: Node[];
   edges: Edge[];
   isEditable: boolean;
@@ -53,6 +54,7 @@ interface DragState {
 }
 
 export function GraphCanvas({
+  className,
   nodes,
   edges,
   isEditable,
@@ -258,6 +260,7 @@ export function GraphCanvas({
 
   return (
     <svg
+      className={className}
       ref={svgRef}
       width={width}
       height={height}

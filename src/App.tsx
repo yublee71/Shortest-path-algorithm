@@ -7,9 +7,9 @@ import {
   type Node,
 } from "./models/Graph";
 import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
-import { Button } from "@mantine/core";
 import { type DijkstraStep } from "./algorithms/dijkstra";
 import { AlgorithmExplanation } from "./components/AlgorithmExplanation";
+import { Buttons } from "./components/Buttons";
 
 function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -118,95 +118,54 @@ function App() {
     setIsAlgorithmMode(true);
   };
 
+  const onResetButtonClick = () => {
+    setNodes([]);
+    setEdges([]);
+    setSourceNodeId(null);
+    setTargetNodeId(null);
+    setIsAlgorithmMode(false);
+    setNextNodeIndex(0);
+    setDijkstraSteps([]);
+    setCurrentStepIndex(0);
+  };
+
   return (
     <div className="app-grid">
       <h1 className="app-heading">Shortest Path Algorithm</h1>
-      <div className="app-buttons">
-        <div style={{ display: "flex", gap: "10px" }}>
-          <Button onClick={onRunButtonClick} disabled={isAlgorithmMode}>
-            {isAlgorithmMode ? "Running" : "Run"}
-          </Button>
-          {sourceNodeId && targetNodeId && (
-            <>
-              <Button
-                disabled={currentStepIndex === 0}
-                onClick={() => {
-                  setCurrentStepIndex((currentStepIndex) =>
-                    Math.max(0, currentStepIndex - 1)
-                  );
-                }}
-              >
-                ❮
-              </Button>
-              <Button
-                disabled={currentStepIndex === dijkstraSteps.length - 1}
-                onClick={() => {
-                  setCurrentStepIndex((currentStepIndex) =>
-                    Math.min(dijkstraSteps.length - 1, currentStepIndex + 1)
-                  );
-                }}
-              >
-                ❯
-              </Button>
-              <Button
-                disabled={currentStepIndex === dijkstraSteps.length - 1}
-                onClick={() => {
-                  setCurrentStepIndex(dijkstraSteps.length - 1);
-                }}
-              >
-                ⏭︎
-              </Button>
-            </>
-          )}
-        </div>
-        {isAlgorithmMode && (
-          <div>
-            <span style={{ marginRight: "10px" }}>
-              {sourceNodeId ? `Source: ${sourceNodeId}` : "Select source node"}
-            </span>
-            <span>
-              {targetNodeId ? `Target: ${targetNodeId}` : "Select target node"}
-            </span>
-          </div>
-        )}
-        <Button
-          color="orange"
-          onClick={() => {
-            setNodes([]);
-            setEdges([]);
-            setSourceNodeId(null);
-            setTargetNodeId(null);
-            setIsAlgorithmMode(false);
-            setNextNodeIndex(0);
-            setDijkstraSteps([]);
-            setCurrentStepIndex(0);
-          }}
-        >
-          Reset
-        </Button>
-      </div>
-      <div className="app-canvas">
-        <GraphCanvas
-          nodes={nodes}
-          edges={edges}
-          isEditable={!isAlgorithmMode}
-          onAddNode={addNode}
-          onDeleteNode={deleteNode}
-          onMoveNode={moveNode}
-          onAddEdge={addEdge}
-          onDeleteEdge={deleteEdge}
-          sourceNodeId={sourceNodeId}
-          targetNodeId={targetNodeId}
-          onSelectSourceNode={(id) => setSourceNodeId(id)}
-          onSelectTargetNode={(id) => setTargetNodeId(id)}
-          dijkstraSteps={dijkstraSteps}
-          setDijkstraSteps={setDijkstraSteps}
-          currentStepIndex={currentStepIndex}
-        />
-      </div>
-      <div className="app-explanation">
-        {isAlgorithmMode && <AlgorithmExplanation nodes={nodes} />}
-      </div>
+      <Buttons
+        className="app-buttons"
+        onRunButtonClick={onRunButtonClick}
+        onResetButtonClick={onResetButtonClick}
+        isAlgorithmMode={isAlgorithmMode}
+        sourceNodeId={sourceNodeId}
+        targetNodeId={targetNodeId}
+        dijkstraSteps={dijkstraSteps}
+        currentStepIndex={currentStepIndex}
+        setCurrentStepIndex={setCurrentStepIndex}
+      ></Buttons>
+      <GraphCanvas
+        className="app-canvas"
+        nodes={nodes}
+        edges={edges}
+        isEditable={!isAlgorithmMode}
+        onAddNode={addNode}
+        onDeleteNode={deleteNode}
+        onMoveNode={moveNode}
+        onAddEdge={addEdge}
+        onDeleteEdge={deleteEdge}
+        sourceNodeId={sourceNodeId}
+        targetNodeId={targetNodeId}
+        onSelectSourceNode={(id) => setSourceNodeId(id)}
+        onSelectTargetNode={(id) => setTargetNodeId(id)}
+        dijkstraSteps={dijkstraSteps}
+        setDijkstraSteps={setDijkstraSteps}
+        currentStepIndex={currentStepIndex}
+      />
+      <AlgorithmExplanation
+        className="app-explanation"
+        isAlgorithmMode={isAlgorithmMode}
+        nodes={nodes}
+      />
       {/* {dijkstraSteps && (
         <div style={{ marginTop: "10px" }}>
           <p>
