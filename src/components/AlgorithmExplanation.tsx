@@ -68,7 +68,10 @@ export function AlgorithmExplanation({
                 Please select source node
               </p>
             ) : (
-              <p style={{ fontWeight: "bold" }}>Source: {sourceNodeId}</p>
+              <p style={{ fontWeight: "bold" }}>
+                Source:{" "}
+                <span style={{ color: "darkblue" }}>{sourceNodeId}</span>
+              </p>
             )}
             {sourceNodeId && !targetNodeId ? (
               <p style={{ color: "blue", fontWeight: "bold" }}>
@@ -76,7 +79,9 @@ export function AlgorithmExplanation({
               </p>
             ) : (
               targetNodeId && (
-                <p style={{ fontWeight: "bold" }}>Target: {targetNodeId}</p>
+                <p style={{ fontWeight: "bold" }}>
+                  Target: <span style={{ color: "green" }}>{targetNodeId}</span>
+                </p>
               )
             )}
           </div>
