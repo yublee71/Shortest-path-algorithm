@@ -63,16 +63,7 @@ export function Buttons({
           </>
         )}
       </div>
-      {isAlgorithmMode && (
-        <div>
-          <span style={{ marginRight: "10px" }}>
-            {sourceNodeId ? `Source: ${sourceNodeId}` : "Select source node"}
-          </span>
-          <span>
-            {targetNodeId ? `Target: ${targetNodeId}` : "Select target node"}
-          </span>
-        </div>
-      )}
+ 
       <Button color="orange" onClick={onResetButtonClick}>
         Reset
       </Button>

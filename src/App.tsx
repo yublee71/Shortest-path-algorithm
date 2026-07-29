@@ -165,6 +165,8 @@ function App() {
         className="app-explanation"
         isAlgorithmMode={isAlgorithmMode}
         nodes={nodes}
+        sourceNodeId={sourceNodeId}
+        targetNodeId={targetNodeId}
       />
       {/* {dijkstraSteps && (
         <div style={{ marginTop: "10px" }}>

@@ -4,12 +4,16 @@ interface AlgorithmExplanationProps {
   className?: string;
   nodes: Node[];
   isAlgorithmMode: boolean;
+  sourceNodeId: string | null;
+  targetNodeId: string | null;
 }
 
 export function AlgorithmExplanation({
   className,
   nodes,
   isAlgorithmMode,
+  sourceNodeId,
+  targetNodeId,
 }: AlgorithmExplanationProps) {
   return (
     <div className={className}>
@@ -52,11 +56,30 @@ export function AlgorithmExplanation({
           <div
             style={{
               width: "100%",
-              minHeight: "100px",
+              height: "100%",
+              minHeight: "70px",
               resize: "vertical",
               border: "1px solid #ccc",
+              padding: "10px",
             }}
-          />
+          >
+            {!sourceNodeId ? (
+              <p style={{ color: "blue", fontWeight: "bold" }}>
+                Please select source node
+              </p>
+            ) : (
+              <p style={{ fontWeight: "bold" }}>Source: {sourceNodeId}</p>
+            )}
+            {sourceNodeId && !targetNodeId ? (
+              <p style={{ color: "blue", fontWeight: "bold" }}>
+                Please select target node
+              </p>
+            ) : (
+              targetNodeId && (
+                <p style={{ fontWeight: "bold" }}>Target: {targetNodeId}</p>
+              )
+            )}
+          </div>
         </aside>
       )}
     </div>
