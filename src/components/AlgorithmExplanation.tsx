@@ -139,6 +139,26 @@ export function AlgorithmExplanation({
               )
             )}
           </div>
+          {currentStepIndex === dijkstraSteps.length - 1 && (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                minHeight: "70px",
+                resize: "vertical",
+                border: "1px solid #ccc",
+                padding: "10px",
+                marginTop: "10px",
+                fontWeight: "bold",
+                backgroundColor: "#fcffe4",
+              }}
+            >
+              <p>Shortest path: {dijkstraSteps[currentStepIndex].path}</p>
+              <p>
+                Total distance: {dijkstraSteps[currentStepIndex].totalDistance}
+              </p>
+            </div>
+          )}
         </aside>
       )}
     </div>

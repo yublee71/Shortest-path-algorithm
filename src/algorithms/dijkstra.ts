@@ -15,7 +15,7 @@ export interface DijkstraStep {
   prevDistances?: Record<string, number>;
   altDistances?: Record<string, number>;
   totalDistance?: number;
-  path?: string[];
+  path?: string;
   currentlyVisitingEdgesId?: string[];
 }
 
@@ -53,15 +53,39 @@ export function dijkstra({
     }
 
     visitedNodesId.push(u);
-    dijkstraSteps.push({
+
+    const currentStep = {
       visitedNodesId: [...visitedNodesId],
       distances: { ...dist },
       previousNodes: { ...prev },
-    });
+      totalDistance: 0,
+      path: "",
+    };
 
     if (u === targetNodeId) {
+      const path: string[] = [];
+      let currentNodeId: string | undefined | null = targetNodeId;
+
+      while (currentNodeId !== undefined && currentNodeId !== null) {
+        path.push(currentNodeId);
+        currentNodeId = prev[currentNodeId];
+      }
+
+      path.reverse();
+
+      //   if (prev[currentNodeId] === null && currentNodeId !== sourceNodeId) {
+      //     throw new Error(
+      //       `No path found from source "${sourceNodeId}" to target "${targetNodeId}".`
+      //     );
+      //   }
+
+      currentStep.totalDistance = dist[targetNodeId];
+      currentStep.path = path.join(", ");
+      dijkstraSteps.push(currentStep);
       break;
     }
+
+    dijkstraSteps.push(currentStep);
 
     queue.delete(u);
 
@@ -100,29 +124,6 @@ export function dijkstra({
       currentlyVisitingEdgesId: [...currentlyVisitingEdgesId],
     });
   }
-
-  const path: string[] = [];
-  let currentNodeId: string | null = targetNodeId;
-
-  if (prev[currentNodeId] === null && currentNodeId !== sourceNodeId) {
-    throw new Error(
-      `No path found from source "${sourceNodeId}" to target "${targetNodeId}".`
-    );
-  }
-
-  while (currentNodeId !== null) {
-    path.unshift(currentNodeId);
-    currentNodeId = prev[currentNodeId];
-  }
-
-  console.log(
-    `Shortest path from "${sourceNodeId}" to "${targetNodeId}":`,
-    path
-  );
-  console.log(
-    `Total distance from "${sourceNodeId}" to "${targetNodeId}":`,
-    dist[targetNodeId]
-  );
 
   return dijkstraSteps;
 }
