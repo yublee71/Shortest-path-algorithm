@@ -36,6 +36,9 @@ export function Nodes({
         const fillColor =
           node.id === sourceNodeId
             ? "darkblue"
+            : node.id === targetNodeId &&
+              dijkstraSteps[currentStepIndex]?.visitedNodesId?.includes(node.id)
+            ? "rgb(0, 95, 0)"
             : node.id === targetNodeId
             ? "green"
             : dijkstraSteps[currentStepIndex]?.visitedNodesId?.includes(node.id)
