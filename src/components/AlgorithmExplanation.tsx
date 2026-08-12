@@ -1,3 +1,4 @@
+import type { DijkstraStep } from "../algorithms/dijkstra";
 import type { Node } from "../models/Graph";
 
 interface AlgorithmExplanationProps {
@@ -6,6 +7,8 @@ interface AlgorithmExplanationProps {
   isAlgorithmMode: boolean;
   sourceNodeId: string | null;
   targetNodeId: string | null;
+  dijkstraSteps: DijkstraStep[];
+  currentStepIndex: number;
 }
 
 export function AlgorithmExplanation({
@@ -14,7 +17,44 @@ export function AlgorithmExplanation({
   isAlgorithmMode,
   sourceNodeId,
   targetNodeId,
+  dijkstraSteps,
+  currentStepIndex,
 }: AlgorithmExplanationProps) {
+  const currentStep = dijkstraSteps[currentStepIndex];
+
+  const formatDistance = (distance: number | undefined) => {
+    if (distance === undefined) {
+      return "";
+    }
+
+    return distance === Infinity ? "∞" : distance;
+  };
+
+  const formatPreviousNodes = (nodeId: string) => {
+    const previousNodes = currentStep?.previousNodes;
+
+    if (!previousNodes || !sourceNodeId) {
+      return "";
+    }
+
+    const path: string[] = [];
+
+    let currentNodeId: string | undefined | null = nodeId;
+
+    while (currentNodeId !== undefined && currentNodeId !== null) {
+      path.push(currentNodeId);
+      currentNodeId = previousNodes[currentNodeId];
+    }
+
+    path.reverse();
+
+    if (path[0] !== sourceNodeId) {
+      return "";
+    }
+
+    return path.join(", ");
+  };
+
   return (
     <div className={className}>
       {isAlgorithmMode && (
@@ -47,8 +87,12 @@ export function AlgorithmExplanation({
                   <td style={{ border: "1px solid #ccc", padding: "6px" }}>
                     {node.id}
                   </td>
-                  <td style={{ border: "1px solid #ccc", padding: "6px" }}></td>
-                  <td style={{ border: "1px solid #ccc", padding: "6px" }}></td>
+                  <td style={{ border: "1px solid #ccc", padding: "6px" }}>
+                    {formatDistance(currentStep?.distances[node.id])}
+                  </td>
+                  <td style={{ border: "1px solid #ccc", padding: "6px" }}>
+                    {formatPreviousNodes(node.id)}
+                  </td>
                 </tr>
               ))}
             </tbody>

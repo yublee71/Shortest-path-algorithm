@@ -113,7 +113,12 @@ export function Nodes({
         );
       })}
       {nodes.map((node) => {
-        const distance = distances[node.id];
+        const distance =
+          distances[node.id] == Infinity ? "∞" : distances[node.id];
+        const prevDistance =
+          prevDistances[node.id] == Infinity ? "∞" : prevDistances[node.id];
+        const altDistance =
+          altDistances[node.id] == Infinity ? "∞" : altDistances[node.id];
 
         // const prevDistance =
         //   prevDistances[node.id] !== undefined
@@ -136,22 +141,21 @@ export function Nodes({
             fontWeight="bold"
           >
             <tspan style={{ textDecoration: "line-through" }}>
-              {prevDistances[node.id]}
+              {prevDistance}
             </tspan>
-            {prevDistances[node.id] !== undefined ? " → " : ""}
+            {prevDistance !== undefined ? " → " : ""}
             <tspan
               fill={
-                prevDistances[node.id] !== undefined ||
-                altDistances[node.id] !== undefined
+                prevDistance !== undefined || altDistance !== undefined
                   ? "blue"
                   : "black"
               }
             >
               {distance}
             </tspan>
-            {altDistances[node.id] !== undefined ? " < " : ""}
+            {altDistance !== undefined ? " < " : ""}
             <tspan style={{ textDecoration: "line-through" }}>
-              {altDistances[node.id]}
+              {altDistance}
             </tspan>
           </text>
         );

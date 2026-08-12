@@ -11,6 +11,7 @@ export interface DijkstraStep {
   currentVisitingNodesId?: string[];
   visitedNodesId?: string[];
   distances: Record<string, number>;
+  previousNodes?: Record<string, string | null>;
   prevDistances?: Record<string, number>;
   altDistances?: Record<string, number>;
   totalDistance?: number;
@@ -55,6 +56,7 @@ export function dijkstra({
     dijkstraSteps.push({
       visitedNodesId: [...visitedNodesId],
       distances: { ...dist },
+      previousNodes: { ...prev },
     });
 
     if (u === targetNodeId) {
@@ -94,6 +96,7 @@ export function dijkstra({
       prevDistances: { ...prevDist },
       altDistances: { ...altDist },
       distances: { ...dist },
+      previousNodes: { ...prev },
       currentlyVisitingEdgesId: [...currentlyVisitingEdgesId],
     });
   }

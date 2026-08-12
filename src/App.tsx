@@ -167,6 +167,8 @@ function App() {
         nodes={nodes}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
+        dijkstraSteps={dijkstraSteps}
+        currentStepIndex={currentStepIndex}
       />
       {/* {dijkstraSteps && (
         <div style={{ marginTop: "10px" }}>
