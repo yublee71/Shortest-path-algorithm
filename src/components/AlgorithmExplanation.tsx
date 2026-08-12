@@ -82,19 +82,29 @@ export function AlgorithmExplanation({
               </tr>
             </thead>
             <tbody style={{ textAlign: "center" }}>
-              {nodes.map((node) => (
-                <tr key={node.id}>
-                  <td style={{ border: "1px solid #ccc", padding: "6px" }}>
-                    {node.id}
-                  </td>
-                  <td style={{ border: "1px solid #ccc", padding: "6px" }}>
-                    {formatDistance(currentStep?.distances[node.id])}
-                  </td>
-                  <td style={{ border: "1px solid #ccc", padding: "6px" }}>
-                    {formatPreviousNodes(node.id)}
-                  </td>
-                </tr>
-              ))}
+              {nodes.map((node) => {
+                const isVisited =
+                  currentStep?.visitedNodesId?.includes(node.id);
+
+                return (
+                  <tr
+                    key={node.id}
+                    style={{
+                      backgroundColor: isVisited ? "#f1f3f5" : "transparent",
+                    }}
+                  >
+                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>
+                      {node.id}
+                    </td>
+                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>
+                      {formatDistance(currentStep?.distances[node.id])}
+                    </td>
+                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>
+                      {formatPreviousNodes(node.id)}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           <div
