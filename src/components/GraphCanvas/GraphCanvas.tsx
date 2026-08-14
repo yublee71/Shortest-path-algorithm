@@ -25,6 +25,7 @@ interface GraphCanvasProps {
     weight: number
   ) => void;
   onDeleteEdge: (id: string) => void;
+  onUpdateEdgeWeight: (id: string, weight: number) => void;
   sourceNodeId: string | null;
   targetNodeId: string | null;
   onSelectSourceNode: (id: string) => void;
@@ -42,6 +43,11 @@ interface Point {
 interface DraftEdgeState {
   fromNodeId: string;
   to: Point;
+}
+
+export interface EditingEdgeWeightState {
+  edgeId: string;
+  value: string;
 }
 
 interface DragState {
@@ -63,6 +69,7 @@ export function GraphCanvas({
   onMoveNode,
   onAddEdge,
   onDeleteEdge,
+  onUpdateEdgeWeight,
   sourceNodeId,
   targetNodeId,
   onSelectSourceNode,
@@ -76,6 +83,8 @@ export function GraphCanvas({
   const nodeRadius = 20;
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
   const [draftEdge, setDraftEdge] = useState<DraftEdgeState | null>(null);
+  const [editingEdgeWeight, setEditingEdgeWeight] =
+    useState<EditingEdgeWeightState | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const dragStateRef = useRef<DragState | null>(null);
   const suppressNextClickRef = useRef(false);
@@ -258,6 +267,38 @@ export function GraphCanvas({
     onDeleteNode(node.id);
   };
 
+  const editingEdgeWeightChange = (value: string) => {
+    setEditingEdgeWeight((current) =>
+      current ? { ...current, value } : current
+    );
+  };
+
+  const startEditingEdgeWeight = (edgeId: string, currentWeight: number) => {
+    if (!isEditable) {
+      return;
+    }
+
+    setEditingEdgeWeight({ edgeId, value: String(currentWeight) });
+  };
+
+  const commitEditingEdgeWeight = () => {
+    if (!editingEdgeWeight) {
+      return;
+    }
+
+    const nextWeight = Number(editingEdgeWeight.value);
+
+    if (Number.isFinite(nextWeight) && nextWeight >= 0) {
+      onUpdateEdgeWeight(editingEdgeWeight.edgeId, nextWeight);
+    }
+
+    setEditingEdgeWeight(null);
+  };
+
+  const cancelEditingEdgeWeight = () => {
+    setEditingEdgeWeight(null);
+  };
+
   return (
     <svg
       className={className}
@@ -305,6 +346,11 @@ export function GraphCanvas({
         nodeById={nodeById}
         isEditable={isEditable}
         onDeleteEdge={onDeleteEdge}
+        editingEdgeWeight={editingEdgeWeight}
+        onStartEditingEdgeWeight={startEditingEdgeWeight}
+        onEditingEdgeWeightChange={editingEdgeWeightChange}
+        onEditingEdgeWeightCommit={commitEditingEdgeWeight}
+        onEditingEdgeWeightCancel={cancelEditingEdgeWeight}
       />
     </svg>
   );

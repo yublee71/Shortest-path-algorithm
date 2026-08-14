@@ -64,27 +64,20 @@ export function AlgorithmExplanation({
               width: "100%",
               borderCollapse: "collapse",
               marginBottom: "10px",
-              padding: "6px",
             }}
           >
             <thead>
               <tr>
-                <th style={{ border: "1px solid #ccc", padding: "6px" }}>
-                  Node
-                </th>
-                <th style={{ border: "1px solid #ccc", padding: "6px" }}>
-                  Distance
-                </th>
-                <th style={{ border: "1px solid #ccc", padding: "6px" }}>
-                  {" "}
-                  Previous Nodes
-                </th>
+                <th style={{ border: "1px solid #ccc" }}>Node</th>
+                <th style={{ border: "1px solid #ccc" }}>Distance</th>
+                <th style={{ border: "1px solid #ccc" }}>Previous Nodes</th>
               </tr>
             </thead>
             <tbody style={{ textAlign: "center" }}>
               {nodes.map((node) => {
-                const isVisited =
-                  currentStep?.visitedNodesId?.includes(node.id);
+                const isVisited = currentStep?.visitedNodesId?.includes(
+                  node.id
+                );
 
                 return (
                   <tr
@@ -93,13 +86,11 @@ export function AlgorithmExplanation({
                       backgroundColor: isVisited ? "#f1f3f5" : "transparent",
                     }}
                   >
-                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>
-                      {node.id}
-                    </td>
-                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>
+                    <td style={{ border: "1px solid #ccc" }}>{node.id}</td>
+                    <td style={{ border: "1px solid #ccc" }}>
                       {formatDistance(currentStep?.distances[node.id])}
                     </td>
-                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>
+                    <td style={{ border: "1px solid #ccc" }}>
                       {formatPreviousNodes(node.id)}
                     </td>
                   </tr>

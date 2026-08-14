@@ -106,6 +106,12 @@ function App() {
     setEdges((currentEdges) => currentEdges.filter((edge) => edge.id !== id));
   };
 
+  const updateEdgeWeight = (id: string, weight: number) => {
+    setEdges((currentEdges) =>
+      currentEdges.map((edge) => (edge.id === id ? { ...edge, weight } : edge))
+    );
+  };
+
   const onRunButtonClick = () => {
     if (nodes.length < 2) {
       alert("Please add at least two nodes to run the algorithm.");
@@ -153,6 +159,7 @@ function App() {
         onMoveNode={moveNode}
         onAddEdge={addEdge}
         onDeleteEdge={deleteEdge}
+        onUpdateEdgeWeight={updateEdgeWeight}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
         onSelectSourceNode={(id) => setSourceNodeId(id)}
