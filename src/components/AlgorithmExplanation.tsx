@@ -21,6 +21,11 @@ export function AlgorithmExplanation({
   currentStepIndex,
 }: AlgorithmExplanationProps) {
   const currentStep = dijkstraSteps[currentStepIndex];
+  const isFinalStep = currentStepIndex === dijkstraSteps.length - 1;
+  const targetDistance = targetNodeId
+    ? currentStep?.distances[targetNodeId]
+    : undefined;
+  const hasNoPath = isFinalStep && targetNodeId && targetDistance === Infinity;
 
   const formatDistance = (distance: number | undefined) => {
     if (distance === undefined) {
@@ -137,7 +142,7 @@ export function AlgorithmExplanation({
               )
             )}
           </div>
-          {currentStepIndex === dijkstraSteps.length - 1 && (
+          {isFinalStep && (
             <div
               style={{
                 width: "100%",
@@ -151,10 +156,19 @@ export function AlgorithmExplanation({
                 backgroundColor: "#fcffe4",
               }}
             >
-              <p>Shortest path: {dijkstraSteps[currentStepIndex].path}</p>
-              <p>
-                Total distance: {dijkstraSteps[currentStepIndex].totalDistance}
-              </p>
+              {hasNoPath ? (
+                <p style={{ color: "darkred" }}>
+                  No path found from source to target.
+                </p>
+              ) : (
+                <>
+                  <p>Shortest path: {dijkstraSteps[currentStepIndex].path}</p>
+                  <p>
+                    Total distance:{" "}
+                    {dijkstraSteps[currentStepIndex].totalDistance}
+                  </p>
+                </>
+              )}
             </div>
           )}
         </aside>
