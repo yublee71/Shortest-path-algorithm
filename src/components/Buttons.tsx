@@ -10,7 +10,7 @@ interface ButtonsProps {
   dijkstraSteps: DijkstraStep[];
   currentStepIndex: number;
   setCurrentStepIndex: React.Dispatch<React.SetStateAction<number>>;
-  onResetButtonClick: () => void;
+  onClearButtonClick: () => void;
 }
 
 export function Buttons({
@@ -22,7 +22,7 @@ export function Buttons({
   dijkstraSteps,
   currentStepIndex,
   setCurrentStepIndex,
-  onResetButtonClick,
+  onClearButtonClick,
 }: ButtonsProps) {
   return (
     <div className={className}>
@@ -63,9 +63,9 @@ export function Buttons({
           </>
         )}
       </div>
- 
-      <Button color="orange" onClick={onResetButtonClick}>
-        Reset
+
+      <Button color="orange" onClick={onClearButtonClick}>
+        Clear
       </Button>
     </div>
   );

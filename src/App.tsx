@@ -124,7 +124,7 @@ function App() {
     setIsAlgorithmMode(true);
   };
 
-  const onResetButtonClick = () => {
+  const onClearButtonClick = () => {
     setNodes([]);
     setEdges([]);
     setSourceNodeId(null);
@@ -141,7 +141,7 @@ function App() {
       <Buttons
         className="app-buttons"
         onRunButtonClick={onRunButtonClick}
-        onResetButtonClick={onResetButtonClick}
+        onClearButtonClick={onClearButtonClick}
         isAlgorithmMode={isAlgorithmMode}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
