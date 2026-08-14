@@ -1,11 +1,6 @@
 import "./App.css";
-import { useEffect, useState } from "react";
-import {
-  buildAdjacencyList,
-  calculateDistanceWeight,
-  type Edge,
-  type Node,
-} from "./models/Graph";
+import { useState } from "react";
+import { calculateDistanceWeight, type Edge, type Node } from "./models/Graph";
 import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
 import { type DijkstraStep } from "./algorithms/dijkstra";
 import { AlgorithmExplanation } from "./components/AlgorithmExplanation";
@@ -23,10 +18,6 @@ function App() {
   //   );
   const [dijkstraSteps, setDijkstraSteps] = useState<DijkstraStep[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
-
-  useEffect(() => {
-    console.log("Adjacency list:", buildAdjacencyList(nodes, edges));
-  }, [nodes, edges]);
 
   const generateNodeId = (index: number) => {
     let label = "";
