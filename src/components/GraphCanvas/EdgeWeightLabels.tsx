@@ -1,5 +1,5 @@
 import type { Edge, Node } from "../../models/Graph";
-import type {EditingEdgeWeightState} from "./GraphCanvas";
+import type { EditingEdgeWeightState } from "./GraphCanvas";
 
 interface EdgeWeightLabelsProps {
   edges: Edge[];
@@ -72,7 +72,6 @@ export function EdgeWeightLabels({
               <text
                 x={0}
                 y={-10}
-                fill="#111827"
                 fontSize="12"
                 fontWeight={400}
                 textAnchor="middle"

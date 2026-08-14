@@ -78,12 +78,19 @@ export function AlgorithmExplanation({
                 const isVisited = currentStep?.visitedNodesId?.includes(
                   node.id
                 );
+                const isTargetNodeRow =
+                  currentStepIndex === dijkstraSteps.length - 1 &&
+                  node.id === targetNodeId;
 
                 return (
                   <tr
                     key={node.id}
                     style={{
-                      backgroundColor: isVisited ? "#f1f3f5" : "transparent",
+                      backgroundColor: isTargetNodeRow
+                        ? "#fcffe4"
+                        : isVisited
+                        ? "#f1f3f5"
+                        : "transparent",
                     }}
                   >
                     <td style={{ border: "1px solid #ccc" }}>{node.id}</td>
