@@ -17,6 +17,7 @@ export interface DijkstraStep {
   totalDistance?: number;
   path?: string;
   currentlyVisitingEdgesId?: string[];
+  isVisitingStep?: boolean;
 }
 
 // export interface DijkstraResult {
@@ -60,6 +61,7 @@ export function dijkstra({
       previousNodes: { ...prev },
       totalDistance: 0,
       path: "",
+      isVisitingStep: u === sourceNodeId,
     };
 
     if (u === targetNodeId) {

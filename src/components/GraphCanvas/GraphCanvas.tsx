@@ -228,7 +228,11 @@ export function GraphCanvas({
           sourceNodeId: sourceNodeId,
           targetNodeId: node.id,
         });
-        setDijkstraSteps(dijkstraSteps);
+        setDijkstraSteps(
+          isPracticeMode
+            ? dijkstraSteps.filter((step) => step.isVisitingStep !== false)
+            : dijkstraSteps
+        );
       }
       return;
     }
