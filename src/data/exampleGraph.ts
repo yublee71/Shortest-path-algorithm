@@ -7,7 +7,7 @@ export const exampleGraph = {
     { id: "C", x: 180, y: 280 },
     { id: "D", x: 360, y: 120 },
     { id: "E", x: 360, y: 280 },
-    { id: "Z", x: 500, y: 200 },
+    { id: "F", x: 500, y: 200 },
   ] satisfies Node[],
   edges: [
     { id: "A-B", nodeA: "A", nodeB: "B", weight: 4 },
@@ -17,7 +17,7 @@ export const exampleGraph = {
     { id: "C-D", nodeA: "C", nodeB: "D", weight: 8 },
     { id: "C-E", nodeA: "C", nodeB: "E", weight: 10 },
     { id: "D-E", nodeA: "D", nodeB: "E", weight: 2 },
-    { id: "D-Z", nodeA: "D", nodeB: "Z", weight: 6 },
-    { id: "E-Z", nodeA: "E", nodeB: "Z", weight: 3 },
+    { id: "D-F", nodeA: "D", nodeB: "F", weight: 6 },
+    { id: "E-F", nodeA: "E", nodeB: "F", weight: 3 },
   ] satisfies Edge[],
 } as const;
