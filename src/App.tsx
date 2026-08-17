@@ -5,6 +5,7 @@ import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
 import { type DijkstraStep } from "./algorithms/dijkstra";
 import { AlgorithmExplanation } from "./components/AlgorithmExplanation";
 import { Buttons } from "./components/Buttons";
+import { exampleGraph } from "./data/exampleGraph";
 
 function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -126,12 +127,24 @@ function App() {
     setCurrentStepIndex(0);
   };
 
+  const onLoadExampleGraphClick = () => {
+    setNodes(exampleGraph.nodes);
+    setEdges(exampleGraph.edges);
+    setSourceNodeId(null);
+    setTargetNodeId(null);
+    setIsAlgorithmMode(false);
+    setNextNodeIndex(exampleGraph.nodes.length);
+    setDijkstraSteps([]);
+    setCurrentStepIndex(0);
+  };
+
   return (
     <div className="app-grid">
       <h1 className="app-heading">Shortest Path Algorithm</h1>
       <Buttons
         className="app-buttons"
         onRunButtonClick={onRunButtonClick}
+        onLoadExampleGraphClick={onLoadExampleGraphClick}
         onClearButtonClick={onClearButtonClick}
         isAlgorithmMode={isAlgorithmMode}
         sourceNodeId={sourceNodeId}
