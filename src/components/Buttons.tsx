@@ -4,8 +4,11 @@ import type { DijkstraStep } from "../algorithms/dijkstra";
 interface ButtonsProps {
   className?: string;
   onRunButtonClick: () => void;
+  onPracticeButtonClick: () => void;
   onLoadExampleGraphClick: () => void;
   isAlgorithmMode: boolean;
+  isRunMode: boolean;
+  isPracticeMode: boolean;
   sourceNodeId: string | null;
   targetNodeId: string | null;
   dijkstraSteps: DijkstraStep[];
@@ -17,8 +20,11 @@ interface ButtonsProps {
 export function Buttons({
   className,
   onRunButtonClick,
+  onPracticeButtonClick,
   onLoadExampleGraphClick,
   isAlgorithmMode,
+  isRunMode,
+  isPracticeMode,
   sourceNodeId,
   targetNodeId,
   dijkstraSteps,
@@ -30,7 +36,10 @@ export function Buttons({
     <div className={className}>
       <div style={{ display: "flex", gap: "10px" }}>
         <Button onClick={onRunButtonClick} disabled={isAlgorithmMode}>
-          {isAlgorithmMode ? "Running" : "Run"}
+          {isRunMode ? "Running" : "Run"}
+        </Button>
+        <Button onClick={onPracticeButtonClick} disabled={isAlgorithmMode}>
+          {isPracticeMode ? "Practicing" : "Practice"}
         </Button>
         {!isAlgorithmMode && (
           <Button variant="light" onClick={onLoadExampleGraphClick}>

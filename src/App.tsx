@@ -12,6 +12,8 @@ function App() {
   const [edges, setEdges] = useState<Edge[]>([]);
   const [nextNodeIndex, setNextNodeIndex] = useState(0);
   const [isAlgorithmMode, setIsAlgorithmMode] = useState(false);
+  const [isRunMode, setIsRunMode] = useState(false);
+  const [isPracticeMode, setIsPracticeMode] = useState(false);
   const [sourceNodeId, setSourceNodeId] = useState<string | null>(null);
   const [targetNodeId, setTargetNodeId] = useState<string | null>(null);
   //   const [dijkstraResult, setDijkstraResult] = useState<DijkstraResult | null>(
@@ -104,16 +106,31 @@ function App() {
     );
   };
 
-  const onRunButtonClick = () => {
+  const canStartAlgorithmMode = () => {
     if (nodes.length < 2) {
       alert("Please add at least two nodes to run the algorithm.");
-      return;
+      return false;
     }
     if (edges.length === 0) {
       alert("Please add at least one edge to run the algorithm.");
-      return;
+      return false;
     }
     setIsAlgorithmMode(true);
+    return true;
+  };
+
+  const onRunButtonClick = () => {
+    if (!canStartAlgorithmMode()) {
+      return;
+    }
+    setIsRunMode(true);
+  };
+
+  const onPracticeButtonClick = () => {
+    if (!canStartAlgorithmMode()) {
+      return;
+    }
+    setIsPracticeMode(true);
   };
 
   const onClearButtonClick = () => {
@@ -122,6 +139,8 @@ function App() {
     setSourceNodeId(null);
     setTargetNodeId(null);
     setIsAlgorithmMode(false);
+    setIsRunMode(false);
+    setIsPracticeMode(false);
     setNextNodeIndex(0);
     setDijkstraSteps([]);
     setCurrentStepIndex(0);
@@ -140,9 +159,12 @@ function App() {
       <Buttons
         className="app-buttons"
         onRunButtonClick={onRunButtonClick}
+        onPracticeButtonClick={onPracticeButtonClick}
         onLoadExampleGraphClick={onLoadExampleGraphClick}
         onClearButtonClick={onClearButtonClick}
         isAlgorithmMode={isAlgorithmMode}
+        isRunMode={isRunMode}
+        isPracticeMode={isPracticeMode}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
         dijkstraSteps={dijkstraSteps}
