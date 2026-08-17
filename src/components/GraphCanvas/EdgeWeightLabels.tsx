@@ -1,4 +1,8 @@
 import type { Edge, Node } from "../../models/Graph";
+import {
+  EDGE_WEIGHT_INPUT_LIMIT,
+  toDisplayEdgeWeight,
+} from "../../models/edgeWeight";
 import type { EditingEdgeWeightState } from "./GraphCanvas";
 
 interface EdgeWeightLabelsProps {
@@ -43,6 +47,7 @@ export function EdgeWeightLabels({
             : edgeAngle;
         const labelAngleDegrees = (labelAngle * 180) / Math.PI;
         const isEditing = editingEdgeWeight?.edgeId === edge.id;
+        const displayWeight = toDisplayEdgeWeight(edge.weight);
 
         return (
           <g
@@ -77,50 +82,58 @@ export function EdgeWeightLabels({
                 textAnchor="middle"
                 dominantBaseline="middle"
               >
-                {edge.weight}
+                {displayWeight}
               </text>
             )}
             {isEditing && (
-              <foreignObject
-                x={-16}
-                y={-26}
-                width={32}
-                height={18}
-                style={{ overflow: "visible" }}
-              >
-                <input
-                  type="text"
-                  autoFocus
-                  value={editingEdgeWeight.value}
-                  onChange={(event) =>
-                    onEditingEdgeWeightChange(event.target.value)
-                  }
-                  onBlur={() => onEditingEdgeWeightCommit()}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      onEditingEdgeWeightCommit();
-                      return;
-                    }
-                    if (event.key === "Escape") {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      onEditingEdgeWeightCancel();
-                    }
-                  }}
-                  onClick={(event) => event.stopPropagation()}
-                  onDoubleClick={(event) => event.stopPropagation()}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    border: "solid 1px black",
-                    fontSize: "12px",
-                    textAlign: "center",
-                    outline: "none",
-                  }}
-                />
-              </foreignObject>
+              <g>
+                <foreignObject
+                  x={-18}
+                  y={-26}
+                  width={36}
+                  height={38}
+                  style={{ overflow: "visible" }}
+                >
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <input
+                      type="number"
+                      min={1}
+                      max={EDGE_WEIGHT_INPUT_LIMIT}
+                      step={1}
+                      autoFocus
+                      value={editingEdgeWeight.value}
+                      onChange={(event) =>
+                        onEditingEdgeWeightChange(event.target.value)
+                      }
+                      onBlur={() => onEditingEdgeWeightCommit()}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          onEditingEdgeWeightCommit();
+                          return;
+                        }
+                        if (event.key === "Escape") {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          onEditingEdgeWeightCancel();
+                        }
+                      }}
+                      onClick={(event) => event.stopPropagation()}
+                      onDoubleClick={(event) => event.stopPropagation()}
+                      style={{
+                        width: "100%",
+                        height: "22px",
+                        border: "solid 1px black",
+                        fontSize: "12px",
+                        textAlign: "center",
+                        outline: "none",
+                        boxSizing: "border-box",
+                      }}
+                    />
+                  </div>
+                </foreignObject>
+              </g>
             )}
           </g>
         );

@@ -10,6 +10,11 @@ import { Edges } from "./Edges";
 import { EdgeWeightLabels } from "./EdgeWeightLabels";
 import { Nodes } from "./Nodes";
 import { dijkstra, type DijkstraStep } from "../../algorithms/dijkstra";
+import {
+  isValidEdgeWeight,
+  toDisplayEdgeWeight,
+  toStoredEdgeWeight,
+} from "../../models/edgeWeight";
 
 interface GraphCanvasProps {
   className?: string;
@@ -278,7 +283,10 @@ export function GraphCanvas({
       return;
     }
 
-    setEditingEdgeWeight({ edgeId, value: String(currentWeight) });
+    setEditingEdgeWeight({
+      edgeId,
+      value: String(toDisplayEdgeWeight(currentWeight)),
+    });
   };
 
   const commitEditingEdgeWeight = () => {
@@ -286,11 +294,19 @@ export function GraphCanvas({
       return;
     }
 
-    const nextWeight = Number(editingEdgeWeight.value);
+    const inputString = editingEdgeWeight.value;
+    const inputNumber = Number(inputString.trim());
 
-    if (Number.isFinite(nextWeight) && nextWeight >= 0) {
-      onUpdateEdgeWeight(editingEdgeWeight.edgeId, nextWeight);
+    if (!isValidEdgeWeight(inputNumber)) {
+      window.alert("Please enter a valid integer between 1 and 100.");
+      setEditingEdgeWeight(null);
+      return;
     }
+
+    onUpdateEdgeWeight(
+      editingEdgeWeight.edgeId,
+      toStoredEdgeWeight(inputNumber)
+    );
 
     setEditingEdgeWeight(null);
   };
