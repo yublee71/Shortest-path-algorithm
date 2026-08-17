@@ -1,8 +1,5 @@
 import type { Edge, Node } from "../../models/Graph";
-import {
-  EDGE_WEIGHT_INPUT_LIMIT,
-  toDisplayEdgeWeight,
-} from "../../models/edgeWeight";
+import { EDGE_WEIGHT_INPUT_LIMIT } from "../../models/edgeWeight";
 import type { EditingEdgeWeightState } from "./GraphCanvas";
 
 interface EdgeWeightLabelsProps {
@@ -47,7 +44,6 @@ export function EdgeWeightLabels({
             : edgeAngle;
         const labelAngleDegrees = (labelAngle * 180) / Math.PI;
         const isEditing = editingEdgeWeight?.edgeId === edge.id;
-        const displayWeight = toDisplayEdgeWeight(edge.weight);
 
         return (
           <g
@@ -82,7 +78,7 @@ export function EdgeWeightLabels({
                 textAnchor="middle"
                 dominantBaseline="middle"
               >
-                {displayWeight}
+                {edge.weight}
               </text>
             )}
             {isEditing && (

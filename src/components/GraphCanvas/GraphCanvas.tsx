@@ -10,11 +10,7 @@ import { Edges } from "./Edges";
 import { EdgeWeightLabels } from "./EdgeWeightLabels";
 import { Nodes } from "./Nodes";
 import { dijkstra, type DijkstraStep } from "../../algorithms/dijkstra";
-import {
-  isValidEdgeWeight,
-  toDisplayEdgeWeight,
-  toStoredEdgeWeight,
-} from "../../models/edgeWeight";
+import { isValidEdgeWeight } from "../../models/edgeWeight";
 
 interface GraphCanvasProps {
   className?: string;
@@ -285,7 +281,7 @@ export function GraphCanvas({
 
     setEditingEdgeWeight({
       edgeId,
-      value: String(toDisplayEdgeWeight(currentWeight)),
+      value: String(currentWeight),
     });
   };
 
@@ -303,10 +299,7 @@ export function GraphCanvas({
       return;
     }
 
-    onUpdateEdgeWeight(
-      editingEdgeWeight.edgeId,
-      toStoredEdgeWeight(inputNumber)
-    );
+    onUpdateEdgeWeight(editingEdgeWeight.edgeId, inputNumber);
 
     setEditingEdgeWeight(null);
   };
