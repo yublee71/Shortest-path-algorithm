@@ -189,6 +189,7 @@ function App() {
         dijkstraSteps={dijkstraSteps}
         setDijkstraSteps={setDijkstraSteps}
         currentStepIndex={currentStepIndex}
+        isPracticeMode={isPracticeMode}
       />
       <AlgorithmExplanation
         className="app-explanation"

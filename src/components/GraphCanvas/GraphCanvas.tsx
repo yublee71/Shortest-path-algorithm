@@ -34,6 +34,7 @@ interface GraphCanvasProps {
   dijkstraSteps: DijkstraStep[];
   setDijkstraSteps: (steps: DijkstraStep[]) => void;
   currentStepIndex: number;
+  isPracticeMode: boolean;
 }
 
 interface Point {
@@ -78,6 +79,7 @@ export function GraphCanvas({
   dijkstraSteps,
   setDijkstraSteps,
   currentStepIndex,
+  isPracticeMode,
 }: GraphCanvasProps) {
   const width = 600;
   const height = 400;
@@ -349,6 +351,7 @@ export function GraphCanvas({
         dijkstraSteps={dijkstraSteps}
         currentStepIndex={currentStepIndex}
         isEditable={isEditable}
+        isPracticeMode={isPracticeMode}
       />
       <EdgeWeightLabels
         edges={edges}

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { DijkstraStep } from "../../algorithms/dijkstra";
 import type { Node } from "../../models/Graph";
 
@@ -12,6 +13,7 @@ interface NodesProps {
   dijkstraSteps: DijkstraStep[];
   currentStepIndex: number;
   isEditable: boolean;
+  isPracticeMode: boolean;
 }
 
 export function Nodes({
@@ -25,41 +27,53 @@ export function Nodes({
   dijkstraSteps,
   currentStepIndex,
   isEditable,
+  isPracticeMode,
 }: NodesProps) {
-  const distances = dijkstraSteps[currentStepIndex]?.distances || {};
-  const prevDistances = dijkstraSteps[currentStepIndex]?.prevDistances || {};
-  const altDistances = dijkstraSteps[currentStepIndex]?.altDistances || {};
+  const [practiceDistances, setPracticeDistances] = useState<
+    Record<string, string>
+  >({});
+  const currentStep = dijkstraSteps[currentStepIndex];
+  const distances = currentStep?.distances || {};
+  const prevDistances = currentStep?.prevDistances || {};
+  const altDistances = currentStep?.altDistances || {};
+  const distanceOptions = Array.from({ length: 101 }, (_, index) => index);
+
+  const formatDistance = (distance: number | undefined) => {
+    if (distance === undefined) {
+      return undefined;
+    }
+
+    return distance === Infinity ? "\u221e" : String(distance);
+  };
 
   return (
     <>
       {nodes.map((node) => {
+        const isVisited = currentStep?.visitedNodesId?.includes(node.id);
+        const isCurrentVisiting = currentStep?.currentVisitingNodesId?.includes(
+          node.id
+        );
+
         const fillColor =
           node.id === sourceNodeId
             ? "darkblue"
-            : node.id === targetNodeId &&
-              dijkstraSteps[currentStepIndex]?.visitedNodesId?.includes(node.id)
+            : node.id === targetNodeId && isVisited
             ? "rgb(0, 95, 0)"
             : node.id === targetNodeId
             ? "green"
-            : dijkstraSteps[currentStepIndex]?.visitedNodesId?.includes(node.id)
+            : isVisited
             ? "rgb(11, 14, 19)"
-            : dijkstraSteps[currentStepIndex]?.currentVisitingNodesId?.includes(
-                node.id
-              )
+            : isCurrentVisiting
             ? "orange"
             : "steelblue";
 
         const stroke =
-          node.id === sourceNodeId ||
-          node.id === targetNodeId ||
-          dijkstraSteps[currentStepIndex]?.visitedNodesId?.includes(node.id)
+          node.id === sourceNodeId || node.id === targetNodeId || isVisited
             ? "black"
             : "none";
 
         const strokeWidth =
-          node.id === sourceNodeId ||
-          node.id === targetNodeId ||
-          dijkstraSteps[currentStepIndex]?.visitedNodesId?.includes(node.id)
+          node.id === sourceNodeId || node.id === targetNodeId || isVisited
             ? 2
             : 0;
 
@@ -116,26 +130,55 @@ export function Nodes({
         );
       })}
       {nodes.map((node) => {
-        const distance =
-          distances[node.id] == Infinity ? "∞" : distances[node.id];
-        const prevDistance =
-          prevDistances[node.id] == Infinity ? "∞" : prevDistances[node.id];
-        const altDistance =
-          altDistances[node.id] == Infinity ? "∞" : altDistances[node.id];
+        if (isPracticeMode && sourceNodeId && targetNodeId) {
+          return (
+            <foreignObject
+              key={`${node.id}-practice-distance`}
+              x={node.x - 25}
+              y={node.y + radius + 8}
+              width={50}
+              height={28}
+              onClick={(event) => event.stopPropagation()}
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              <select
+                value={practiceDistances[node.id] ?? ""}
+                onChange={(event) => {
+                  setPracticeDistances((currentDistances) => ({
+                    ...currentDistances,
+                    [node.id]: event.target.value,
+                  }));
+                }}
+                style={{
+                  width: "50px",
+                  height: "24px",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  backgroundColor: "white",
+                  color: "black",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                <option value=""></option>
+                <option value="Infinity">{"\u221e"}</option>
+                {distanceOptions.map((distance) => (
+                  <option key={distance} value={distance}>
+                    {distance}
+                  </option>
+                ))}
+              </select>
+            </foreignObject>
+          );
+        }
 
-        // const prevDistance =
-        //   prevDistances[node.id] !== undefined
-        //     ? prevDistances[node.id] + " → "
-        //     : "";
-
-        // const altDistance =
-        //   altDistances[node.id] !== undefined
-        //     ? " < " + altDistances[node.id]
-        //     : "";
+        const distance = formatDistance(distances[node.id]);
+        const prevDistance = formatDistance(prevDistances[node.id]);
+        const altDistance = formatDistance(altDistances[node.id]);
 
         return (
           <text
-            key={node.id + "-distance"}
+            key={`${node.id}-distance`}
             x={node.x}
             y={node.y}
             dx="0.35em"
