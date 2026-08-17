@@ -1,3 +1,4 @@
+import { Select } from "@mantine/core";
 import type { DijkstraStep } from "../../algorithms/dijkstra";
 import type { Node } from "../../models/Graph";
 
@@ -37,6 +38,13 @@ export function Nodes({
   const prevDistances = currentStep?.prevDistances || {};
   const altDistances = currentStep?.altDistances || {};
   const distanceOptions = Array.from({ length: 101 }, (_, index) => index);
+  const practiceDistanceOptions = [
+    { value: "Infinity", label: "\u221e" },
+    ...distanceOptions.map((distance) => ({
+      value: String(distance),
+      label: String(distance),
+    })),
+  ];
 
   const formatDistance = (distance: number | undefined) => {
     if (distance === undefined) {
@@ -147,43 +155,52 @@ export function Nodes({
           return (
             <foreignObject
               key={`${node.id}-practice-distance`}
-              x={node.x - 25}
+              x={node.x - 35}
               y={node.y + radius + 8}
-              width={50}
-              height={28}
+              width={70}
+              height={32}
               onClick={(event) => event.stopPropagation()}
               onMouseDown={(event) => event.stopPropagation()}
+              onPointerDown={(event) => event.stopPropagation()}
             >
-              <select
-                value={selectedDistance}
-                onChange={(event) => {
-                  onPracticeDistanceChange(node.id, event.target.value);
+              <Select
+                searchable
+                data={practiceDistanceOptions}
+                value={selectedDistance || null}
+                onChange={(value) => {
+                  onPracticeDistanceChange(node.id, value ?? "");
                 }}
-                style={{
-                  width: "50px",
-                  height: "24px",
-                  border: `1px solid ${
-                    isCorrect ? "#2f9e44" : isWrong ? "#e03131" : "#ccc"
-                  }`,
-                  borderRadius: "4px",
-                  backgroundColor: isCorrect
-                    ? "#d3f9d8"
-                    : isWrong
-                    ? "#ffe3e3"
-                    : "white",
-                  color: "black",
-                  fontWeight: "bold",
-                  textAlign: "center",
+                placeholder=""
+                size="s"
+                w={70}
+                maxDropdownHeight={140}
+                comboboxProps={{ withinPortal: true }}
+                styles={{
+                  input: {
+                    minHeight: 24,
+                    height: 24,
+                    borderColor: isCorrect
+                      ? "#2f9e44"
+                      : isWrong
+                      ? "#e03131"
+                      : "#ccc",
+                    backgroundColor: isCorrect
+                      ? "#d3f9d8"
+                      : isWrong
+                      ? "#ffe3e3"
+                      : "white",
+                    color: "black",
+                    fontWeight: 700,
+                    textAlign: "center",
+                  },
+                  section: {
+                    width: 20,
+                  },
+                  dropdown: {
+                    zIndex: 1000,
+                  },
                 }}
-              >
-                <option value=""></option>
-                <option value="Infinity">{"\u221e"}</option>
-                {distanceOptions.map((distance) => (
-                  <option key={distance} value={distance}>
-                    {distance}
-                  </option>
-                ))}
-              </select>
+              />
             </foreignObject>
           );
         }
