@@ -21,6 +21,31 @@ function App() {
   //   );
   const [dijkstraSteps, setDijkstraSteps] = useState<DijkstraStep[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
+  const [practiceDistances, setPracticeDistances] = useState<
+    Record<string, string>
+  >({});
+
+  const currentDijkstraStep = dijkstraSteps[currentStepIndex];
+  const isCurrentPracticeStepCorrect =
+    isPracticeMode &&
+    sourceNodeId !== null &&
+    targetNodeId !== null &&
+    currentDijkstraStep !== undefined &&
+    nodes.every((node) => {
+      const selectedDistance =
+        practiceDistances[`${currentStepIndex}:${node.id}`];
+      const actualDistance = currentDijkstraStep.distances[node.id];
+
+      if (selectedDistance === undefined || selectedDistance === "") {
+        return false;
+      }
+
+      if (actualDistance === Infinity) {
+        return selectedDistance === "Infinity";
+      }
+
+      return Number(selectedDistance) === actualDistance;
+    });
 
   const generateNodeId = (index: number) => {
     let label = "";
@@ -123,13 +148,25 @@ function App() {
     if (!canStartAlgorithmMode()) {
       return;
     }
+    setSourceNodeId(null);
+    setTargetNodeId(null);
+    setDijkstraSteps([]);
+    setCurrentStepIndex(0);
+    setPracticeDistances({});
     setIsRunMode(true);
+    setIsPracticeMode(false);
   };
 
   const onPracticeButtonClick = () => {
     if (!canStartAlgorithmMode()) {
       return;
     }
+    setSourceNodeId(null);
+    setTargetNodeId(null);
+    setDijkstraSteps([]);
+    setCurrentStepIndex(0);
+    setPracticeDistances({});
+    setIsRunMode(false);
     setIsPracticeMode(true);
   };
 
@@ -144,6 +181,7 @@ function App() {
     setNextNodeIndex(0);
     setDijkstraSteps([]);
     setCurrentStepIndex(0);
+    setPracticeDistances({});
   };
 
   const onLoadExampleGraphClick = () => {
@@ -170,6 +208,7 @@ function App() {
         dijkstraSteps={dijkstraSteps}
         currentStepIndex={currentStepIndex}
         setCurrentStepIndex={setCurrentStepIndex}
+        canGoToNextStep={!isPracticeMode || isCurrentPracticeStepCorrect}
       ></Buttons>
       <GraphCanvas
         className="app-canvas"
@@ -190,6 +229,13 @@ function App() {
         setDijkstraSteps={setDijkstraSteps}
         currentStepIndex={currentStepIndex}
         isPracticeMode={isPracticeMode}
+        practiceDistances={practiceDistances}
+        onPracticeDistanceChange={(nodeId, distance) => {
+          setPracticeDistances((currentDistances) => ({
+            ...currentDistances,
+            [`${currentStepIndex}:${nodeId}`]: distance,
+          }));
+        }}
       />
       <AlgorithmExplanation
         className="app-explanation"

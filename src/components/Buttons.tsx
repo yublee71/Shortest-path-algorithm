@@ -14,6 +14,7 @@ interface ButtonsProps {
   dijkstraSteps: DijkstraStep[];
   currentStepIndex: number;
   setCurrentStepIndex: React.Dispatch<React.SetStateAction<number>>;
+  canGoToNextStep: boolean;
   onClearButtonClick: () => void;
 }
 
@@ -30,6 +31,7 @@ export function Buttons({
   dijkstraSteps,
   currentStepIndex,
   setCurrentStepIndex,
+  canGoToNextStep,
   onClearButtonClick,
 }: ButtonsProps) {
   return (
@@ -59,7 +61,10 @@ export function Buttons({
               ❮
             </Button>
             <Button
-              disabled={currentStepIndex === dijkstraSteps.length - 1}
+              disabled={
+                currentStepIndex === dijkstraSteps.length - 1 ||
+                !canGoToNextStep
+              }
               onClick={() => {
                 setCurrentStepIndex((currentStepIndex) =>
                   Math.min(dijkstraSteps.length - 1, currentStepIndex + 1)
@@ -68,14 +73,16 @@ export function Buttons({
             >
               ❯
             </Button>
-            <Button
-              disabled={currentStepIndex === dijkstraSteps.length - 1}
-              onClick={() => {
-                setCurrentStepIndex(dijkstraSteps.length - 1);
-              }}
-            >
-              ⏭︎
-            </Button>
+            {!isPracticeMode && (
+              <Button
+                disabled={currentStepIndex === dijkstraSteps.length - 1}
+                onClick={() => {
+                  setCurrentStepIndex(dijkstraSteps.length - 1);
+                }}
+              >
+                ⏭︎
+              </Button>
+            )}
           </>
         )}
       </div>

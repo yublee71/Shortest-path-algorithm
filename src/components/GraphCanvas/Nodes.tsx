@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { DijkstraStep } from "../../algorithms/dijkstra";
 import type { Node } from "../../models/Graph";
 
@@ -14,6 +13,8 @@ interface NodesProps {
   currentStepIndex: number;
   isEditable: boolean;
   isPracticeMode: boolean;
+  practiceDistances: Record<string, string>;
+  onPracticeDistanceChange: (nodeId: string, distance: string) => void;
 }
 
 export function Nodes({
@@ -28,10 +29,9 @@ export function Nodes({
   currentStepIndex,
   isEditable,
   isPracticeMode,
+  practiceDistances,
+  onPracticeDistanceChange,
 }: NodesProps) {
-  const [practiceDistances, setPracticeDistances] = useState<
-    Record<string, string>
-  >({});
   const currentStep = dijkstraSteps[currentStepIndex];
   const distances = currentStep?.distances || {};
   const prevDistances = currentStep?.prevDistances || {};
@@ -131,6 +131,19 @@ export function Nodes({
       })}
       {nodes.map((node) => {
         if (isPracticeMode && sourceNodeId && targetNodeId) {
+          const practiceDistanceKey = `${currentStepIndex}:${node.id}`;
+          const selectedDistance = practiceDistances[practiceDistanceKey] ?? "";
+          const actualDistance = currentStep?.distances[node.id];
+          const isCorrect =
+            selectedDistance !== "" &&
+            (actualDistance === Infinity
+              ? selectedDistance === "Infinity"
+              : Number(selectedDistance) === actualDistance);
+          const isWrong =
+            selectedDistance !== "" &&
+            actualDistance !== undefined &&
+            !isCorrect;
+
           return (
             <foreignObject
               key={`${node.id}-practice-distance`}
@@ -142,19 +155,22 @@ export function Nodes({
               onMouseDown={(event) => event.stopPropagation()}
             >
               <select
-                value={practiceDistances[node.id] ?? ""}
+                value={selectedDistance}
                 onChange={(event) => {
-                  setPracticeDistances((currentDistances) => ({
-                    ...currentDistances,
-                    [node.id]: event.target.value,
-                  }));
+                  onPracticeDistanceChange(node.id, event.target.value);
                 }}
                 style={{
                   width: "50px",
                   height: "24px",
-                  border: "1px solid #ccc",
+                  border: `1px solid ${
+                    isCorrect ? "#2f9e44" : isWrong ? "#e03131" : "#ccc"
+                  }`,
                   borderRadius: "4px",
-                  backgroundColor: "white",
+                  backgroundColor: isCorrect
+                    ? "#d3f9d8"
+                    : isWrong
+                    ? "#ffe3e3"
+                    : "white",
                   color: "black",
                   fontWeight: "bold",
                   textAlign: "center",
