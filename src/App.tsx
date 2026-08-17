@@ -24,6 +24,10 @@ function App() {
   const [practiceDistances, setPracticeDistances] = useState<
     Record<string, string>
   >({});
+  const [hasCheckedPracticeStep, setHasCheckedPracticeStep] = useState(false);
+  const [completedPracticeSteps, setCompletedPracticeSteps] = useState<
+    Record<number, boolean>
+  >({});
 
   const currentDijkstraStep = dijkstraSteps[currentStepIndex];
   const isCurrentPracticeStepCorrect =
@@ -46,6 +50,67 @@ function App() {
 
       return Number(selectedDistance) === actualDistance;
     });
+  const hasCompletedCurrentPracticeStep =
+    completedPracticeSteps[currentStepIndex] === true;
+  const shouldShowFeedback =
+    hasCheckedPracticeStep || hasCompletedCurrentPracticeStep;
+  const canGoToNextPracticeStep =
+    hasCompletedCurrentPracticeStep || isCurrentPracticeStepCorrect;
+
+  const goToPreviousStep = () => {
+    setHasCheckedPracticeStep(false);
+    setCurrentStepIndex((currentIndex) => Math.max(0, currentIndex - 1));
+  };
+
+  const goToNextStep = () => {
+    const nextStepIndex = Math.min(
+      dijkstraSteps.length - 1,
+      currentStepIndex + 1
+    );
+
+    if (isPracticeMode) {
+      if (isCurrentPracticeStepCorrect) {
+        setCompletedPracticeSteps((currentSteps) => ({
+          ...currentSteps,
+          [currentStepIndex]: true,
+        }));
+      }
+
+      setPracticeDistances((currentDistances) => {
+        const nextDistances = { ...currentDistances };
+
+        for (const node of nodes) {
+          const currentStepKey = `${currentStepIndex}:${node.id}`;
+          const nextStepKey = `${nextStepIndex}:${node.id}`;
+
+          if (nextDistances[nextStepKey] === undefined) {
+            nextDistances[nextStepKey] = nextDistances[currentStepKey] ?? "";
+          }
+        }
+
+        return nextDistances;
+      });
+    }
+
+    setHasCheckedPracticeStep(false);
+    setCurrentStepIndex(nextStepIndex);
+  };
+
+  const goToLastStep = () => {
+    setHasCheckedPracticeStep(false);
+    setCurrentStepIndex(dijkstraSteps.length - 1);
+  };
+
+  const checkPracticeStep = () => {
+    setHasCheckedPracticeStep(true);
+
+    if (isCurrentPracticeStepCorrect) {
+      setCompletedPracticeSteps((currentSteps) => ({
+        ...currentSteps,
+        [currentStepIndex]: true,
+      }));
+    }
+  };
 
   const generateNodeId = (index: number) => {
     let label = "";
@@ -148,25 +213,13 @@ function App() {
     if (!canStartAlgorithmMode()) {
       return;
     }
-    setSourceNodeId(null);
-    setTargetNodeId(null);
-    setDijkstraSteps([]);
-    setCurrentStepIndex(0);
-    setPracticeDistances({});
     setIsRunMode(true);
-    setIsPracticeMode(false);
   };
 
   const onPracticeButtonClick = () => {
     if (!canStartAlgorithmMode()) {
       return;
     }
-    setSourceNodeId(null);
-    setTargetNodeId(null);
-    setDijkstraSteps([]);
-    setCurrentStepIndex(0);
-    setPracticeDistances({});
-    setIsRunMode(false);
     setIsPracticeMode(true);
   };
 
@@ -182,6 +235,8 @@ function App() {
     setDijkstraSteps([]);
     setCurrentStepIndex(0);
     setPracticeDistances({});
+    setHasCheckedPracticeStep(false);
+    setCompletedPracticeSteps({});
   };
 
   const onLoadExampleGraphClick = () => {
@@ -207,8 +262,12 @@ function App() {
         targetNodeId={targetNodeId}
         dijkstraSteps={dijkstraSteps}
         currentStepIndex={currentStepIndex}
-        setCurrentStepIndex={setCurrentStepIndex}
-        canGoToNextStep={!isPracticeMode || isCurrentPracticeStepCorrect}
+        canGoToNextStep={!isPracticeMode || canGoToNextPracticeStep}
+        hasCheckedPracticeStep={shouldShowFeedback}
+        onPracticeCheckButtonClick={checkPracticeStep}
+        onPreviousStep={goToPreviousStep}
+        onNextStep={goToNextStep}
+        onLastStep={goToLastStep}
       ></Buttons>
       <GraphCanvas
         className="app-canvas"
@@ -229,6 +288,7 @@ function App() {
         setDijkstraSteps={setDijkstraSteps}
         currentStepIndex={currentStepIndex}
         isPracticeMode={isPracticeMode}
+        hasCheckedPracticeStep={shouldShowFeedback}
         practiceDistances={practiceDistances}
         onPracticeDistanceChange={(nodeId, distance) => {
           setPracticeDistances((currentDistances) => ({

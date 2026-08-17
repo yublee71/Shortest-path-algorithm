@@ -14,6 +14,7 @@ interface NodesProps {
   currentStepIndex: number;
   isEditable: boolean;
   isPracticeMode: boolean;
+  hasCheckedPracticeStep: boolean;
   practiceDistances: Record<string, string>;
   onPracticeDistanceChange: (nodeId: string, distance: string) => void;
 }
@@ -30,6 +31,7 @@ export function Nodes({
   currentStepIndex,
   isEditable,
   isPracticeMode,
+  hasCheckedPracticeStep,
   practiceDistances,
   onPracticeDistanceChange,
 }: NodesProps) {
@@ -139,16 +141,17 @@ export function Nodes({
       })}
       {nodes.map((node) => {
         if (isPracticeMode && sourceNodeId && targetNodeId) {
-          const practiceDistanceKey = `${currentStepIndex}:${node.id}`;
-          const selectedDistance = practiceDistances[practiceDistanceKey] ?? "";
+          const selectedDistance =
+            practiceDistances[`${currentStepIndex}:${node.id}`] ?? "";
           const actualDistance = currentStep?.distances[node.id];
           const isCorrect =
+            hasCheckedPracticeStep &&
             selectedDistance !== "" &&
             (actualDistance === Infinity
               ? selectedDistance === "Infinity"
               : Number(selectedDistance) === actualDistance);
           const isWrong =
-            selectedDistance !== "" &&
+            hasCheckedPracticeStep &&
             actualDistance !== undefined &&
             !isCorrect;
 

@@ -13,8 +13,12 @@ interface ButtonsProps {
   targetNodeId: string | null;
   dijkstraSteps: DijkstraStep[];
   currentStepIndex: number;
-  setCurrentStepIndex: React.Dispatch<React.SetStateAction<number>>;
   canGoToNextStep: boolean;
+  hasCheckedPracticeStep: boolean;
+  onPracticeCheckButtonClick: () => void;
+  onPreviousStep: () => void;
+  onNextStep: () => void;
+  onLastStep: () => void;
   onClearButtonClick: () => void;
 }
 
@@ -30,10 +34,17 @@ export function Buttons({
   targetNodeId,
   dijkstraSteps,
   currentStepIndex,
-  setCurrentStepIndex,
   canGoToNextStep,
+  hasCheckedPracticeStep,
+  onPracticeCheckButtonClick,
+  onPreviousStep,
+  onNextStep,
+  onLastStep,
   onClearButtonClick,
 }: ButtonsProps) {
+  const isLastStep = currentStepIndex === dijkstraSteps.length - 1;
+  const canAdvancePracticeStep = hasCheckedPracticeStep && canGoToNextStep;
+
   return (
     <div className={className}>
       <div style={{ display: "flex", gap: "10px" }}>
@@ -50,36 +61,32 @@ export function Buttons({
         )}
         {sourceNodeId && targetNodeId && (
           <>
-            <Button
-              disabled={currentStepIndex === 0}
-              onClick={() => {
-                setCurrentStepIndex((currentStepIndex) =>
-                  Math.max(0, currentStepIndex - 1)
-                );
-              }}
-            >
+            <Button disabled={currentStepIndex === 0} onClick={onPreviousStep}>
               ❮
             </Button>
-            <Button
-              disabled={
-                currentStepIndex === dijkstraSteps.length - 1 ||
-                !canGoToNextStep
-              }
-              onClick={() => {
-                setCurrentStepIndex((currentStepIndex) =>
-                  Math.min(dijkstraSteps.length - 1, currentStepIndex + 1)
-                );
-              }}
-            >
-              ❯
-            </Button>
-            {!isPracticeMode && (
+            {isPracticeMode ? (
               <Button
-                disabled={currentStepIndex === dijkstraSteps.length - 1}
+                color={canAdvancePracticeStep ? "blue" : "cyan"}
+                variant={canAdvancePracticeStep ? "filled" : "light"}
+                disabled={canAdvancePracticeStep && isLastStep}
                 onClick={() => {
-                  setCurrentStepIndex(dijkstraSteps.length - 1);
+                  if (!canAdvancePracticeStep) {
+                    onPracticeCheckButtonClick();
+                    return;
+                  }
+
+                  onNextStep();
                 }}
               >
+                {canAdvancePracticeStep ? "❯" : "Check"}
+              </Button>
+            ) : (
+              <Button disabled={isLastStep} onClick={onNextStep}>
+                ❯
+              </Button>
+            )}
+            {!isPracticeMode && (
+              <Button disabled={isLastStep} onClick={onLastStep}>
                 ⏭︎
               </Button>
             )}
