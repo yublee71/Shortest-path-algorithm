@@ -128,14 +128,10 @@ function App() {
   };
 
   const onLoadExampleGraphClick = () => {
+    onClearButtonClick();
     setNodes(exampleGraph.nodes);
     setEdges(exampleGraph.edges);
-    setSourceNodeId(null);
-    setTargetNodeId(null);
-    setIsAlgorithmMode(false);
     setNextNodeIndex(exampleGraph.nodes.length);
-    setDijkstraSteps([]);
-    setCurrentStepIndex(0);
   };
 
   return (
