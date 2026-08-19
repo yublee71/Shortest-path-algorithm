@@ -36,6 +36,7 @@ interface GraphCanvasProps {
   currentStepIndex: number;
   isPracticeMode: boolean;
   hasCheckedPracticeStep: boolean;
+  hasCompletedPracticeStep: boolean;
   practiceDistances: Record<string, string>;
   onPracticeDistanceChange: (nodeId: string, distance: string) => void;
 }
@@ -84,6 +85,7 @@ export function GraphCanvas({
   currentStepIndex,
   isPracticeMode,
   hasCheckedPracticeStep,
+  hasCompletedPracticeStep,
   practiceDistances,
   onPracticeDistanceChange,
 }: GraphCanvasProps) {
@@ -363,6 +365,7 @@ export function GraphCanvas({
         isEditable={isEditable}
         isPracticeMode={isPracticeMode}
         hasCheckedPracticeStep={hasCheckedPracticeStep}
+        hasCompletedPracticeStep={hasCompletedPracticeStep}
         practiceDistances={practiceDistances}
         onPracticeDistanceChange={onPracticeDistanceChange}
       />

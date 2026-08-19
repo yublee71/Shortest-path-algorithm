@@ -308,6 +308,7 @@ function App() {
         currentStepIndex={currentStepIndex}
         isPracticeMode={isPracticeMode}
         hasCheckedPracticeStep={shouldShowFeedback}
+        hasCompletedPracticeStep={hasCompletedCurrentPracticeStep}
         practiceDistances={practiceDistances}
         onPracticeDistanceChange={(nodeId, distance) => {
           setPracticeDistances((currentDistances) => ({
@@ -326,6 +327,7 @@ function App() {
         currentStepIndex={currentStepIndex}
         isPracticeMode={isPracticeMode}
         showPracticeNextNodeSelect={shouldShowPracticeNextNodeSelect}
+        hasCompletedPracticeStep={hasCompletedCurrentPracticeStep}
         practiceNextNodeValue={selectedPracticeNextNodeId}
         practiceNextNodeStatus={
           shouldShowPracticeNextNodeSelect

@@ -15,6 +15,7 @@ interface NodesProps {
   isEditable: boolean;
   isPracticeMode: boolean;
   hasCheckedPracticeStep: boolean;
+  hasCompletedPracticeStep: boolean;
   practiceDistances: Record<string, string>;
   onPracticeDistanceChange: (nodeId: string, distance: string) => void;
 }
@@ -32,6 +33,7 @@ export function Nodes({
   isEditable,
   isPracticeMode,
   hasCheckedPracticeStep,
+  hasCompletedPracticeStep,
   practiceDistances,
   onPracticeDistanceChange,
 }: NodesProps) {
@@ -173,6 +175,7 @@ export function Nodes({
                 onChange={(value) => {
                   onPracticeDistanceChange(node.id, value ?? "");
                 }}
+                disabled={hasCompletedPracticeStep}
                 placeholder=""
                 size="s"
                 w={70}

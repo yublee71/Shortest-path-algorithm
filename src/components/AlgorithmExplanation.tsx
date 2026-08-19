@@ -14,6 +14,7 @@ interface AlgorithmExplanationProps {
   dijkstraSteps: DijkstraStep[];
   currentStepIndex: number;
   showPracticeNextNodeSelect: boolean;
+  hasCompletedPracticeStep: boolean;
   practiceNextNodeValue: string;
   practiceNextNodeStatus: PracticeNextNodeStatus;
   onPracticeNextNodeChange: (nodeId: string) => void;
@@ -29,6 +30,7 @@ export function AlgorithmExplanation({
   dijkstraSteps,
   currentStepIndex,
   showPracticeNextNodeSelect,
+  hasCompletedPracticeStep,
   practiceNextNodeValue,
   practiceNextNodeStatus,
   onPracticeNextNodeChange,
@@ -172,6 +174,7 @@ export function AlgorithmExplanation({
                   onChange={(value) => {
                     onPracticeNextNodeChange(value ?? "");
                   }}
+                  disabled={hasCompletedPracticeStep}
                   placeholder=""
                   maxDropdownHeight={140}
                   styles={{
