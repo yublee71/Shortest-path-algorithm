@@ -13,6 +13,7 @@ interface AlgorithmExplanationProps {
   targetNodeId: string | null;
   dijkstraSteps: DijkstraStep[];
   currentStepIndex: number;
+  showExplanationTable: boolean;
   showPracticeNextNodeSelect: boolean;
   hasCompletedPracticeStep: boolean;
   practiceNextNodeValue: string;
@@ -29,6 +30,7 @@ export function AlgorithmExplanation({
   targetNodeId,
   dijkstraSteps,
   currentStepIndex,
+  showExplanationTable,
   showPracticeNextNodeSelect,
   hasCompletedPracticeStep,
   practiceNextNodeValue,
@@ -85,118 +87,111 @@ export function AlgorithmExplanation({
     <div className={className}>
       {isAlgorithmMode && (
         <aside>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              marginBottom: "10px",
-            }}
-          >
-            <thead>
-              <tr>
-                <th style={{ border: "1px solid #ccc" }}>Node</th>
-                <th style={{ border: "1px solid #ccc" }}>Distance</th>
-                <th style={{ border: "1px solid #ccc" }}>Previous Nodes</th>
-              </tr>
-            </thead>
-            <tbody style={{ textAlign: "center" }}>
-              {nodes.map((node) => {
-                const isVisited = currentStep?.visitedNodesId?.includes(
-                  node.id
-                );
-                const isTargetNodeRow =
-                  currentStepIndex === dijkstraSteps.length - 1 &&
-                  node.id === targetNodeId;
+          {showExplanationTable && (
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                marginBottom: "10px",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th style={{ border: "1px solid #ccc" }}>Node</th>
+                  <th style={{ border: "1px solid #ccc" }}>Distance</th>
+                  <th style={{ border: "1px solid #ccc" }}>Previous Nodes</th>
+                </tr>
+              </thead>
+              <tbody style={{ textAlign: "center" }}>
+                {nodes.map((node) => {
+                  const isVisited = currentStep?.visitedNodesId?.includes(
+                    node.id
+                  );
+                  const isTargetNodeRow =
+                    currentStepIndex === dijkstraSteps.length - 1 &&
+                    node.id === targetNodeId;
 
-                return (
-                  <tr
-                    key={node.id}
+                  return (
+                    <tr
+                      key={node.id}
+                      style={{
+                        backgroundColor: isTargetNodeRow
+                          ? "#fcffe4"
+                          : isVisited
+                          ? "#f1f3f5"
+                          : "transparent",
+                      }}
+                    >
+                      <td style={{ border: "1px solid #ccc" }}>{node.id}</td>
+                      <td style={{ border: "1px solid #ccc" }}>
+                        {formatDistance(currentStep?.distances[node.id])}
+                      </td>
+                      <td style={{ border: "1px solid #ccc" }}>
+                        {formatPreviousNodes(node.id)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+          {(!sourceNodeId ||
+            !targetNodeId ||
+            (isPracticeMode && showPracticeNextNodeSelect)) && (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                border: "1px solid #ccc",
+                padding: "10px",
+                color: "blue",
+                fontWeight: "bold",
+              }}
+            >
+              {!sourceNodeId ? "Please select source node" : ""}
+              {sourceNodeId && !targetNodeId ? "Please select target node" : ""}
+              {isPracticeMode && showPracticeNextNodeSelect && (
+                <div>
+                  <p
                     style={{
-                      backgroundColor: isTargetNodeRow
-                        ? "#fcffe4"
-                        : isVisited
-                        ? "#f1f3f5"
-                        : "transparent",
+                      color: "blue",
+                      fontWeight: "bold",
+                      marginBottom: "10px",
                     }}
                   >
-                    <td style={{ border: "1px solid #ccc" }}>{node.id}</td>
-                    <td style={{ border: "1px solid #ccc" }}>
-                      {formatDistance(currentStep?.distances[node.id])}
-                    </td>
-                    <td style={{ border: "1px solid #ccc" }}>
-                      {formatPreviousNodes(node.id)}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              minHeight: "70px",
-              resize: "vertical",
-              border: "1px solid #ccc",
-              padding: "10px",
-            }}
-          >
-            {!sourceNodeId ? (
-              <p style={{ color: "blue", fontWeight: "bold" }}>
-                Please select source node
-              </p>
-            ) : (
-              <p style={{ fontWeight: "bold" }}>
-                Source:{" "}
-                <span style={{ color: "darkblue" }}>{sourceNodeId}</span>
-              </p>
-            )}
-            {sourceNodeId && !targetNodeId ? (
-              <p style={{ color: "blue", fontWeight: "bold" }}>
-                Please select target node
-              </p>
-            ) : (
-              targetNodeId && (
-                <p style={{ fontWeight: "bold" }}>
-                  Target: <span style={{ color: "green" }}>{targetNodeId}</span>
-                </p>
-              )
-            )}
-            {isPracticeMode && showPracticeNextNodeSelect && (
-              <div style={{ marginTop: "10px" }}>
-                <p style={{ color: "blue", fontWeight: "bold" }}>
-                  Please select next visiting node
-                </p>
-                <Select
-                  searchable
-                  data={nextNodeOptions}
-                  value={practiceNextNodeValue || null}
-                  onChange={(value) => {
-                    onPracticeNextNodeChange(value ?? "");
-                  }}
-                  disabled={hasCompletedPracticeStep}
-                  placeholder=""
-                  maxDropdownHeight={140}
-                  styles={{
-                    input: {
-                      borderColor:
-                        practiceNextNodeStatus === "correct"
-                          ? "#2f9e44"
-                          : practiceNextNodeStatus === "wrong"
-                          ? "#e03131"
-                          : "#ccc",
-                      backgroundColor:
-                        practiceNextNodeStatus === "correct"
-                          ? "#d3f9d8"
-                          : practiceNextNodeStatus === "wrong"
-                          ? "#ffe3e3"
-                          : "white",
-                    },
-                  }}
-                />
-              </div>
-            )}
-          </div>
+                    Please select next visiting node
+                  </p>
+                  <Select
+                    searchable
+                    data={nextNodeOptions}
+                    value={practiceNextNodeValue || null}
+                    onChange={(value) => {
+                      onPracticeNextNodeChange(value ?? "");
+                    }}
+                    disabled={hasCompletedPracticeStep}
+                    placeholder=""
+                    maxDropdownHeight={140}
+                    styles={{
+                      input: {
+                        borderColor:
+                          practiceNextNodeStatus === "correct"
+                            ? "#2f9e44"
+                            : practiceNextNodeStatus === "wrong"
+                            ? "#e03131"
+                            : "#ccc",
+                        backgroundColor:
+                          practiceNextNodeStatus === "correct"
+                            ? "#d3f9d8"
+                            : practiceNextNodeStatus === "wrong"
+                            ? "#ffe3e3"
+                            : "white",
+                      },
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
           {isFinalStep && (
             <div
               style={{

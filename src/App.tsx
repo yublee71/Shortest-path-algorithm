@@ -72,6 +72,10 @@ function App() {
     isCurrentPracticeStepCorrect && isCurrentPracticeNextNodeCorrect;
   const shouldShowPracticeNextNodeSelect =
     needsPracticeNextNode && shouldShowFeedback && isCurrentPracticeStepCorrect;
+  const shouldShowExplanationTable =
+    !isPracticeMode ||
+    hasCompletedCurrentPracticeStep ||
+    (hasCheckedPracticeStep && isCurrentPracticeStepCorrect);
   const canGoToNextPracticeStep =
     hasCompletedCurrentPracticeStep || isCurrentPracticeAnswerCorrect;
 
@@ -326,6 +330,7 @@ function App() {
         dijkstraSteps={dijkstraSteps}
         currentStepIndex={currentStepIndex}
         isPracticeMode={isPracticeMode}
+        showExplanationTable={shouldShowExplanationTable}
         showPracticeNextNodeSelect={shouldShowPracticeNextNodeSelect}
         hasCompletedPracticeStep={hasCompletedCurrentPracticeStep}
         practiceNextNodeValue={selectedPracticeNextNodeId}
