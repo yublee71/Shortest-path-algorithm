@@ -1,5 +1,13 @@
-import { Button } from "@mantine/core";
+import { Button, Menu } from "@mantine/core";
 import type { DijkstraStep } from "../algorithms/dijkstra";
+
+type AlgorithmId = "dijkstra" | "bellman-ford" | "a-star";
+
+const algorithmOptions: { id: AlgorithmId; label: string }[] = [
+  { id: "dijkstra", label: "Dijkstra" },
+  { id: "bellman-ford", label: "Bellman-Ford" },
+  { id: "a-star", label: "A*" },
+];
 
 interface ButtonsProps {
   className?: string;
@@ -46,16 +54,60 @@ export function Buttons({
 }: ButtonsProps) {
   const isLastStep = currentStepIndex === dijkstraSteps.length - 1;
   const canAdvancePracticeStep = hasCheckedPracticeStep && canGoToNextStep;
+  const runAlgorithm = (algorithmId: AlgorithmId) => {
+    if (algorithmId !== "dijkstra") {
+      window.alert("This algorithm is not implemented yet.");
+      return;
+    }
+
+    onRunButtonClick();
+  };
+  const practiceAlgorithm = (algorithmId: AlgorithmId) => {
+    if (algorithmId !== "dijkstra") {
+      window.alert("This algorithm is not implemented yet.");
+      return;
+    }
+
+    onPracticeButtonClick();
+  };
 
   return (
     <div className={className}>
       <div style={{ display: "flex", gap: "10px" }}>
-        <Button onClick={onRunButtonClick} disabled={isAlgorithmMode}>
-          {isRunMode ? "Running" : "Run"}
-        </Button>
-        <Button onClick={onPracticeButtonClick} disabled={isAlgorithmMode}>
-          {isPracticeMode ? "Practicing" : "Practice"}
-        </Button>
+        <Menu withinPortal position="bottom-start">
+          <Menu.Target>
+            <Button disabled={isAlgorithmMode}>
+              {isRunMode ? "Running" : "Run"}
+            </Button>
+          </Menu.Target>
+          <Menu.Dropdown>
+            {algorithmOptions.map((algorithm) => (
+              <Menu.Item
+                key={algorithm.id}
+                onClick={() => runAlgorithm(algorithm.id)}
+              >
+                {algorithm.label}
+              </Menu.Item>
+            ))}
+          </Menu.Dropdown>
+        </Menu>
+        <Menu withinPortal position="bottom-start">
+          <Menu.Target>
+            <Button disabled={isAlgorithmMode}>
+              {isPracticeMode ? "Practicing" : "Practice"}
+            </Button>
+          </Menu.Target>
+          <Menu.Dropdown>
+            {algorithmOptions.map((algorithm) => (
+              <Menu.Item
+                key={algorithm.id}
+                onClick={() => practiceAlgorithm(algorithm.id)}
+              >
+                {algorithm.label}
+              </Menu.Item>
+            ))}
+          </Menu.Dropdown>
+        </Menu>
         {!isAlgorithmMode && (
           <Button variant="light" onClick={onLoadExampleGraphClick}>
             Load Example
