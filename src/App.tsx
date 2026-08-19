@@ -245,6 +245,20 @@ function App() {
     setIsPracticeMode(true);
   };
 
+  const onBackToGraphEditButtonClick = () => {
+    setSourceNodeId(null);
+    setTargetNodeId(null);
+    setIsAlgorithmMode(false);
+    setIsRunMode(false);
+    setIsPracticeMode(false);
+    setDijkstraSteps([]);
+    setCurrentStepIndex(0);
+    setPracticeDistances({});
+    setHasCheckedPracticeStep(false);
+    setCompletedPracticeSteps({});
+    setPracticeNextNodes({});
+  };
+
   const onClearButtonClick = () => {
     setNodes([]);
     setEdges([]);
@@ -277,6 +291,7 @@ function App() {
         onRunButtonClick={onRunButtonClick}
         onPracticeButtonClick={onPracticeButtonClick}
         onLoadExampleGraphClick={onLoadExampleGraphClick}
+        onBackToGraphEditButtonClick={onBackToGraphEditButtonClick}
         onClearButtonClick={onClearButtonClick}
         isAlgorithmMode={isAlgorithmMode}
         isRunMode={isRunMode}

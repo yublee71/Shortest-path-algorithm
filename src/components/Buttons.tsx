@@ -6,6 +6,7 @@ interface ButtonsProps {
   onRunButtonClick: () => void;
   onPracticeButtonClick: () => void;
   onLoadExampleGraphClick: () => void;
+  onBackToGraphEditButtonClick: () => void;
   isAlgorithmMode: boolean;
   isRunMode: boolean;
   isPracticeMode: boolean;
@@ -27,6 +28,7 @@ export function Buttons({
   onRunButtonClick,
   onPracticeButtonClick,
   onLoadExampleGraphClick,
+  onBackToGraphEditButtonClick,
   isAlgorithmMode,
   isRunMode,
   isPracticeMode,
@@ -94,9 +96,20 @@ export function Buttons({
         )}
       </div>
 
-      <Button color="orange" onClick={onClearButtonClick}>
-        Clear
-      </Button>
+      <div style={{ display: "flex", gap: "10px" }}>
+        {isAlgorithmMode && (
+          <Button
+            variant="light"
+            color="orange"
+            onClick={onBackToGraphEditButtonClick}
+          >
+            Back to graph edit
+          </Button>
+        )}
+        <Button color="orange" onClick={onClearButtonClick}>
+          Clear
+        </Button>
+      </div>
     </div>
   );
 }
