@@ -1,24 +1,37 @@
+import { Select } from "@mantine/core";
 import type { DijkstraStep } from "../algorithms/dijkstra";
 import type { Node } from "../models/Graph";
+
+type PracticeNextNodeStatus = "idle" | "correct" | "wrong";
 
 interface AlgorithmExplanationProps {
   className?: string;
   nodes: Node[];
   isAlgorithmMode: boolean;
+  isPracticeMode: boolean;
   sourceNodeId: string | null;
   targetNodeId: string | null;
   dijkstraSteps: DijkstraStep[];
   currentStepIndex: number;
+  showPracticeNextNodeSelect: boolean;
+  practiceNextNodeValue: string;
+  practiceNextNodeStatus: PracticeNextNodeStatus;
+  onPracticeNextNodeChange: (nodeId: string) => void;
 }
 
 export function AlgorithmExplanation({
   className,
   nodes,
   isAlgorithmMode,
+  isPracticeMode,
   sourceNodeId,
   targetNodeId,
   dijkstraSteps,
   currentStepIndex,
+  showPracticeNextNodeSelect,
+  practiceNextNodeValue,
+  practiceNextNodeStatus,
+  onPracticeNextNodeChange,
 }: AlgorithmExplanationProps) {
   const currentStep = dijkstraSteps[currentStepIndex];
   const isFinalStep = currentStepIndex === dijkstraSteps.length - 1;
@@ -59,6 +72,12 @@ export function AlgorithmExplanation({
 
     return path.join(", ");
   };
+  const nextNodeOptions = nodes
+    .filter((node) => !currentStep?.visitedNodesId?.includes(node.id))
+    .map((node) => ({
+      value: node.id,
+      label: node.id,
+    }));
 
   return (
     <div className={className}>
@@ -140,6 +159,39 @@ export function AlgorithmExplanation({
                   Target: <span style={{ color: "green" }}>{targetNodeId}</span>
                 </p>
               )
+            )}
+            {isPracticeMode && showPracticeNextNodeSelect && (
+              <div style={{ marginTop: "10px" }}>
+                <p style={{ color: "blue", fontWeight: "bold" }}>
+                  Please select next visiting node
+                </p>
+                <Select
+                  searchable
+                  data={nextNodeOptions}
+                  value={practiceNextNodeValue || null}
+                  onChange={(value) => {
+                    onPracticeNextNodeChange(value ?? "");
+                  }}
+                  placeholder=""
+                  maxDropdownHeight={140}
+                  styles={{
+                    input: {
+                      borderColor:
+                        practiceNextNodeStatus === "correct"
+                          ? "#2f9e44"
+                          : practiceNextNodeStatus === "wrong"
+                          ? "#e03131"
+                          : "#ccc",
+                      backgroundColor:
+                        practiceNextNodeStatus === "correct"
+                          ? "#d3f9d8"
+                          : practiceNextNodeStatus === "wrong"
+                          ? "#ffe3e3"
+                          : "white",
+                    },
+                  }}
+                />
+              </div>
             )}
           </div>
           {isFinalStep && (

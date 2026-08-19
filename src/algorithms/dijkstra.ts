@@ -18,6 +18,7 @@ export interface DijkstraStep {
   path?: string;
   currentlyVisitingEdgesId?: string[];
   isVisitingStep?: boolean;
+  nextVisitingNodeId?: string | null;
 }
 
 // export interface DijkstraResult {
@@ -116,6 +117,9 @@ export function dijkstra({
         altDist[neighbor.nodeId] = alt;
       }
     }
+
+    const nextVisitingNodeId = getClosestNode(queue, dist);
+
     dijkstraSteps.push({
       visitedNodesId: [...visitedNodesId],
       currentVisitingNodesId: [...currentVisitingNodesId],
@@ -124,6 +128,7 @@ export function dijkstra({
       distances: { ...dist },
       previousNodes: { ...prev },
       currentlyVisitingEdgesId: [...currentlyVisitingEdgesId],
+      nextVisitingNodeId,
     });
   }
 

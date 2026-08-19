@@ -28,6 +28,9 @@ function App() {
   const [completedPracticeSteps, setCompletedPracticeSteps] = useState<
     Record<number, boolean>
   >({});
+  const [practiceNextNodes, setPracticeNextNodes] = useState<
+    Record<number, string>
+  >({});
 
   const currentDijkstraStep = dijkstraSteps[currentStepIndex];
   const isCurrentPracticeStepCorrect =
@@ -54,8 +57,23 @@ function App() {
     completedPracticeSteps[currentStepIndex] === true;
   const shouldShowFeedback =
     hasCheckedPracticeStep || hasCompletedCurrentPracticeStep;
+  const currentPracticeNextNodeId = currentDijkstraStep?.nextVisitingNodeId;
+  const needsPracticeNextNode =
+    isPracticeMode &&
+    currentStepIndex > 0 &&
+    currentStepIndex < dijkstraSteps.length - 1 &&
+    currentPracticeNextNodeId !== undefined &&
+    currentPracticeNextNodeId !== null;
+  const selectedPracticeNextNodeId = practiceNextNodes[currentStepIndex] ?? "";
+  const isCurrentPracticeNextNodeCorrect =
+    !needsPracticeNextNode ||
+    selectedPracticeNextNodeId === currentPracticeNextNodeId;
+  const isCurrentPracticeAnswerCorrect =
+    isCurrentPracticeStepCorrect && isCurrentPracticeNextNodeCorrect;
+  const shouldShowPracticeNextNodeSelect =
+    needsPracticeNextNode && shouldShowFeedback && isCurrentPracticeStepCorrect;
   const canGoToNextPracticeStep =
-    hasCompletedCurrentPracticeStep || isCurrentPracticeStepCorrect;
+    hasCompletedCurrentPracticeStep || isCurrentPracticeAnswerCorrect;
 
   const goToPreviousStep = () => {
     setHasCheckedPracticeStep(false);
@@ -69,7 +87,7 @@ function App() {
     );
 
     if (isPracticeMode) {
-      if (isCurrentPracticeStepCorrect) {
+      if (isCurrentPracticeAnswerCorrect) {
         setCompletedPracticeSteps((currentSteps) => ({
           ...currentSteps,
           [currentStepIndex]: true,
@@ -104,7 +122,7 @@ function App() {
   const checkPracticeStep = () => {
     setHasCheckedPracticeStep(true);
 
-    if (isCurrentPracticeStepCorrect) {
+    if (isCurrentPracticeAnswerCorrect) {
       setCompletedPracticeSteps((currentSteps) => ({
         ...currentSteps,
         [currentStepIndex]: true,
@@ -237,6 +255,7 @@ function App() {
     setPracticeDistances({});
     setHasCheckedPracticeStep(false);
     setCompletedPracticeSteps({});
+    setPracticeNextNodes({});
   };
 
   const onLoadExampleGraphClick = () => {
@@ -305,6 +324,24 @@ function App() {
         targetNodeId={targetNodeId}
         dijkstraSteps={dijkstraSteps}
         currentStepIndex={currentStepIndex}
+        isPracticeMode={isPracticeMode}
+        showPracticeNextNodeSelect={shouldShowPracticeNextNodeSelect}
+        practiceNextNodeValue={selectedPracticeNextNodeId}
+        practiceNextNodeStatus={
+          shouldShowPracticeNextNodeSelect
+            ? isCurrentPracticeNextNodeCorrect
+              ? "correct"
+              : selectedPracticeNextNodeId === ""
+              ? "idle"
+              : "wrong"
+            : "idle"
+        }
+        onPracticeNextNodeChange={(nodeId) => {
+          setPracticeNextNodes((currentNextNodes) => ({
+            ...currentNextNodes,
+            [currentStepIndex]: nodeId,
+          }));
+        }}
       />
       {/* {dijkstraSteps && (
         <div style={{ marginTop: "10px" }}>
