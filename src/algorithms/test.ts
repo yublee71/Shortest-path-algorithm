@@ -1,4 +1,5 @@
 import { buildAdjacencyList, type Edge, type Node } from "../models/Graph";
+import { bellmanFord } from "./bellmanford";
 import { dijkstra } from "./dijkstra";
 
 const nodes: Node[] = [
@@ -32,3 +33,5 @@ console.log(
     targetNodeId: "Z",
   })
 );
+
+console.log(bellmanFord(nodes, edges, "A"));
