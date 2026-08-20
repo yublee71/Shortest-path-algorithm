@@ -28,16 +28,19 @@ export function EdgeWeightLabels({
   return (
     <>
       {edges.map((edge) => {
-        const nodeA = nodeById.get(edge.nodeA);
-        const nodeB = nodeById.get(edge.nodeB);
+        const fromNode = nodeById.get(edge.fromNodeId);
+        const toNode = nodeById.get(edge.toNodeId);
 
-        if (!nodeA || !nodeB) {
+        if (!fromNode || !toNode) {
           return null;
         }
 
-        const midX = (nodeA.x + nodeB.x) / 2;
-        const midY = (nodeA.y + nodeB.y) / 2;
-        const edgeAngle = Math.atan2(nodeB.y - nodeA.y, nodeB.x - nodeA.x);
+        const midX = (fromNode.x + toNode.x) / 2;
+        const midY = (fromNode.y + toNode.y) / 2;
+        const edgeAngle = Math.atan2(
+          toNode.y - fromNode.y,
+          toNode.x - fromNode.x
+        );
         const labelAngle =
           edgeAngle > Math.PI / 2 || edgeAngle < -Math.PI / 2
             ? edgeAngle + Math.PI

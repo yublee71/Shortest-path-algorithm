@@ -6,8 +6,8 @@ export interface Node {
 
 export interface Edge {
   id: string;
-  nodeA: string;
-  nodeB: string;
+  fromNodeId: string;
+  toNodeId: string;
   weight: number;
 }
 
@@ -18,8 +18,11 @@ export interface AdjacentNode {
 
 export type AdjacencyList = Record<string, AdjacentNode[]>;
 
-export function calculateDistanceWeight(nodeA: Node, nodeB: Node) {
-  const euclideanDistance = Math.hypot(nodeA.x - nodeB.x, nodeA.y - nodeB.y);
+export function calculateDistanceWeight(fromNode: Node, toNode: Node) {
+  const euclideanDistance = Math.hypot(
+    fromNode.x - toNode.x,
+    fromNode.y - toNode.y
+  );
   const EDGE_WEIGHT_DISPLAY_SCALE = 10;
 
   return Math.max(1, Math.round(euclideanDistance / EDGE_WEIGHT_DISPLAY_SCALE));
@@ -33,17 +36,12 @@ export function buildAdjacencyList(nodes: Node[], edges: Edge[]) {
   }
 
   for (const edge of edges) {
-    if (!adjacencyList[edge.nodeA] || !adjacencyList[edge.nodeB]) {
+    if (!adjacencyList[edge.fromNodeId] || !adjacencyList[edge.toNodeId]) {
       continue;
     }
 
-    adjacencyList[edge.nodeA].push({
-      nodeId: edge.nodeB,
-      weight: edge.weight,
-    });
-
-    adjacencyList[edge.nodeB].push({
-      nodeId: edge.nodeA,
+    adjacencyList[edge.fromNodeId].push({
+      nodeId: edge.toNodeId,
       weight: edge.weight,
     });
   }

@@ -11,15 +11,15 @@ const nodes: Node[] = [
 ];
 
 const edges: Edge[] = [
-  { id: "A-B", nodeA: "A", nodeB: "B", weight: 4 },
-  { id: "A-C", nodeA: "A", nodeB: "C", weight: 2 },
-  { id: "B-C", nodeA: "B", nodeB: "C", weight: 1 },
-  { id: "B-D", nodeA: "B", nodeB: "D", weight: 5 },
-  { id: "C-D", nodeA: "C", nodeB: "D", weight: 8 },
-  { id: "C-E", nodeA: "C", nodeB: "E", weight: 10 },
-  { id: "D-E", nodeA: "D", nodeB: "E", weight: 2 },
-  { id: "D-Z", nodeA: "D", nodeB: "Z", weight: 6 },
-  { id: "E-Z", nodeA: "E", nodeB: "Z", weight: 3 },
+  { id: "A-B", fromNodeId: "A", toNodeId: "B", weight: 4 },
+  { id: "A-C", fromNodeId: "A", toNodeId: "C", weight: 2 },
+  { id: "B-C", fromNodeId: "B", toNodeId: "C", weight: 1 },
+  { id: "B-D", fromNodeId: "B", toNodeId: "D", weight: 5 },
+  { id: "C-D", fromNodeId: "C", toNodeId: "D", weight: 8 },
+  { id: "C-E", fromNodeId: "C", toNodeId: "E", weight: 10 },
+  { id: "D-E", fromNodeId: "D", toNodeId: "E", weight: 2 },
+  { id: "D-Z", fromNodeId: "D", toNodeId: "Z", weight: 6 },
+  { id: "E-Z", fromNodeId: "E", toNodeId: "Z", weight: 3 },
 ];
 
 const adjacencyList = buildAdjacencyList(nodes, edges);

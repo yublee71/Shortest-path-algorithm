@@ -105,8 +105,7 @@ export function dijkstra({
         continue;
       }
       const alt = dist[u] + neighbor.weight;
-      const [nodeA, nodeB] = [u, neighbor.nodeId].sort();
-      const edgeId = `${nodeA}-${nodeB}`;
+      const edgeId = `${u}-${neighbor.nodeId}`;
 
       currentlyVisitingEdgesId.push(edgeId);
       if (alt < dist[neighbor.nodeId]) {

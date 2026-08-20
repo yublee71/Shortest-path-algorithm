@@ -345,6 +345,7 @@ export function GraphCanvas({
         onDeleteEdge={onDeleteEdge}
         dijkstraSteps={dijkstraSteps}
         currentStepIndex={currentStepIndex}
+        nodeRadius={nodeRadius}
       />
       {draftEdge && (
         <DraftEdge

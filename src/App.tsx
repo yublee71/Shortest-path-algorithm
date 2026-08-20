@@ -158,7 +158,9 @@ function App() {
   const deleteNode = (id: string) => {
     setNodes((currentNodes) => currentNodes.filter((node) => node.id !== id));
     setEdges((currentEdges) =>
-      currentEdges.filter((edge) => edge.nodeA !== id && edge.nodeB !== id)
+      currentEdges.filter(
+        (edge) => edge.fromNodeId !== id && edge.toNodeId !== id
+      )
     );
   };
 
@@ -171,31 +173,26 @@ function App() {
     setNodes(updatedNodes);
     setEdges((currentEdges) =>
       currentEdges.map((edge) => {
-        const nodeA = nodeById.get(edge.nodeA);
-        const nodeB = nodeById.get(edge.nodeB);
+        const fromNode = nodeById.get(edge.fromNodeId);
+        const toNode = nodeById.get(edge.toNodeId);
 
-        if (!nodeA || !nodeB) {
+        if (!fromNode || !toNode) {
           return edge;
         }
 
-        const weight = calculateDistanceWeight(nodeA, nodeB);
+        const weight = calculateDistanceWeight(fromNode, toNode);
 
         return { ...edge, weight };
       })
     );
   };
 
-  const addEdge = (
-    firstNodeId: string,
-    secondNodeId: string,
-    weight: number
-  ) => {
-    if (firstNodeId === secondNodeId) {
+  const addEdge = (fromNodeId: string, toNodeId: string, weight: number) => {
+    if (fromNodeId === toNodeId) {
       return;
     }
 
-    const [nodeA, nodeB] = [firstNodeId, secondNodeId].sort();
-    const edgeId = `${nodeA}-${nodeB}`;
+    const edgeId = `${fromNodeId}-${toNodeId}`;
 
     setEdges((currentEdges) => {
       const edgeExists = currentEdges.some((edge) => edge.id === edgeId);
@@ -204,7 +201,7 @@ function App() {
         return currentEdges;
       }
 
-      return [...currentEdges, { id: edgeId, nodeA, nodeB, weight }];
+      return [...currentEdges, { id: edgeId, fromNodeId, toNodeId, weight }];
     });
   };
 
