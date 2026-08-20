@@ -1,5 +1,6 @@
 import type { DijkstraStep } from "../../algorithms/dijkstra";
 import type { Edge, Node } from "../../models/Graph";
+import { hasReverseEdge } from "../../models/edgeCalculation";
 
 interface EdgesProps {
   edges: Edge[];
@@ -29,11 +30,15 @@ export function Edges({
         if (!fromNode || !toNode) {
           return null;
         }
+        const reverseEdge = hasReverseEdge(edges, edge);
         const dx = toNode.x - fromNode.x;
         const dy = toNode.y - fromNode.y;
         const length = Math.hypot(dx, dy);
         const unitX = length === 0 ? 0 : dx / length;
         const unitY = length === 0 ? 0 : dy / length;
+        const perpendicularX = -unitY;
+        const perpendicularY = unitX;
+        const curveOffset = reverseEdge ? 24 : 0;
         const lineStartX = fromNode.x + unitX * nodeRadius;
         const lineStartY = fromNode.y + unitY * nodeRadius;
         const isVisitingEdge =
@@ -45,11 +50,35 @@ export function Edges({
         const arrowWidth = isVisitingEdge ? 10 : 8;
         const arrowTipX = toNode.x - unitX * nodeRadius;
         const arrowTipY = toNode.y - unitY * nodeRadius;
-        const arrowBaseX = arrowTipX - unitX * arrowLength;
-        const arrowBaseY = arrowTipY - unitY * arrowLength;
-        const arrowPerpendicularX = -unitY;
-        const arrowPerpendicularY = unitX;
+        const controlX =
+          (lineStartX + arrowTipX) / 2 + perpendicularX * curveOffset;
+        const controlY =
+          (lineStartY + arrowTipY) / 2 + perpendicularY * curveOffset;
+        const arrowDirectionX = reverseEdge ? arrowTipX - controlX : unitX;
+        const arrowDirectionY = reverseEdge ? arrowTipY - controlY : unitY;
+        const arrowDirectionLength = Math.hypot(
+          arrowDirectionX,
+          arrowDirectionY
+        );
+        const arrowUnitX =
+          arrowDirectionLength === 0
+            ? 0
+            : arrowDirectionX / arrowDirectionLength;
+        const arrowUnitY =
+          arrowDirectionLength === 0
+            ? 0
+            : arrowDirectionY / arrowDirectionLength;
+        const arrowBaseX = arrowTipX - arrowUnitX * arrowLength;
+        const arrowBaseY = arrowTipY - arrowUnitY * arrowLength;
+        const arrowPerpendicularX = -arrowUnitY;
+        const arrowPerpendicularY = arrowUnitX;
         const arrowHalfWidth = arrowWidth / 2;
+        const edgePath = reverseEdge
+          ? `M ${lineStartX} ${lineStartY} Q ${controlX} ${controlY} ${arrowBaseX} ${arrowBaseY}`
+          : `M ${lineStartX} ${lineStartY} L ${arrowBaseX} ${arrowBaseY}`;
+        const hitPath = reverseEdge
+          ? `M ${fromNode.x} ${fromNode.y} Q ${controlX} ${controlY} ${toNode.x} ${toNode.y}`
+          : `M ${fromNode.x} ${fromNode.y} L ${toNode.x} ${toNode.y}`;
         const arrowPoints = [
           `${arrowTipX},${arrowTipY}`,
           `${arrowBaseX + arrowPerpendicularX * arrowHalfWidth},${
@@ -76,21 +105,17 @@ export function Edges({
             }}
             style={{ cursor: isEditable ? "pointer" : "default" }}
           >
-            <line
-              x1={fromNode.x}
-              y1={fromNode.y}
-              x2={toNode.x}
-              y2={toNode.y}
+            <path
+              d={hitPath}
               stroke="transparent"
               strokeWidth={12}
+              fill="none"
             />
-            <line
-              x1={lineStartX}
-              y1={lineStartY}
-              x2={arrowBaseX}
-              y2={arrowBaseY}
+            <path
+              d={edgePath}
               stroke="#000000"
               strokeWidth={isVisitingEdge ? 4 : 2}
+              fill="none"
               pointerEvents="none"
             />
             <polygon points={arrowPoints} pointerEvents="none" />

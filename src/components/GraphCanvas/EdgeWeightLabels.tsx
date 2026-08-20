@@ -1,6 +1,7 @@
 import type { Edge, Node } from "../../models/Graph";
 import { EDGE_WEIGHT_INPUT_LIMIT } from "../../models/edgeWeight";
 import type { EditingEdgeWeightState } from "./GraphCanvas";
+import { hasReverseEdge } from "../../models/edgeCalculation";
 
 interface EdgeWeightLabelsProps {
   edges: Edge[];
@@ -35,12 +36,19 @@ export function EdgeWeightLabels({
           return null;
         }
 
+        const dx = toNode.x - fromNode.x;
+        const dy = toNode.y - fromNode.y;
+        const length = Math.hypot(dx, dy);
+        const unitX = length === 0 ? 0 : dx / length;
+        const unitY = length === 0 ? 0 : dy / length;
+        const perpendicularX = -unitY;
+        const perpendicularY = unitX;
+        const labelOffset = hasReverseEdge(edges, edge) ? 24 : 11;
         const midX = (fromNode.x + toNode.x) / 2;
         const midY = (fromNode.y + toNode.y) / 2;
-        const edgeAngle = Math.atan2(
-          toNode.y - fromNode.y,
-          toNode.x - fromNode.x
-        );
+        const labelX = midX + perpendicularX * labelOffset;
+        const labelY = midY + perpendicularY * labelOffset;
+        const edgeAngle = Math.atan2(dy, dx);
         const labelAngle =
           edgeAngle > Math.PI / 2 || edgeAngle < -Math.PI / 2
             ? edgeAngle + Math.PI
@@ -51,7 +59,7 @@ export function EdgeWeightLabels({
         return (
           <g
             key={`${edge.id}-weight`}
-            transform={`translate(${midX}, ${midY}) rotate(${labelAngleDegrees})`}
+            transform={`translate(${labelX}, ${labelY}) rotate(${labelAngleDegrees})`}
             onClick={(event) => event.stopPropagation()}
             onDoubleClick={(event) => {
               event.stopPropagation();
@@ -75,11 +83,11 @@ export function EdgeWeightLabels({
             {!isEditing && (
               <text
                 x={0}
-                y={-10}
+                y={0}
                 fontSize="12"
                 fontWeight={400}
                 textAnchor="middle"
-                dominantBaseline="middle"
+                dominantBaseline="central"
               >
                 {edge.weight}
               </text>
@@ -88,9 +96,9 @@ export function EdgeWeightLabels({
               <g>
                 <foreignObject
                   x={-18}
-                  y={-26}
+                  y={-11}
                   width={36}
-                  height={38}
+                  height={22}
                   style={{ overflow: "visible" }}
                 >
                   <div style={{ display: "flex", flexDirection: "column" }}>

@@ -18,16 +18,6 @@ export interface AdjacentNode {
 
 export type AdjacencyList = Record<string, AdjacentNode[]>;
 
-export function calculateDistanceWeight(fromNode: Node, toNode: Node) {
-  const euclideanDistance = Math.hypot(
-    fromNode.x - toNode.x,
-    fromNode.y - toNode.y
-  );
-  const EDGE_WEIGHT_DISPLAY_SCALE = 10;
-
-  return Math.max(1, Math.round(euclideanDistance / EDGE_WEIGHT_DISPLAY_SCALE));
-}
-
 export function buildAdjacencyList(nodes: Node[], edges: Edge[]) {
   const adjacencyList: AdjacencyList = {};
 

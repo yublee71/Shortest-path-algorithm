@@ -1,10 +1,6 @@
 import { useRef, useState } from "react";
-import {
-  buildAdjacencyList,
-  calculateDistanceWeight,
-  type Edge,
-  type Node,
-} from "../../models/Graph";
+import { buildAdjacencyList, type Edge, type Node } from "../../models/Graph";
+import { calculateDistanceWeight } from "../../models/edgeCalculation";
 import { DraftEdge } from "./DraftEdge";
 import { Edges } from "./Edges";
 import { EdgeWeightLabels } from "./EdgeWeightLabels";

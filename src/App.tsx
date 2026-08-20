@@ -1,6 +1,7 @@
 import "./App.css";
 import { useState } from "react";
-import { calculateDistanceWeight, type Edge, type Node } from "./models/Graph";
+import { type Edge, type Node } from "./models/Graph";
+import { calculateDistanceWeight } from "./models/edgeCalculation";
 import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
 import { type DijkstraStep } from "./algorithms/dijkstra";
 import { AlgorithmExplanation } from "./components/AlgorithmExplanation";
