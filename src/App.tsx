@@ -174,6 +174,10 @@ function App() {
     setNodes(updatedNodes);
     setEdges((currentEdges) =>
       currentEdges.map((edge) => {
+        if (edge.fromNodeId !== id && edge.toNodeId !== id) {
+          return edge;
+        }
+
         const fromNode = nodeById.get(edge.fromNodeId);
         const toNode = nodeById.get(edge.toNodeId);
 
