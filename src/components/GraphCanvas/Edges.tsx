@@ -22,19 +22,6 @@ export function Edges({
 }: EdgesProps) {
   return (
     <>
-      <defs>
-        <marker
-          id="edge-arrowhead"
-          markerWidth="6"
-          markerHeight="6"
-          refX="6"
-          refY="3"
-          orient="auto"
-          markerUnits="userSpaceOnUse"
-        >
-          <path d="M 0 0 L 6 3 L 0 6 z" fill="#000000" />
-        </marker>
-      </defs>
       {edges.map((edge) => {
         const fromNode = nodeById.get(edge.fromNodeId);
         const toNode = nodeById.get(edge.toNodeId);
@@ -49,8 +36,29 @@ export function Edges({
         const unitY = length === 0 ? 0 : dy / length;
         const lineStartX = fromNode.x + unitX * nodeRadius;
         const lineStartY = fromNode.y + unitY * nodeRadius;
-        const lineEndX = toNode.x - unitX * nodeRadius;
-        const lineEndY = toNode.y - unitY * nodeRadius;
+        const isVisitingEdge =
+          !isEditable &&
+          dijkstraSteps[currentStepIndex]?.currentlyVisitingEdgesId?.includes(
+            edge.id
+          );
+        const arrowLength = isVisitingEdge ? 10 : 8;
+        const arrowWidth = isVisitingEdge ? 10 : 8;
+        const arrowTipX = toNode.x - unitX * nodeRadius;
+        const arrowTipY = toNode.y - unitY * nodeRadius;
+        const arrowBaseX = arrowTipX - unitX * arrowLength;
+        const arrowBaseY = arrowTipY - unitY * arrowLength;
+        const arrowPerpendicularX = -unitY;
+        const arrowPerpendicularY = unitX;
+        const arrowHalfWidth = arrowWidth / 2;
+        const arrowPoints = [
+          `${arrowTipX},${arrowTipY}`,
+          `${arrowBaseX + arrowPerpendicularX * arrowHalfWidth},${
+            arrowBaseY + arrowPerpendicularY * arrowHalfWidth
+          }`,
+          `${arrowBaseX - arrowPerpendicularX * arrowHalfWidth},${
+            arrowBaseY - arrowPerpendicularY * arrowHalfWidth
+          }`,
+        ].join(" ");
 
         return (
           <g
@@ -79,20 +87,13 @@ export function Edges({
             <line
               x1={lineStartX}
               y1={lineStartY}
-              x2={lineEndX}
-              y2={lineEndY}
+              x2={arrowBaseX}
+              y2={arrowBaseY}
               stroke="#000000"
-              strokeWidth={
-                !isEditable &&
-                dijkstraSteps[
-                  currentStepIndex
-                ]?.currentlyVisitingEdgesId?.includes(edge.id)
-                  ? 4
-                  : 2
-              }
-              markerEnd="url(#edge-arrowhead)"
+              strokeWidth={isVisitingEdge ? 4 : 2}
               pointerEvents="none"
             />
+            <polygon points={arrowPoints} pointerEvents="none" />
           </g>
         );
       })}
