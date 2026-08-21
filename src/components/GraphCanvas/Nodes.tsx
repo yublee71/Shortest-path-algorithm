@@ -230,16 +230,15 @@ export function Nodes({
             </tspan>
             {prevDistance !== undefined ? " → " : ""}
             <tspan
-              fill={
-                prevDistance !== undefined || altDistance !== undefined
-                  ? "blue"
-                  : "black"
-              }
+              fill={prevDistance !== undefined ? "blue" : "black"}
             >
               {distance}
             </tspan>
-            {altDistance !== undefined ? " < " : ""}
-            <tspan style={{ textDecoration: "line-through" }}>
+            {altDistance !== undefined ? " ≤ " : ""}
+            <tspan
+              fill="blue"
+              style={{ textDecoration: "line-through" }}
+            >
               {altDistance}
             </tspan>
           </text>
