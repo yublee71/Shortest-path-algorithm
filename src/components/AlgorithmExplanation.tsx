@@ -1,5 +1,5 @@
 import { Select } from "@mantine/core";
-import type { DijkstraStep } from "../algorithms/dijkstra";
+import type { AlgorithmStep } from "../models/Algorithm";
 import type { Node } from "../models/Graph";
 
 type PracticeNextNodeStatus = "idle" | "correct" | "wrong";
@@ -11,7 +11,7 @@ interface AlgorithmExplanationProps {
   isPracticeMode: boolean;
   sourceNodeId: string | null;
   targetNodeId: string | null;
-  dijkstraSteps: DijkstraStep[];
+  algorithmSteps: AlgorithmStep[];
   currentStepIndex: number;
   showExplanationTable: boolean;
   showPracticeNextNodeSelect: boolean;
@@ -28,7 +28,7 @@ export function AlgorithmExplanation({
   isPracticeMode,
   sourceNodeId,
   targetNodeId,
-  dijkstraSteps,
+  algorithmSteps,
   currentStepIndex,
   showExplanationTable,
   showPracticeNextNodeSelect,
@@ -37,8 +37,8 @@ export function AlgorithmExplanation({
   practiceNextNodeStatus,
   onPracticeNextNodeChange,
 }: AlgorithmExplanationProps) {
-  const currentStep = dijkstraSteps[currentStepIndex];
-  const isFinalStep = currentStepIndex === dijkstraSteps.length - 1;
+  const currentStep = algorithmSteps[currentStepIndex];
+  const isFinalStep = currentStepIndex === algorithmSteps.length - 1;
   const targetDistance = targetNodeId
     ? currentStep?.distances[targetNodeId]
     : undefined;
@@ -108,7 +108,7 @@ export function AlgorithmExplanation({
                     node.id
                   );
                   const isTargetNodeRow =
-                    currentStepIndex === dijkstraSteps.length - 1 &&
+                    currentStepIndex === algorithmSteps.length - 1 &&
                     node.id === targetNodeId;
 
                   return (
@@ -212,10 +212,10 @@ export function AlgorithmExplanation({
                 </p>
               ) : (
                 <>
-                  <p>Shortest path: {dijkstraSteps[currentStepIndex].path}</p>
+                  <p>Shortest path: {algorithmSteps[currentStepIndex].path}</p>
                   <p>
                     Total distance:{" "}
-                    {dijkstraSteps[currentStepIndex].totalDistance}
+                    {algorithmSteps[currentStepIndex].totalDistance}
                   </p>
                 </>
               )}

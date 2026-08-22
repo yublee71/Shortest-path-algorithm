@@ -1,36 +1,75 @@
 import type { Edge, Node } from "../models/Graph";
+import type { AlgorithmStep } from "../models/Algorithm";
 
-interface BellmanFordResult {
-  distances: Record<string, number>;
-  previousNodes: Record<string, string | null>;
-  hasNegativeCycle: boolean;
+export interface BellmanFordStep extends AlgorithmStep {
+  iteration: number;
+  totalIterations: number;
+  relaxedEdgesId: string[];
+  hasNegativeCycle?: boolean;
 }
 
 export function bellmanFord(
   nodes: Node[],
   edges: Edge[],
-  sourceNodeId: string
-): BellmanFordResult {
+  sourceNodeId: string,
+  targetNodeId?: string
+): BellmanFordStep[] {
   const distances: Record<string, number> = {};
   const previousNodes: Record<string, string | null> = {};
+  const bellmanFordSteps: BellmanFordStep[] = [];
+  const totalIterations = nodes.length - 1;
 
   for (const node of nodes) {
     distances[node.id] = node.id === sourceNodeId ? 0 : Infinity;
     previousNodes[node.id] = null;
   }
 
-  for (let i = 0; i < nodes.length - 1; i++) {
+  bellmanFordSteps.push({
+    iteration: 0,
+    totalIterations,
+    currentVisitingNodesId: [],
+    currentlyVisitingEdgesId: [],
+    distances: { ...distances },
+    previousNodes: { ...previousNodes },
+    prevDistances: {},
+    altDistances: {},
+    relaxedEdgesId: [],
+  });
+
+  for (let i = 0; i < totalIterations; i++) {
+    const relaxedEdgesId: string[] = [];
+
     for (const edge of edges) {
+      const prevDistances: Record<string, number> = {};
+      const altDistances: Record<string, number> = {};
+
       if (distances[edge.fromNodeId] === Infinity) {
         continue;
+      } else {
+        const nextDistance = distances[edge.fromNodeId] + edge.weight;
+
+        if (distances[edge.toNodeId] > nextDistance) {
+          prevDistances[edge.toNodeId] = distances[edge.toNodeId];
+          distances[edge.toNodeId] = nextDistance;
+          previousNodes[edge.toNodeId] = edge.fromNodeId;
+        } else {
+          altDistances[edge.toNodeId] = nextDistance;
+        }
       }
 
-      const nextDistance = distances[edge.fromNodeId] + edge.weight;
+      relaxedEdgesId.push(edge.id);
 
-      if (distances[edge.toNodeId] > nextDistance) {
-        distances[edge.toNodeId] = nextDistance;
-        previousNodes[edge.toNodeId] = edge.fromNodeId;
-      }
+      bellmanFordSteps.push({
+        iteration: i + 1,
+        totalIterations,
+        currentVisitingNodesId: [edge.fromNodeId, edge.toNodeId],
+        currentlyVisitingEdgesId: [edge.id],
+        distances: { ...distances },
+        previousNodes: { ...previousNodes },
+        prevDistances: { ...prevDistances },
+        altDistances: { ...altDistances },
+        relaxedEdgesId: [...relaxedEdgesId],
+      });
     }
   }
 
@@ -42,13 +81,49 @@ export function bellmanFord(
     return distances[edge.toNodeId] > distances[edge.fromNodeId] + edge.weight;
   });
 
-  return {
-    distances,
-    previousNodes,
+  bellmanFordSteps.push({
+    iteration: totalIterations,
+    totalIterations,
+    currentVisitingNodesId: [],
+    currentlyVisitingEdgesId: [],
+    distances: { ...distances },
+    previousNodes: { ...previousNodes },
+    prevDistances: {},
+    altDistances: {},
+    relaxedEdgesId: [],
     hasNegativeCycle,
-  };
+    totalDistance:
+      targetNodeId === undefined ? undefined : distances[targetNodeId],
+    path:
+      targetNodeId === undefined
+        ? undefined
+        : createPath(previousNodes, sourceNodeId, targetNodeId).join(", "),
+  });
+
+  return bellmanFordSteps;
 }
 
+function createPath(
+  previousNodes: Record<string, string | null>,
+  sourceNodeId: string,
+  targetNodeId: string
+): string[] {
+  const path: string[] = [];
+  let currentNodeId: string | null = targetNodeId;
+
+  while (currentNodeId !== null) {
+    path.push(currentNodeId);
+    currentNodeId = previousNodes[currentNodeId];
+  }
+
+  path.reverse();
+
+  if (path[0] !== sourceNodeId) {
+    return [];
+  }
+
+  return path;
+}
 
 // void BellmanFord(Edge edges[], int edgecount, int nodecount, int source)
 // {

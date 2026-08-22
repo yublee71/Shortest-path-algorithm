@@ -1,4 +1,4 @@
-import type { DijkstraStep } from "../../algorithms/dijkstra";
+import type { AlgorithmStep } from "../../models/Algorithm";
 import type { Edge, Node } from "../../models/Graph";
 import { hasReverseEdge } from "../../models/edgeCalculation";
 
@@ -7,7 +7,7 @@ interface EdgesProps {
   nodeById: Map<string, Node>;
   isEditable: boolean;
   onDeleteEdge: (id: string) => void;
-  dijkstraSteps: DijkstraStep[];
+  algorithmSteps: AlgorithmStep[];
   currentStepIndex: number;
   nodeRadius: number;
 }
@@ -17,7 +17,7 @@ export function Edges({
   nodeById,
   isEditable,
   onDeleteEdge,
-  dijkstraSteps,
+  algorithmSteps,
   currentStepIndex,
   nodeRadius,
 }: EdgesProps) {
@@ -43,7 +43,7 @@ export function Edges({
         const lineStartY = fromNode.y + unitY * nodeRadius;
         const isVisitingEdge =
           !isEditable &&
-          dijkstraSteps[currentStepIndex]?.currentlyVisitingEdgesId?.includes(
+          algorithmSteps[currentStepIndex]?.currentlyVisitingEdgesId?.includes(
             edge.id
           );
         const arrowLength = isVisitingEdge ? 10 : 8;

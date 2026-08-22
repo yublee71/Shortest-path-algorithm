@@ -1,4 +1,5 @@
 import type { AdjacencyList, Node } from "../models/Graph";
+import type { AlgorithmStep } from "../models/Algorithm";
 
 interface DijkstraProps {
   nodes: Node[];
@@ -7,16 +8,7 @@ interface DijkstraProps {
   targetNodeId: string;
 }
 
-export interface DijkstraStep {
-  currentVisitingNodesId?: string[];
-  visitedNodesId?: string[];
-  distances: Record<string, number>;
-  previousNodes?: Record<string, string | null>;
-  prevDistances?: Record<string, number>;
-  altDistances?: Record<string, number>;
-  totalDistance?: number;
-  path?: string;
-  currentlyVisitingEdgesId?: string[];
+export interface DijkstraStep extends AlgorithmStep {
   isVisitingStep?: boolean;
   nextVisitingNodeId?: string | null;
 }

@@ -5,7 +5,9 @@ import { DraftEdge } from "./DraftEdge";
 import { Edges } from "./Edges";
 import { EdgeWeightLabels } from "./EdgeWeightLabels";
 import { Nodes } from "./Nodes";
-import { dijkstra, type DijkstraStep } from "../../algorithms/dijkstra";
+import { bellmanFord } from "../../algorithms/bellmanford";
+import { dijkstra } from "../../algorithms/dijkstra";
+import type { AlgorithmId, AlgorithmStep } from "../../models/Algorithm";
 import { isValidEdgeWeight } from "../../models/edgeWeight";
 
 interface GraphCanvasProps {
@@ -27,8 +29,9 @@ interface GraphCanvasProps {
   targetNodeId: string | null;
   onSelectSourceNode: (id: string) => void;
   onSelectTargetNode: (id: string) => void;
-  dijkstraSteps: DijkstraStep[];
-  setDijkstraSteps: (steps: DijkstraStep[]) => void;
+  algorithmSteps: AlgorithmStep[];
+  setAlgorithmSteps: (steps: AlgorithmStep[]) => void;
+  selectedAlgorithm: AlgorithmId | null;
   currentStepIndex: number;
   isPracticeMode: boolean;
   hasCheckedPracticeStep: boolean;
@@ -76,8 +79,9 @@ export function GraphCanvas({
   targetNodeId,
   onSelectSourceNode,
   onSelectTargetNode,
-  dijkstraSteps,
-  setDijkstraSteps,
+  algorithmSteps,
+  setAlgorithmSteps,
+  selectedAlgorithm,
   currentStepIndex,
   isPracticeMode,
   hasCheckedPracticeStep,
@@ -220,13 +224,20 @@ export function GraphCanvas({
         onSelectSourceNode(node.id);
       } else if (sourceNodeId !== node.id && targetNodeId === null) {
         onSelectTargetNode(node.id);
+
+        if (selectedAlgorithm === "bellman-ford") {
+          setAlgorithmSteps(bellmanFord(nodes, edges, sourceNodeId, node.id));
+          return;
+        }
+
         const dijkstraSteps = dijkstra({
           nodes,
           adjacencyList: buildAdjacencyList(nodes, edges),
           sourceNodeId: sourceNodeId,
           targetNodeId: node.id,
         });
-        setDijkstraSteps(
+
+        setAlgorithmSteps(
           isPracticeMode
             ? dijkstraSteps.filter((step) => step.isVisitingStep !== false)
             : dijkstraSteps
@@ -339,7 +350,7 @@ export function GraphCanvas({
         nodeById={nodeById}
         isEditable={isEditable}
         onDeleteEdge={onDeleteEdge}
-        dijkstraSteps={dijkstraSteps}
+        algorithmSteps={algorithmSteps}
         currentStepIndex={currentStepIndex}
         nodeRadius={nodeRadius}
       />
@@ -357,7 +368,7 @@ export function GraphCanvas({
         onContextMenu={handleNodeContextMenu}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
-        dijkstraSteps={dijkstraSteps}
+        algorithmSteps={algorithmSteps}
         currentStepIndex={currentStepIndex}
         isEditable={isEditable}
         isPracticeMode={isPracticeMode}

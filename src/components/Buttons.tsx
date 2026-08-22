@@ -1,6 +1,5 @@
 import { Button, Menu } from "@mantine/core";
-import type { DijkstraStep } from "../algorithms/dijkstra";
-import type { AlgorithmId } from "../models/Algorithm";
+import type { AlgorithmId, AlgorithmStep } from "../models/Algorithm";
 
 const algorithmOptions: { id: AlgorithmId; label: string }[] = [
   { id: "dijkstra", label: "Dijkstra" },
@@ -19,7 +18,7 @@ interface ButtonsProps {
   isPracticeMode: boolean;
   sourceNodeId: string | null;
   targetNodeId: string | null;
-  dijkstraSteps: DijkstraStep[];
+  algorithmSteps: AlgorithmStep[];
   currentStepIndex: number;
   canGoToNextStep: boolean;
   hasCheckedPracticeStep: boolean;
@@ -41,7 +40,7 @@ export function Buttons({
   isPracticeMode,
   sourceNodeId,
   targetNodeId,
-  dijkstraSteps,
+  algorithmSteps,
   currentStepIndex,
   canGoToNextStep,
   hasCheckedPracticeStep,
@@ -51,7 +50,7 @@ export function Buttons({
   onLastStep,
   onClearButtonClick,
 }: ButtonsProps) {
-  const isLastStep = currentStepIndex === dijkstraSteps.length - 1;
+  const isLastStep = currentStepIndex === algorithmSteps.length - 1;
   const canAdvancePracticeStep = hasCheckedPracticeStep && canGoToNextStep;
   const runAlgorithm = (algorithmId: AlgorithmId) => {
     if (algorithmId === "a-star") {

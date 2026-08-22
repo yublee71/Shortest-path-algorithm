@@ -1,5 +1,5 @@
 import { Select } from "@mantine/core";
-import type { DijkstraStep } from "../../algorithms/dijkstra";
+import type { AlgorithmStep } from "../../models/Algorithm";
 import type { Node } from "../../models/Graph";
 
 interface NodesProps {
@@ -10,7 +10,7 @@ interface NodesProps {
   onContextMenu: (event: React.MouseEvent<SVGGElement>, node: Node) => void;
   sourceNodeId: string | null;
   targetNodeId: string | null;
-  dijkstraSteps: DijkstraStep[];
+  algorithmSteps: AlgorithmStep[];
   currentStepIndex: number;
   isEditable: boolean;
   isPracticeMode: boolean;
@@ -28,7 +28,7 @@ export function Nodes({
   onContextMenu,
   sourceNodeId,
   targetNodeId,
-  dijkstraSteps,
+  algorithmSteps,
   currentStepIndex,
   isEditable,
   isPracticeMode,
@@ -37,7 +37,7 @@ export function Nodes({
   practiceDistances,
   onPracticeDistanceChange,
 }: NodesProps) {
-  const currentStep = dijkstraSteps[currentStepIndex];
+  const currentStep = algorithmSteps[currentStepIndex];
   const distances = currentStep?.distances || {};
   const prevDistances = currentStep?.prevDistances || {};
   const altDistances = currentStep?.altDistances || {};

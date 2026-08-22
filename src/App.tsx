@@ -3,11 +3,10 @@ import { useState } from "react";
 import { type Edge, type Node } from "./models/Graph";
 import { calculateDistanceWeight } from "./models/edgeCalculation";
 import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
-import { type DijkstraStep } from "./algorithms/dijkstra";
 import { AlgorithmExplanation } from "./components/AlgorithmExplanation";
 import { Buttons } from "./components/Buttons";
 import { exampleGraph } from "./data/exampleGraph";
-import type { AlgorithmId } from "./models/Algorithm";
+import type { AlgorithmId, AlgorithmStep } from "./models/Algorithm";
 
 function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -16,13 +15,14 @@ function App() {
   const [isAlgorithmMode, setIsAlgorithmMode] = useState(false);
   const [isRunMode, setIsRunMode] = useState(false);
   const [isPracticeMode, setIsPracticeMode] = useState(false);
-  const [, setSelectedAlgorithm] = useState<AlgorithmId | null>(null);
+  const [selectedAlgorithm, setSelectedAlgorithm] =
+    useState<AlgorithmId | null>(null);
   const [sourceNodeId, setSourceNodeId] = useState<string | null>(null);
   const [targetNodeId, setTargetNodeId] = useState<string | null>(null);
   //   const [dijkstraResult, setDijkstraResult] = useState<DijkstraResult | null>(
   // null
   //   );
-  const [dijkstraSteps, setDijkstraSteps] = useState<DijkstraStep[]>([]);
+  const [algorithmSteps, setAlgorithmSteps] = useState<AlgorithmStep[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [practiceDistances, setPracticeDistances] = useState<
     Record<string, string>
@@ -35,16 +35,16 @@ function App() {
     Record<number, string>
   >({});
 
-  const currentDijkstraStep = dijkstraSteps[currentStepIndex];
+  const currentAlgorithmStep = algorithmSteps[currentStepIndex];
   const isCurrentPracticeStepCorrect =
     isPracticeMode &&
     sourceNodeId !== null &&
     targetNodeId !== null &&
-    currentDijkstraStep !== undefined &&
+    currentAlgorithmStep !== undefined &&
     nodes.every((node) => {
       const selectedDistance =
         practiceDistances[`${currentStepIndex}:${node.id}`];
-      const actualDistance = currentDijkstraStep.distances[node.id];
+      const actualDistance = currentAlgorithmStep.distances[node.id];
 
       if (selectedDistance === undefined || selectedDistance === "") {
         return false;
@@ -60,11 +60,11 @@ function App() {
     completedPracticeSteps[currentStepIndex] === true;
   const shouldShowFeedback =
     hasCheckedPracticeStep || hasCompletedCurrentPracticeStep;
-  const currentPracticeNextNodeId = currentDijkstraStep?.nextVisitingNodeId;
+  const currentPracticeNextNodeId = currentAlgorithmStep?.nextVisitingNodeId;
   const needsPracticeNextNode =
     isPracticeMode &&
     currentStepIndex > 0 &&
-    currentStepIndex < dijkstraSteps.length - 1 &&
+    currentStepIndex < algorithmSteps.length - 1 &&
     currentPracticeNextNodeId !== undefined &&
     currentPracticeNextNodeId !== null;
   const selectedPracticeNextNodeId = practiceNextNodes[currentStepIndex] ?? "";
@@ -89,7 +89,7 @@ function App() {
 
   const goToNextStep = () => {
     const nextStepIndex = Math.min(
-      dijkstraSteps.length - 1,
+      algorithmSteps.length - 1,
       currentStepIndex + 1
     );
 
@@ -123,7 +123,7 @@ function App() {
 
   const goToLastStep = () => {
     setHasCheckedPracticeStep(false);
-    setCurrentStepIndex(dijkstraSteps.length - 1);
+    setCurrentStepIndex(algorithmSteps.length - 1);
   };
 
   const checkPracticeStep = () => {
@@ -258,7 +258,7 @@ function App() {
     setIsRunMode(false);
     setIsPracticeMode(false);
     setSelectedAlgorithm(null);
-    setDijkstraSteps([]);
+    setAlgorithmSteps([]);
     setCurrentStepIndex(0);
     setPracticeDistances({});
     setHasCheckedPracticeStep(false);
@@ -276,7 +276,7 @@ function App() {
     setIsPracticeMode(false);
     setSelectedAlgorithm(null);
     setNextNodeIndex(0);
-    setDijkstraSteps([]);
+    setAlgorithmSteps([]);
     setCurrentStepIndex(0);
     setPracticeDistances({});
     setHasCheckedPracticeStep(false);
@@ -306,7 +306,7 @@ function App() {
         isPracticeMode={isPracticeMode}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
-        dijkstraSteps={dijkstraSteps}
+        algorithmSteps={algorithmSteps}
         currentStepIndex={currentStepIndex}
         canGoToNextStep={!isPracticeMode || canGoToNextPracticeStep}
         hasCheckedPracticeStep={shouldShowFeedback}
@@ -330,8 +330,9 @@ function App() {
         targetNodeId={targetNodeId}
         onSelectSourceNode={(id) => setSourceNodeId(id)}
         onSelectTargetNode={(id) => setTargetNodeId(id)}
-        dijkstraSteps={dijkstraSteps}
-        setDijkstraSteps={setDijkstraSteps}
+        algorithmSteps={algorithmSteps}
+        setAlgorithmSteps={setAlgorithmSteps}
+        selectedAlgorithm={selectedAlgorithm}
         currentStepIndex={currentStepIndex}
         isPracticeMode={isPracticeMode}
         hasCheckedPracticeStep={shouldShowFeedback}
@@ -350,7 +351,7 @@ function App() {
         nodes={nodes}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
-        dijkstraSteps={dijkstraSteps}
+        algorithmSteps={algorithmSteps}
         currentStepIndex={currentStepIndex}
         isPracticeMode={isPracticeMode}
         showExplanationTable={shouldShowExplanationTable}
