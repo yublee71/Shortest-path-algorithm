@@ -43,6 +43,7 @@ export function AlgorithmExplanation({
     ? currentStep?.distances[targetNodeId]
     : undefined;
   const hasNoPath = isFinalStep && targetNodeId && targetDistance === Infinity;
+  const iterationLabel = getIterationLabel(currentStep);
 
   const formatDistance = (distance: number | undefined) => {
     if (distance === undefined) {
@@ -88,52 +89,59 @@ export function AlgorithmExplanation({
       {isAlgorithmMode && (
         <aside>
           {showExplanationTable && (
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                marginBottom: "10px",
-              }}
-            >
-              <thead>
-                <tr>
-                  <th style={{ border: "1px solid #ccc" }}>Node</th>
-                  <th style={{ border: "1px solid #ccc" }}>Distance</th>
-                  <th style={{ border: "1px solid #ccc" }}>Previous Nodes</th>
-                </tr>
-              </thead>
-              <tbody style={{ textAlign: "center" }}>
-                {nodes.map((node) => {
-                  const isVisited = currentStep?.visitedNodesId?.includes(
-                    node.id
-                  );
-                  const isTargetNodeRow =
-                    currentStepIndex === algorithmSteps.length - 1 &&
-                    node.id === targetNodeId;
+            <>
+              {iterationLabel && (
+                <p style={{ fontWeight: "bold", margin: "0 0 10px" }}>
+                  {iterationLabel}
+                </p>
+              )}
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  marginBottom: "10px",
+                }}
+              >
+                <thead>
+                  <tr>
+                    <th style={{ border: "1px solid #ccc" }}>Node</th>
+                    <th style={{ border: "1px solid #ccc" }}>Distance</th>
+                    <th style={{ border: "1px solid #ccc" }}>Previous Nodes</th>
+                  </tr>
+                </thead>
+                <tbody style={{ textAlign: "center" }}>
+                  {nodes.map((node) => {
+                    const isVisited = currentStep?.visitedNodesId?.includes(
+                      node.id
+                    );
+                    const isTargetNodeRow =
+                      currentStepIndex === algorithmSteps.length - 1 &&
+                      node.id === targetNodeId;
 
-                  return (
-                    <tr
-                      key={node.id}
-                      style={{
-                        backgroundColor: isTargetNodeRow
-                          ? "#fcffe4"
-                          : isVisited
-                          ? "#f1f3f5"
-                          : "transparent",
-                      }}
-                    >
-                      <td style={{ border: "1px solid #ccc" }}>{node.id}</td>
-                      <td style={{ border: "1px solid #ccc" }}>
-                        {formatDistance(currentStep?.distances[node.id])}
-                      </td>
-                      <td style={{ border: "1px solid #ccc" }}>
-                        {formatPreviousNodes(node.id)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                    return (
+                      <tr
+                        key={node.id}
+                        style={{
+                          backgroundColor: isTargetNodeRow
+                            ? "#fcffe4"
+                            : isVisited
+                            ? "#f1f3f5"
+                            : "transparent",
+                        }}
+                      >
+                        <td style={{ border: "1px solid #ccc" }}>{node.id}</td>
+                        <td style={{ border: "1px solid #ccc" }}>
+                          {formatDistance(currentStep?.distances[node.id])}
+                        </td>
+                        <td style={{ border: "1px solid #ccc" }}>
+                          {formatPreviousNodes(node.id)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </>
           )}
           {(!sourceNodeId ||
             !targetNodeId ||
@@ -225,4 +233,19 @@ export function AlgorithmExplanation({
       )}
     </div>
   );
+}
+
+function getIterationLabel(step: AlgorithmStep | undefined): string | null {
+  if (
+    !step ||
+    !("iteration" in step) ||
+    !("totalIterations" in step) ||
+    step.currentlyVisitingEdgesId?.length === 0
+  ) {
+    return null;
+  }
+
+  const { iteration, totalIterations } = step;
+
+  return `Iteration ${iteration} / ${totalIterations}`;
 }

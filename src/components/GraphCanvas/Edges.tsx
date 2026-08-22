@@ -12,6 +12,16 @@ interface EdgesProps {
   nodeRadius: number;
 }
 
+function hasRelaxedEdge(step: AlgorithmStep, edgeId: string): boolean {
+  if (!step || !("relaxedEdgesId" in step)) {
+    return false;
+  }
+
+  return Array.isArray(step.relaxedEdgesId)
+    ? step.relaxedEdgesId.includes(edgeId)
+    : false;
+}
+
 export function Edges({
   edges,
   nodeById,
@@ -46,6 +56,10 @@ export function Edges({
           algorithmSteps[currentStepIndex]?.currentlyVisitingEdgesId?.includes(
             edge.id
           );
+        const isRelaxedEdge =
+          !isEditable &&
+          hasRelaxedEdge(algorithmSteps[currentStepIndex], edge.id);
+        const edgeColor = isRelaxedEdge && !isVisitingEdge ? "grey" : "black";
         const arrowLength = isVisitingEdge ? 10 : 8;
         const arrowWidth = isVisitingEdge ? 10 : 8;
         const arrowTipX = toNode.x - unitX * nodeRadius;
@@ -113,12 +127,16 @@ export function Edges({
             />
             <path
               d={edgePath}
-              stroke="#000000"
+              stroke={edgeColor}
               strokeWidth={isVisitingEdge ? 4 : 2}
               fill="none"
               pointerEvents="none"
             />
-            <polygon points={arrowPoints} pointerEvents="none" />
+            <polygon
+              points={arrowPoints}
+              fill={edgeColor}
+              pointerEvents="none"
+            />
           </g>
         );
       })}
