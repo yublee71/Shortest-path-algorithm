@@ -3,6 +3,8 @@ export const EDGE_WEIGHT_INPUT_LIMIT = 100;
 
 export function isValidEdgeWeight(value: number) {
   return (
-    Number.isInteger(value) && value >= 1 && value <= EDGE_WEIGHT_INPUT_LIMIT
+    Number.isInteger(value) &&
+    Math.abs(value) >= 1 &&
+    Math.abs(value) <= EDGE_WEIGHT_INPUT_LIMIT
   );
 }

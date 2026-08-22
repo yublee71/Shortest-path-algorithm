@@ -104,7 +104,7 @@ export function EdgeWeightLabels({
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     <input
                       type="number"
-                      min={1}
+                      min={-EDGE_WEIGHT_INPUT_LIMIT}
                       max={EDGE_WEIGHT_INPUT_LIMIT}
                       step={1}
                       autoFocus
@@ -129,7 +129,7 @@ export function EdgeWeightLabels({
                       onClick={(event) => event.stopPropagation()}
                       onDoubleClick={(event) => event.stopPropagation()}
                       style={{
-                        width: "100%",
+                        width: "125%",
                         height: "22px",
                         border: "solid 1px black",
                         fontSize: "12px",

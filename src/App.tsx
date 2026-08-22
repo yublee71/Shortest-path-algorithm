@@ -240,7 +240,23 @@ function App() {
     return true;
   };
 
+  const canRunSelectedAlgorithm = (algorithmId: AlgorithmId) => {
+    if (
+      algorithmId === "dijkstra" &&
+      edges.some((edge) => edge.weight < 0)
+    ) {
+      alert("Dijkstra cannot run with negative edge weights.");
+      return false;
+    }
+
+    return true;
+  };
+
   const onRunButtonClick = (algorithmId: AlgorithmId) => {
+    if (!canRunSelectedAlgorithm(algorithmId)) {
+      return;
+    }
+
     if (!canStartAlgorithmMode()) {
       return;
     }
@@ -249,6 +265,10 @@ function App() {
   };
 
   const onPracticeButtonClick = (algorithmId: AlgorithmId) => {
+    if (!canRunSelectedAlgorithm(algorithmId)) {
+      return;
+    }
+
     if (!canStartAlgorithmMode()) {
       return;
     }
