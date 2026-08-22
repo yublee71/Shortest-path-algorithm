@@ -89,7 +89,7 @@ export function GraphCanvas({
   practiceDistances,
   onPracticeDistanceChange,
 }: GraphCanvasProps) {
-  const width = 600;
+  const width = 680;
   const height = 400;
   const nodeRadius = 20;
   const nodeById = new Map(nodes.map((node) => [node.id, node]));

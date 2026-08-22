@@ -82,6 +82,11 @@ function App() {
   const canGoToNextPracticeStep =
     hasCompletedCurrentPracticeStep || isCurrentPracticeAnswerCorrect;
 
+  const goToFirstStep = () => {
+    setHasCheckedPracticeStep(false);
+    setCurrentStepIndex(0);
+  };
+
   const goToPreviousStep = () => {
     setHasCheckedPracticeStep(false);
     setCurrentStepIndex((currentIndex) => Math.max(0, currentIndex - 1));
@@ -311,6 +316,7 @@ function App() {
         canGoToNextStep={!isPracticeMode || canGoToNextPracticeStep}
         hasCheckedPracticeStep={shouldShowFeedback}
         onPracticeCheckButtonClick={checkPracticeStep}
+        onFirstStep={goToFirstStep}
         onPreviousStep={goToPreviousStep}
         onNextStep={goToNextStep}
         onLastStep={goToLastStep}

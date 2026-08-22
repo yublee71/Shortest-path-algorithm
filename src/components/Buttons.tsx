@@ -23,6 +23,7 @@ interface ButtonsProps {
   canGoToNextStep: boolean;
   hasCheckedPracticeStep: boolean;
   onPracticeCheckButtonClick: () => void;
+  onFirstStep: () => void;
   onPreviousStep: () => void;
   onNextStep: () => void;
   onLastStep: () => void;
@@ -45,6 +46,7 @@ export function Buttons({
   canGoToNextStep,
   hasCheckedPracticeStep,
   onPracticeCheckButtonClick,
+  onFirstStep,
   onPreviousStep,
   onNextStep,
   onLastStep,
@@ -113,6 +115,11 @@ export function Buttons({
         )}
         {sourceNodeId && targetNodeId && (
           <>
+            {!isPracticeMode && (
+              <Button disabled={currentStepIndex === 0} onClick={onFirstStep}>
+                ⏮︎
+              </Button>
+            )}
             <Button disabled={currentStepIndex === 0} onClick={onPreviousStep}>
               ❮
             </Button>

@@ -1,6 +1,6 @@
 .app-grid {
   display: grid;
-  grid-template-columns: 600px 400px;
+  grid-template-columns: 680px 400px;
   grid-template-rows: auto auto 400px;
   column-gap: 20px;
   row-gap: 5px;
