@@ -7,6 +7,7 @@ import { type DijkstraStep } from "./algorithms/dijkstra";
 import { AlgorithmExplanation } from "./components/AlgorithmExplanation";
 import { Buttons } from "./components/Buttons";
 import { exampleGraph } from "./data/exampleGraph";
+import type { AlgorithmId } from "./models/Algorithm";
 
 function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -15,6 +16,7 @@ function App() {
   const [isAlgorithmMode, setIsAlgorithmMode] = useState(false);
   const [isRunMode, setIsRunMode] = useState(false);
   const [isPracticeMode, setIsPracticeMode] = useState(false);
+  const [, setSelectedAlgorithm] = useState<AlgorithmId | null>(null);
   const [sourceNodeId, setSourceNodeId] = useState<string | null>(null);
   const [targetNodeId, setTargetNodeId] = useState<string | null>(null);
   //   const [dijkstraResult, setDijkstraResult] = useState<DijkstraResult | null>(
@@ -233,17 +235,19 @@ function App() {
     return true;
   };
 
-  const onRunButtonClick = () => {
+  const onRunButtonClick = (algorithmId: AlgorithmId) => {
     if (!canStartAlgorithmMode()) {
       return;
     }
+    setSelectedAlgorithm(algorithmId);
     setIsRunMode(true);
   };
 
-  const onPracticeButtonClick = () => {
+  const onPracticeButtonClick = (algorithmId: AlgorithmId) => {
     if (!canStartAlgorithmMode()) {
       return;
     }
+    setSelectedAlgorithm(algorithmId);
     setIsPracticeMode(true);
   };
 
@@ -253,6 +257,7 @@ function App() {
     setIsAlgorithmMode(false);
     setIsRunMode(false);
     setIsPracticeMode(false);
+    setSelectedAlgorithm(null);
     setDijkstraSteps([]);
     setCurrentStepIndex(0);
     setPracticeDistances({});
@@ -269,6 +274,7 @@ function App() {
     setIsAlgorithmMode(false);
     setIsRunMode(false);
     setIsPracticeMode(false);
+    setSelectedAlgorithm(null);
     setNextNodeIndex(0);
     setDijkstraSteps([]);
     setCurrentStepIndex(0);

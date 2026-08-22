@@ -1,7 +1,6 @@
 import { Button, Menu } from "@mantine/core";
 import type { DijkstraStep } from "../algorithms/dijkstra";
-
-type AlgorithmId = "dijkstra" | "bellman-ford" | "a-star";
+import type { AlgorithmId } from "../models/Algorithm";
 
 const algorithmOptions: { id: AlgorithmId; label: string }[] = [
   { id: "dijkstra", label: "Dijkstra" },
@@ -11,8 +10,8 @@ const algorithmOptions: { id: AlgorithmId; label: string }[] = [
 
 interface ButtonsProps {
   className?: string;
-  onRunButtonClick: () => void;
-  onPracticeButtonClick: () => void;
+  onRunButtonClick: (algorithmId: AlgorithmId) => void;
+  onPracticeButtonClick: (algorithmId: AlgorithmId) => void;
   onLoadExampleGraphClick: () => void;
   onBackToGraphEditButtonClick: () => void;
   isAlgorithmMode: boolean;
@@ -55,20 +54,20 @@ export function Buttons({
   const isLastStep = currentStepIndex === dijkstraSteps.length - 1;
   const canAdvancePracticeStep = hasCheckedPracticeStep && canGoToNextStep;
   const runAlgorithm = (algorithmId: AlgorithmId) => {
-    if (algorithmId !== "dijkstra") {
+    if (algorithmId === "a-star") {
       window.alert("This algorithm is not implemented yet.");
       return;
     }
 
-    onRunButtonClick();
+    onRunButtonClick(algorithmId);
   };
   const practiceAlgorithm = (algorithmId: AlgorithmId) => {
-    if (algorithmId !== "dijkstra") {
+    if (algorithmId === "a-star") {
       window.alert("This algorithm is not implemented yet.");
       return;
     }
 
-    onPracticeButtonClick();
+    onPracticeButtonClick(algorithmId);
   };
 
   return (
