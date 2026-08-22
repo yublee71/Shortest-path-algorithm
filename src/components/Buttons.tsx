@@ -1,11 +1,6 @@
 import { Button, Menu } from "@mantine/core";
+import { algorithmOptions } from "../models/Algorithm";
 import type { AlgorithmId, AlgorithmStep } from "../models/Algorithm";
-
-const algorithmOptions: { id: AlgorithmId; label: string }[] = [
-  { id: "dijkstra", label: "Dijkstra" },
-  { id: "bellman-ford", label: "Bellman-Ford" },
-  { id: "a-star", label: "A*" },
-];
 
 interface ButtonsProps {
   className?: string;

@@ -1,5 +1,9 @@
 import { Select } from "@mantine/core";
-import type { AlgorithmStep } from "../models/Algorithm";
+import {
+  type AlgorithmId,
+  type AlgorithmStep,
+  getAlgorithmLabel,
+} from "../models/Algorithm";
 import type { Node } from "../models/Graph";
 
 type PracticeNextNodeStatus = "idle" | "correct" | "wrong";
@@ -8,6 +12,7 @@ interface AlgorithmExplanationProps {
   className?: string;
   nodes: Node[];
   isAlgorithmMode: boolean;
+  selectedAlgorithm: AlgorithmId | null;
   isPracticeMode: boolean;
   sourceNodeId: string | null;
   targetNodeId: string | null;
@@ -21,10 +26,26 @@ interface AlgorithmExplanationProps {
   onPracticeNextNodeChange: (nodeId: string) => void;
 }
 
+function getIterationLabel(step: AlgorithmStep | undefined): string | null {
+  if (
+    !step ||
+    !("iteration" in step) ||
+    !("totalIterations" in step) ||
+    step.currentlyVisitingEdgesId?.length === 0
+  ) {
+    return null;
+  }
+
+  const { iteration, totalIterations } = step;
+
+  return `Iteration ${iteration} / ${totalIterations}`;
+}
+
 export function AlgorithmExplanation({
   className,
   nodes,
   isAlgorithmMode,
+  selectedAlgorithm,
   isPracticeMode,
   sourceNodeId,
   targetNodeId,
@@ -44,6 +65,8 @@ export function AlgorithmExplanation({
     : undefined;
   const hasNoPath = isFinalStep && targetNodeId && targetDistance === Infinity;
   const iterationLabel = getIterationLabel(currentStep);
+  const algorithm = getAlgorithmLabel(selectedAlgorithm);
+  const mode = isPracticeMode ? "Practice Mode" : "Run Mode";
 
   const formatDistance = (distance: number | undefined) => {
     if (distance === undefined) {
@@ -88,6 +111,21 @@ export function AlgorithmExplanation({
     <div className={className}>
       {isAlgorithmMode && (
         <aside>
+          {algorithm && (
+            <div style={{ marginBottom: "16px" }}>
+              <div
+                style={{
+                  color: "grey",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  marginBottom: "4px",
+                }}
+              >
+                {mode}
+              </div>
+              <h2 style={{ fontSize: "20px", margin: 0 }}>{algorithm}</h2>
+            </div>
+          )}
           {showExplanationTable && (
             <>
               {iterationLabel && (
@@ -233,19 +271,4 @@ export function AlgorithmExplanation({
       )}
     </div>
   );
-}
-
-function getIterationLabel(step: AlgorithmStep | undefined): string | null {
-  if (
-    !step ||
-    !("iteration" in step) ||
-    !("totalIterations" in step) ||
-    step.currentlyVisitingEdgesId?.length === 0
-  ) {
-    return null;
-  }
-
-  const { iteration, totalIterations } = step;
-
-  return `Iteration ${iteration} / ${totalIterations}`;
 }

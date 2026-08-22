@@ -1,5 +1,18 @@
 export type AlgorithmId = "dijkstra" | "bellman-ford" | "a-star";
 
+export const algorithmOptions: { id: AlgorithmId; label: string }[] = [
+  { id: "dijkstra", label: "Dijkstra" },
+  { id: "bellman-ford", label: "Bellman-Ford" },
+  { id: "a-star", label: "A*" },
+];
+
+export function getAlgorithmLabel(algorithmId: AlgorithmId | null): string {
+  return (
+    algorithmOptions.find((algorithm) => algorithm.id === algorithmId)?.label ??
+    ""
+  );
+}
+
 export interface AlgorithmStep {
   currentVisitingNodesId?: string[];
   visitedNodesId?: string[];

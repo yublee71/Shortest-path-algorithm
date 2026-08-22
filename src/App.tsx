@@ -354,6 +354,7 @@ function App() {
       <AlgorithmExplanation
         className="app-explanation"
         isAlgorithmMode={isAlgorithmMode}
+        selectedAlgorithm={selectedAlgorithm}
         nodes={nodes}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
