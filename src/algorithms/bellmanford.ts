@@ -5,7 +5,7 @@ export interface BellmanFordStep extends AlgorithmStep {
   iteration: number;
   totalIterations: number;
   relaxedEdgesId: string[];
-  hasNegativeCycle?: boolean;
+  hasReachableNegativeCycle?: boolean;
 }
 
 export function bellmanFord(
@@ -73,7 +73,7 @@ export function bellmanFord(
     }
   }
 
-  const hasNegativeCycle = edges.some((edge) => {
+  const reachableNegativeCycle = edges.some((edge) => {
     if (distances[edge.fromNodeId] === Infinity) {
       return false;
     }
@@ -91,11 +91,13 @@ export function bellmanFord(
     prevDistances: {},
     altDistances: {},
     relaxedEdgesId: [],
-    hasNegativeCycle,
+    hasReachableNegativeCycle: reachableNegativeCycle,
     totalDistance:
-      targetNodeId === undefined ? undefined : distances[targetNodeId],
+      targetNodeId === undefined || reachableNegativeCycle
+        ? undefined
+        : distances[targetNodeId],
     path:
-      targetNodeId === undefined
+      targetNodeId === undefined || reachableNegativeCycle
         ? undefined
         : createPath(previousNodes, sourceNodeId, targetNodeId).join(", "),
   });

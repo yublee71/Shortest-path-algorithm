@@ -221,6 +221,17 @@ export function GraphCanvas({
 
     if (!isEditable) {
       if (sourceNodeId === null) {
+        if (selectedAlgorithm === "bellman-ford") {
+          const bellmanFordSteps = bellmanFord(nodes, edges, node.id);
+          const lastStep = bellmanFordSteps[bellmanFordSteps.length - 1];
+
+          if (lastStep.hasReachableNegativeCycle === true) {
+            window.alert(
+              "Bellman-Ford cannot run because a negative cycle is reachable from the selected source node."
+            );
+            return;
+          }
+        }
         onSelectSourceNode(node.id);
       } else if (sourceNodeId !== node.id && targetNodeId === null) {
         onSelectTargetNode(node.id);
@@ -315,7 +326,9 @@ export function GraphCanvas({
     const inputNumber = Number(inputString.trim());
 
     if (!isValidEdgeWeight(inputNumber)) {
-      window.alert("Please enter a valid integer from -100 to 100, excluding 0.");
+      window.alert(
+        "Please enter a valid integer from -100 to 100, excluding 0."
+      );
       setEditingEdgeWeight(null);
       return;
     }
