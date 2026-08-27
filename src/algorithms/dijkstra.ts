@@ -54,7 +54,7 @@ export function dijkstra({
       previousNodes: { ...prev },
       totalDistance: 0,
       path: "",
-      isVisitingStep: u === sourceNodeId,
+      isVisitingStep: u === sourceNodeId || u === targetNodeId,
     };
 
     if (u === targetNodeId) {
