@@ -334,6 +334,9 @@ function App() {
         currentStepIndex={currentStepIndex}
         canGoToNextStep={!isPracticeMode || canGoToNextPracticeStep}
         hasCheckedPracticeStep={shouldShowFeedback}
+        shouldSelectPracticeNextNode={
+          shouldShowPracticeNextNodeSelect && !canGoToNextPracticeStep
+        }
         onPracticeCheckButtonClick={checkPracticeStep}
         onFirstStep={goToFirstStep}
         onPreviousStep={goToPreviousStep}

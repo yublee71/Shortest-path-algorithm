@@ -1,4 +1,5 @@
-import { Button, Menu } from "@mantine/core";
+import { Button, Menu, Tooltip } from "@mantine/core";
+import type { ReactNode } from "react";
 import { algorithmOptions } from "../models/Algorithm";
 import type { AlgorithmId, AlgorithmStep } from "../models/Algorithm";
 
@@ -17,6 +18,7 @@ interface ButtonsProps {
   currentStepIndex: number;
   canGoToNextStep: boolean;
   hasCheckedPracticeStep: boolean;
+  shouldSelectPracticeNextNode: boolean;
   onPracticeCheckButtonClick: () => void;
   onFirstStep: () => void;
   onPreviousStep: () => void;
@@ -40,6 +42,7 @@ export function Buttons({
   currentStepIndex,
   canGoToNextStep,
   hasCheckedPracticeStep,
+  shouldSelectPracticeNextNode,
   onPracticeCheckButtonClick,
   onFirstStep,
   onPreviousStep,
@@ -49,6 +52,19 @@ export function Buttons({
 }: ButtonsProps) {
   const isLastStep = currentStepIndex === algorithmSteps.length - 1;
   const canAdvancePracticeStep = hasCheckedPracticeStep && canGoToNextStep;
+  const isPracticeActionDisabled =
+    shouldSelectPracticeNextNode || (canAdvancePracticeStep && isLastStep);
+  const practiceActionTooltip = shouldSelectPracticeNextNode
+    ? "Select the next visiting node"
+    : canAdvancePracticeStep
+    ? "Go to the next step"
+    : "Check your answer";
+  const withTooltip = (label: string, control: ReactNode) => (
+    <Tooltip label={label} withArrow openDelay={400}>
+      <span>{control}</span>
+    </Tooltip>
+  );
+
   const runAlgorithm = (algorithmId: AlgorithmId) => {
     if (algorithmId === "a-star") {
       window.alert("This algorithm is not implemented yet.");
@@ -57,6 +73,7 @@ export function Buttons({
 
     onRunButtonClick(algorithmId);
   };
+
   const practiceAlgorithm = (algorithmId: AlgorithmId) => {
     if (algorithmId === "a-star") {
       window.alert("This algorithm is not implemented yet.");
@@ -69,98 +86,129 @@ export function Buttons({
   return (
     <div className={className}>
       <div style={{ display: "flex", gap: "10px" }}>
-        <Menu withinPortal position="bottom-start">
-          <Menu.Target>
-            <Button disabled={isAlgorithmMode}>
-              {isRunMode ? "Running" : "Run"}
-            </Button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            {algorithmOptions.map((algorithm) => (
-              <Menu.Item
-                key={algorithm.id}
-                onClick={() => runAlgorithm(algorithm.id)}
-              >
-                {algorithm.label}
-              </Menu.Item>
-            ))}
-          </Menu.Dropdown>
-        </Menu>
-        <Menu withinPortal position="bottom-start">
-          <Menu.Target>
-            <Button disabled={isAlgorithmMode}>
-              {isPracticeMode ? "Practicing" : "Practice"}
-            </Button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            {algorithmOptions.map((algorithm) => (
-              <Menu.Item
-                key={algorithm.id}
-                onClick={() => practiceAlgorithm(algorithm.id)}
-              >
-                {algorithm.label}
-              </Menu.Item>
-            ))}
-          </Menu.Dropdown>
-        </Menu>
-        {!isAlgorithmMode && (
-          <Button variant="light" onClick={onLoadExampleGraphClick}>
-            Load Example
-          </Button>
+        {withTooltip(
+          "Select an algorithm and run it",
+          <Menu withinPortal position="bottom-start">
+            <Menu.Target>
+              <Button disabled={isAlgorithmMode}>
+                {isRunMode ? "Running" : "Run"}
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              {algorithmOptions.map((algorithm) => (
+                <Menu.Item
+                  key={algorithm.id}
+                  onClick={() => runAlgorithm(algorithm.id)}
+                >
+                  {algorithm.label}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
         )}
+        {withTooltip(
+          "Practice the algorithm step by step",
+          <Menu withinPortal position="bottom-start">
+            <Menu.Target>
+              <Button disabled={isAlgorithmMode}>
+                {isPracticeMode ? "Practicing" : "Practice"}
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              {algorithmOptions.map((algorithm) => (
+                <Menu.Item
+                  key={algorithm.id}
+                  onClick={() => practiceAlgorithm(algorithm.id)}
+                >
+                  {algorithm.label}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
+        )}
+        {!isAlgorithmMode &&
+          withTooltip(
+            "Load a sample graph",
+            <Button variant="light" onClick={onLoadExampleGraphClick}>
+              Load Example
+            </Button>
+          )}
         {sourceNodeId && targetNodeId && (
           <>
-            {!isPracticeMode && (
-              <Button disabled={currentStepIndex === 0} onClick={onFirstStep}>
-                ⏮︎
-              </Button>
-            )}
-            <Button disabled={currentStepIndex === 0} onClick={onPreviousStep}>
-              ❮
-            </Button>
-            {isPracticeMode ? (
+            {!isPracticeMode &&
+              withTooltip(
+                "Go to the first step",
+                <Button disabled={currentStepIndex === 0} onClick={onFirstStep}>
+                  ⏮︎
+                </Button>
+              )}
+            {withTooltip(
+              "Go to the previous step",
               <Button
-                color={canAdvancePracticeStep ? "blue" : "cyan"}
-                variant={canAdvancePracticeStep ? "filled" : "light"}
-                disabled={canAdvancePracticeStep && isLastStep}
-                onClick={() => {
-                  if (!canAdvancePracticeStep) {
-                    onPracticeCheckButtonClick();
-                    return;
-                  }
-
-                  onNextStep();
-                }}
+                disabled={currentStepIndex === 0}
+                onClick={onPreviousStep}
               >
-                {canAdvancePracticeStep ? "❯" : "Check"}
-              </Button>
-            ) : (
-              <Button disabled={isLastStep} onClick={onNextStep}>
-                ❯
+                ❮
               </Button>
             )}
-            {!isPracticeMode && (
-              <Button disabled={isLastStep} onClick={onLastStep}>
-                ⏭︎
-              </Button>
-            )}
+            {isPracticeMode
+              ? withTooltip(
+                  practiceActionTooltip,
+                  <Button
+                    color={canAdvancePracticeStep ? "blue" : "cyan"}
+                    variant={canAdvancePracticeStep ? "filled" : "light"}
+                    disabled={isPracticeActionDisabled}
+                    onClick={() => {
+                      if (shouldSelectPracticeNextNode) {
+                        return;
+                      }
+
+                      if (!canAdvancePracticeStep) {
+                        onPracticeCheckButtonClick();
+                        return;
+                      }
+
+                      onNextStep();
+                    }}
+                  >
+                    {canAdvancePracticeStep ? "❯" : "Check"}
+                  </Button>
+                )
+              : withTooltip(
+                  "Go to the next step",
+                  <Button disabled={isLastStep} onClick={onNextStep}>
+                    ❯
+                  </Button>
+                )}
+            {!isPracticeMode &&
+              withTooltip(
+                "Go to the last step",
+                <Button disabled={isLastStep} onClick={onLastStep}>
+                  ⏭︎
+                </Button>
+              )}
           </>
         )}
       </div>
 
       <div style={{ display: "flex", gap: "10px" }}>
-        {isAlgorithmMode && (
-          <Button
-            variant="light"
-            color="orange"
-            onClick={onBackToGraphEditButtonClick}
-          >
-            Back to graph edit
+        {isAlgorithmMode &&
+          withTooltip(
+            "Return to graph editing mode",
+            <Button
+              variant="light"
+              color="orange"
+              onClick={onBackToGraphEditButtonClick}
+            >
+              Back to graph edit
+            </Button>
+          )}
+        {withTooltip(
+          "Clear the graph",
+          <Button color="orange" onClick={onClearButtonClick}>
+            Clear
           </Button>
         )}
-        <Button color="orange" onClick={onClearButtonClick}>
-          Clear
-        </Button>
       </div>
     </div>
   );
