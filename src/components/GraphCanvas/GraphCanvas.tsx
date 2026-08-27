@@ -322,10 +322,10 @@ export function GraphCanvas({
       return;
     }
 
-    const inputString = editingEdgeWeight.value;
-    const inputNumber = Number(inputString.trim());
+    const inputString = editingEdgeWeight.value.trim();
+    const inputNumber = Number(inputString);
 
-    if (!isValidEdgeWeight(inputNumber)) {
+    if (inputString === "" || !isValidEdgeWeight(inputNumber)) {
       window.alert("Please enter a valid integer from -100 to 100.");
       setEditingEdgeWeight(null);
       return;
