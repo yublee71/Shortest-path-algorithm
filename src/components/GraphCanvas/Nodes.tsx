@@ -156,58 +156,73 @@ export function Nodes({
             hasCheckedPracticeStep &&
             actualDistance !== undefined &&
             !isCorrect;
+          const feedbackIcon = isCorrect ? "✓" : isWrong ? "×" : "";
 
           return (
-            <foreignObject
-              key={`${node.id}-practice-distance`}
-              x={node.x - 35}
-              y={node.y + radius + 8}
-              width={70}
-              height={32}
-              onClick={(event) => event.stopPropagation()}
-              onMouseDown={(event) => event.stopPropagation()}
-              onPointerDown={(event) => event.stopPropagation()}
-            >
-              <Select
-                searchable
-                data={practiceDistanceOptions}
-                value={selectedDistance || null}
-                onChange={(value) => {
-                  onPracticeDistanceChange(node.id, value ?? "");
-                }}
-                disabled={hasCompletedPracticeStep}
-                placeholder=""
-                size="s"
-                w={70}
-                maxDropdownHeight={140}
-                comboboxProps={{ withinPortal: true }}
-                styles={{
-                  input: {
-                    minHeight: 24,
-                    height: 24,
-                    borderColor: isCorrect
-                      ? "#2f9e44"
-                      : isWrong
-                      ? "#e03131"
-                      : "#ccc",
-                    backgroundColor: isCorrect
-                      ? "#d3f9d8"
-                      : isWrong
-                      ? "#ffe3e3"
-                      : "white",
-                    color: "black",
-                    fontWeight: 700,
-                    textAlign: "center",
-                  },
-                  section: {
-                    width: 20,
-                  },
-                  dropdown: {
-                    zIndex: 1000,
-                  },
-                }}
-              />
-            </foreignObject>
+            <g key={`${node.id}-practice-distance`}>
+              {feedbackIcon && (
+                <text
+                  x={node.x - 38}
+                  y={node.y + radius + 27}
+                  textAnchor="end"
+                  pointerEvents="none"
+                  fill={isCorrect ? "#2f9e44" : "#e03131"}
+                  fontSize="14"
+                  fontWeight="900"
+                >
+                  {feedbackIcon}
+                </text>
+              )}
+              <foreignObject
+                x={node.x - 35}
+                y={node.y + radius + 8}
+                width={70}
+                height={32}
+                onClick={(event) => event.stopPropagation()}
+                onMouseDown={(event) => event.stopPropagation()}
+                onPointerDown={(event) => event.stopPropagation()}
+              >
+                <Select
+                  searchable
+                  data={practiceDistanceOptions}
+                  value={selectedDistance || null}
+                  onChange={(value) => {
+                    onPracticeDistanceChange(node.id, value ?? "");
+                  }}
+                  disabled={hasCompletedPracticeStep}
+                  placeholder=""
+                  size="s"
+                  w={70}
+                  maxDropdownHeight={140}
+                  comboboxProps={{ withinPortal: true }}
+                  styles={{
+                    input: {
+                      minHeight: 24,
+                      height: 24,
+                      borderColor: isCorrect
+                        ? "#2f9e44"
+                        : isWrong
+                        ? "#e03131"
+                        : "#ccc",
+                      backgroundColor: isCorrect
+                        ? "#d3f9d8"
+                        : isWrong
+                        ? "#ffe3e3"
+                        : "white",
+                      color: "black",
+                      fontWeight: 700,
+                      textAlign: "center",
+                    },
+                    section: {
+                      width: 20,
+                    },
+                    dropdown: {
+                      zIndex: 1000,
+                    },
+                  }}
+                />
+              </foreignObject>
+            </g>
           );
         }
 
