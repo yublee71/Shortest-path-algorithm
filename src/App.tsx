@@ -8,6 +8,8 @@ import { Buttons } from "./components/Buttons";
 import { exampleGraph } from "./data/exampleGraph";
 import type { AlgorithmId, AlgorithmStep } from "./models/Algorithm";
 
+const MAX_NODE_COUNT = 15;
+
 function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
@@ -155,6 +157,11 @@ function App() {
   };
 
   const addNode = (x: number, y: number) => {
+    if (nodes.length >= MAX_NODE_COUNT) {
+      window.alert("Nodes can only be created up to 15.");
+      return null;
+    }
+
     const id = generateNodeId(nextNodeIndex);
 
     setNodes((currentNodes) => [...currentNodes, { id, x, y }]);

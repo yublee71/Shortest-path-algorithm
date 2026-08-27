@@ -15,7 +15,7 @@ interface GraphCanvasProps {
   nodes: Node[];
   edges: Edge[];
   isEditable: boolean;
-  onAddNode: (x: number, y: number) => string;
+  onAddNode: (x: number, y: number) => string | null;
   onDeleteNode: (id: string) => void;
   onMoveNode: (id: string, x: number, y: number) => void;
   onAddEdge: (
@@ -124,7 +124,7 @@ export function GraphCanvas({
       const newNodeId = onAddNode(point.x, point.y);
       const fromNode = nodeById.get(draftEdge.fromNodeId);
 
-      if (fromNode) {
+      if (fromNode && newNodeId !== null) {
         onAddEdge(
           draftEdge.fromNodeId,
           newNodeId,
