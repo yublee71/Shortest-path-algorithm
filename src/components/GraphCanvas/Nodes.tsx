@@ -1,6 +1,7 @@
-import { Select } from "@mantine/core";
+import { TextInput } from "@mantine/core";
 import type { AlgorithmStep } from "../../models/Algorithm";
 import type { Node } from "../../models/Graph";
+import { isCorrectDistanceInput } from "../../models/practiceDistance";
 
 interface NodesProps {
   nodes: Node[];
@@ -41,21 +42,13 @@ export function Nodes({
   const distances = currentStep?.distances || {};
   const prevDistances = currentStep?.prevDistances || {};
   const altDistances = currentStep?.altDistances || {};
-  const distanceOptions = Array.from({ length: 101 }, (_, index) => index);
-  const practiceDistanceOptions = [
-    { value: "Infinity", label: "\u221e" },
-    ...distanceOptions.map((distance) => ({
-      value: String(distance),
-      label: String(distance),
-    })),
-  ];
 
   const formatDistance = (distance: number | undefined) => {
     if (distance === undefined) {
       return undefined;
     }
 
-    return distance === Infinity ? "\u221e" : String(distance);
+    return distance === Infinity ? "∞" : String(distance);
   };
 
   return (
@@ -148,10 +141,7 @@ export function Nodes({
           const actualDistance = currentStep?.distances[node.id];
           const isCorrect =
             hasCheckedPracticeStep &&
-            selectedDistance !== "" &&
-            (actualDistance === Infinity
-              ? selectedDistance === "Infinity"
-              : Number(selectedDistance) === actualDistance);
+            isCorrectDistanceInput(selectedDistance, actualDistance);
           const isWrong =
             hasCheckedPracticeStep &&
             actualDistance !== undefined &&
@@ -182,19 +172,18 @@ export function Nodes({
                 onMouseDown={(event) => event.stopPropagation()}
                 onPointerDown={(event) => event.stopPropagation()}
               >
-                <Select
-                  searchable
-                  data={practiceDistanceOptions}
-                  value={selectedDistance || null}
-                  onChange={(value) => {
-                    onPracticeDistanceChange(node.id, value ?? "");
+                <TextInput
+                  value={selectedDistance}
+                  onChange={(event) => {
+                    onPracticeDistanceChange(
+                      node.id,
+                      event.currentTarget.value
+                    );
                   }}
                   disabled={hasCompletedPracticeStep}
                   placeholder=""
                   size="s"
                   w={70}
-                  maxDropdownHeight={140}
-                  comboboxProps={{ withinPortal: true }}
                   styles={{
                     input: {
                       minHeight: 24,
@@ -212,12 +201,6 @@ export function Nodes({
                       color: "black",
                       fontWeight: 700,
                       textAlign: "center",
-                    },
-                    section: {
-                      width: 20,
-                    },
-                    dropdown: {
-                      zIndex: 1000,
                     },
                   }}
                 />

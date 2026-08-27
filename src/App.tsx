@@ -7,6 +7,7 @@ import { AlgorithmExplanation } from "./components/AlgorithmExplanation";
 import { Buttons } from "./components/Buttons";
 import { exampleGraph } from "./data/exampleGraph";
 import type { AlgorithmId, AlgorithmStep } from "./models/Algorithm";
+import { isCorrectDistanceInput } from "./models/practiceDistance";
 
 const MAX_NODE_COUNT = 15;
 
@@ -44,19 +45,10 @@ function App() {
     targetNodeId !== null &&
     currentAlgorithmStep !== undefined &&
     nodes.every((node) => {
-      const selectedDistance =
-        practiceDistances[`${currentStepIndex}:${node.id}`];
-      const actualDistance = currentAlgorithmStep.distances[node.id];
-
-      if (selectedDistance === undefined || selectedDistance === "") {
-        return false;
-      }
-
-      if (actualDistance === Infinity) {
-        return selectedDistance === "Infinity";
-      }
-
-      return Number(selectedDistance) === actualDistance;
+      return isCorrectDistanceInput(
+        practiceDistances[`${currentStepIndex}:${node.id}`],
+        currentAlgorithmStep.distances[node.id]
+      );
     });
   const hasCompletedCurrentPracticeStep =
     completedPracticeSteps[currentStepIndex] === true;
@@ -348,36 +340,43 @@ function App() {
         onNextStep={goToNextStep}
         onLastStep={goToLastStep}
       ></Buttons>
-      <GraphCanvas
-        className="app-canvas"
-        nodes={nodes}
-        edges={edges}
-        isEditable={!isAlgorithmMode}
-        onAddNode={addNode}
-        onDeleteNode={deleteNode}
-        onMoveNode={moveNode}
-        onAddEdge={addEdge}
-        onDeleteEdge={deleteEdge}
-        onUpdateEdgeWeight={updateEdgeWeight}
-        sourceNodeId={sourceNodeId}
-        targetNodeId={targetNodeId}
-        onSelectSourceNode={(id) => setSourceNodeId(id)}
-        onSelectTargetNode={(id) => setTargetNodeId(id)}
-        algorithmSteps={algorithmSteps}
-        setAlgorithmSteps={setAlgorithmSteps}
-        selectedAlgorithm={selectedAlgorithm}
-        currentStepIndex={currentStepIndex}
-        isPracticeMode={isPracticeMode}
-        hasCheckedPracticeStep={shouldShowFeedback}
-        hasCompletedPracticeStep={hasCompletedCurrentPracticeStep}
-        practiceDistances={practiceDistances}
-        onPracticeDistanceChange={(nodeId, distance) => {
-          setPracticeDistances((currentDistances) => ({
-            ...currentDistances,
-            [`${currentStepIndex}:${nodeId}`]: distance,
-          }));
-        }}
-      />
+      <div className="app-canvas-area">
+        <GraphCanvas
+          className="app-canvas"
+          nodes={nodes}
+          edges={edges}
+          isEditable={!isAlgorithmMode}
+          onAddNode={addNode}
+          onDeleteNode={deleteNode}
+          onMoveNode={moveNode}
+          onAddEdge={addEdge}
+          onDeleteEdge={deleteEdge}
+          onUpdateEdgeWeight={updateEdgeWeight}
+          sourceNodeId={sourceNodeId}
+          targetNodeId={targetNodeId}
+          onSelectSourceNode={(id) => setSourceNodeId(id)}
+          onSelectTargetNode={(id) => setTargetNodeId(id)}
+          algorithmSteps={algorithmSteps}
+          setAlgorithmSteps={setAlgorithmSteps}
+          selectedAlgorithm={selectedAlgorithm}
+          currentStepIndex={currentStepIndex}
+          isPracticeMode={isPracticeMode}
+          hasCheckedPracticeStep={shouldShowFeedback}
+          hasCompletedPracticeStep={hasCompletedCurrentPracticeStep}
+          practiceDistances={practiceDistances}
+          onPracticeDistanceChange={(nodeId, distance) => {
+            setPracticeDistances((currentDistances) => ({
+              ...currentDistances,
+              [`${currentStepIndex}:${nodeId}`]: distance,
+            }));
+          }}
+        />
+        {isPracticeMode && sourceNodeId && targetNodeId && (
+          <p className="practice-distance-hint">
+            For infinity, enter ∞ or inf.
+          </p>
+        )}
+      </div>
       <AlgorithmExplanation
         className="app-explanation"
         isAlgorithmMode={isAlgorithmMode}
