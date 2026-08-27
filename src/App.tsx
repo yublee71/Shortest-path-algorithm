@@ -371,11 +371,11 @@ function App() {
             }));
           }}
         />
-        {isPracticeMode && sourceNodeId && targetNodeId && (
-          <p className="practice-distance-hint">
-            For infinity, enter ∞ or inf.
-          </p>
-        )}
+        <p className="practice-distance-hint">
+          {isPracticeMode && sourceNodeId && targetNodeId
+            ? "For infinity, enter ∞ or inf."
+            : ""}
+        </p>
       </div>
       <AlgorithmExplanation
         className="app-explanation"

@@ -126,6 +126,64 @@ export function AlgorithmExplanation({
               <h2 style={{ fontSize: "20px", margin: 0 }}>{algorithm}</h2>
             </div>
           )}
+          {(!sourceNodeId ||
+            !targetNodeId ||
+            (isPracticeMode && showPracticeNextNodeSelect)) && (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                border: "1px solid #ccc",
+                padding: "10px",
+                color: "blue",
+                fontWeight: "bold",
+                marginBottom: "10px",
+              }}
+            >
+              {!sourceNodeId ? "Please select source node" : ""}
+              {sourceNodeId && !targetNodeId ? "Please select target node" : ""}
+              {isPracticeMode && showPracticeNextNodeSelect && (
+                <div>
+                  <p
+                    style={{
+                      color: "blue",
+                      fontWeight: "bold",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    Please select next visiting node
+                  </p>
+                  <Select
+                    searchable
+                    data={nextNodeOptions}
+                    value={practiceNextNodeValue || null}
+                    onChange={(value) => {
+                      onPracticeNextNodeChange(value ?? "");
+                    }}
+                    disabled={hasCompletedPracticeStep}
+                    placeholder=""
+                    maxDropdownHeight={140}
+                    styles={{
+                      input: {
+                        borderColor:
+                          practiceNextNodeStatus === "correct"
+                            ? "#2f9e44"
+                            : practiceNextNodeStatus === "wrong"
+                            ? "#e03131"
+                            : "#ccc",
+                        backgroundColor:
+                          practiceNextNodeStatus === "correct"
+                            ? "#d3f9d8"
+                            : practiceNextNodeStatus === "wrong"
+                            ? "#ffe3e3"
+                            : "white",
+                      },
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
           {showExplanationTable && (
             <>
               {iterationLabel && (
@@ -180,63 +238,6 @@ export function AlgorithmExplanation({
                 </tbody>
               </table>
             </>
-          )}
-          {(!sourceNodeId ||
-            !targetNodeId ||
-            (isPracticeMode && showPracticeNextNodeSelect)) && (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                border: "1px solid #ccc",
-                padding: "10px",
-                color: "blue",
-                fontWeight: "bold",
-              }}
-            >
-              {!sourceNodeId ? "Please select source node" : ""}
-              {sourceNodeId && !targetNodeId ? "Please select target node" : ""}
-              {isPracticeMode && showPracticeNextNodeSelect && (
-                <div>
-                  <p
-                    style={{
-                      color: "blue",
-                      fontWeight: "bold",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    Please select next visiting node
-                  </p>
-                  <Select
-                    searchable
-                    data={nextNodeOptions}
-                    value={practiceNextNodeValue || null}
-                    onChange={(value) => {
-                      onPracticeNextNodeChange(value ?? "");
-                    }}
-                    disabled={hasCompletedPracticeStep}
-                    placeholder=""
-                    maxDropdownHeight={140}
-                    styles={{
-                      input: {
-                        borderColor:
-                          practiceNextNodeStatus === "correct"
-                            ? "#2f9e44"
-                            : practiceNextNodeStatus === "wrong"
-                            ? "#e03131"
-                            : "#ccc",
-                        backgroundColor:
-                          practiceNextNodeStatus === "correct"
-                            ? "#d3f9d8"
-                            : practiceNextNodeStatus === "wrong"
-                            ? "#ffe3e3"
-                            : "white",
-                      },
-                    }}
-                  />
-                </div>
-              )}
-            </div>
           )}
           {isFinalStep && (
             <div
