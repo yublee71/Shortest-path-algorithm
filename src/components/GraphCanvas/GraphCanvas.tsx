@@ -326,9 +326,7 @@ export function GraphCanvas({
     const inputNumber = Number(inputString.trim());
 
     if (!isValidEdgeWeight(inputNumber)) {
-      window.alert(
-        "Please enter a valid integer from -100 to 100, excluding 0."
-      );
+      window.alert("Please enter a valid integer from -100 to 100.");
       setEditingEdgeWeight(null);
       return;
     }
