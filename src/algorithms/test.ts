@@ -1,4 +1,4 @@
-import { buildAdjacencyList, type Edge, type Node } from "../models/Graph";
+import type { Edge, Node } from "../models/Graph";
 import { bellmanFord } from "./bellmanford";
 import { dijkstra } from "./dijkstra";
 
@@ -23,15 +23,19 @@ const edges: Edge[] = [
   { id: "E-Z", fromNodeId: "E", toNodeId: "Z", weight: 3 },
 ];
 
-const adjacencyList = buildAdjacencyList(nodes, edges);
-
 console.log(
   dijkstra({
     nodes,
-    adjacencyList,
+    edges,
     sourceNodeId: "A",
     targetNodeId: "Z",
   })
 );
 
-console.log(bellmanFord(nodes, edges, "A"));
+console.log(
+  bellmanFord({
+    nodes,
+    edges,
+    sourceNodeId: "A",
+  })
+);

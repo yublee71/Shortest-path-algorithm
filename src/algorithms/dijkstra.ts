@@ -1,12 +1,5 @@
-import type { AdjacencyList, Node } from "../models/Graph";
-import type { AlgorithmStep } from "../models/Algorithm";
-
-interface DijkstraProps {
-  nodes: Node[];
-  adjacencyList: AdjacencyList;
-  sourceNodeId: string;
-  targetNodeId: string;
-}
+import { buildAdjacencyList } from "../models/Graph";
+import type { AlgorithmInput, AlgorithmStep } from "../models/Algorithm";
 
 export interface DijkstraStep extends AlgorithmStep {
   isVisitingStep?: boolean;
@@ -20,10 +13,11 @@ export interface DijkstraStep extends AlgorithmStep {
 
 export function dijkstra({
   nodes,
-  adjacencyList,
+  edges,
   sourceNodeId,
   targetNodeId,
-}: DijkstraProps): DijkstraStep[] {
+}: AlgorithmInput & { targetNodeId: string }): DijkstraStep[] {
+  const adjacencyList = buildAdjacencyList(nodes, edges);
   const dist: Record<string, number> = {};
   const prev: Record<string, string | null> = {};
   const queue: Set<string> = new Set();

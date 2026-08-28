@@ -1,3 +1,5 @@
+import type { Edge, Node } from "./Graph";
+
 export type AlgorithmId = "dijkstra" | "bellman-ford" | "a-star";
 
 export const algorithmOptions: { id: AlgorithmId; label: string }[] = [
@@ -24,4 +26,11 @@ export interface AlgorithmStep {
   path?: string;
   currentlyVisitingEdgesId?: string[];
   nextVisitingNodeId?: string | null;
+}
+
+export interface AlgorithmInput {
+  nodes: Node[];
+  edges: Edge[];
+  sourceNodeId: string;
+  targetNodeId?: string;
 }

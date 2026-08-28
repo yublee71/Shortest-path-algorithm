@@ -1,5 +1,4 @@
-import type { Edge, Node } from "../models/Graph";
-import type { AlgorithmStep } from "../models/Algorithm";
+import type { AlgorithmInput, AlgorithmStep } from "../models/Algorithm";
 
 export interface BellmanFordStep extends AlgorithmStep {
   iteration: number;
@@ -8,12 +7,12 @@ export interface BellmanFordStep extends AlgorithmStep {
   hasReachableNegativeCycle?: boolean;
 }
 
-export function bellmanFord(
-  nodes: Node[],
-  edges: Edge[],
-  sourceNodeId: string,
-  targetNodeId?: string
-): BellmanFordStep[] {
+export function bellmanFord({
+  nodes,
+  edges,
+  sourceNodeId,
+  targetNodeId,
+}: AlgorithmInput): BellmanFordStep[] {
   const distances: Record<string, number> = {};
   const previousNodes: Record<string, string | null> = {};
   const bellmanFordSteps: BellmanFordStep[] = [];

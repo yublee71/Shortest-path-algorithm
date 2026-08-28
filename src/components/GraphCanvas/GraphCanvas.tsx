@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { buildAdjacencyList, type Edge, type Node } from "../../models/Graph";
+import type { Edge, Node } from "../../models/Graph";
 import { calculateDistanceWeight } from "../../models/edgeCalculation";
 import { DraftEdge } from "./DraftEdge";
 import { Edges } from "./Edges";
@@ -222,7 +222,11 @@ export function GraphCanvas({
     if (!isEditable) {
       if (sourceNodeId === null) {
         if (selectedAlgorithm === "bellman-ford") {
-          const bellmanFordSteps = bellmanFord(nodes, edges, node.id);
+          const bellmanFordSteps = bellmanFord({
+            nodes,
+            edges,
+            sourceNodeId: node.id,
+          });
           const lastStep = bellmanFordSteps[bellmanFordSteps.length - 1];
 
           if (lastStep.hasReachableNegativeCycle === true) {
@@ -237,13 +241,20 @@ export function GraphCanvas({
         onSelectTargetNode(node.id);
 
         if (selectedAlgorithm === "bellman-ford") {
-          setAlgorithmSteps(bellmanFord(nodes, edges, sourceNodeId, node.id));
+          setAlgorithmSteps(
+            bellmanFord({
+              nodes,
+              edges,
+              sourceNodeId,
+              targetNodeId: node.id,
+            })
+          );
           return;
         }
 
         const dijkstraSteps = dijkstra({
           nodes,
-          adjacencyList: buildAdjacencyList(nodes, edges),
+          edges,
           sourceNodeId: sourceNodeId,
           targetNodeId: node.id,
         });
