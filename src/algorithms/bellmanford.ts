@@ -4,6 +4,7 @@ export interface BellmanFordStep extends AlgorithmStep {
   iteration: number;
   totalIterations: number;
   relaxedEdgesId: string[];
+  skippedEdgesId: string[];
   hasReachableNegativeCycle?: boolean;
 }
 
@@ -33,6 +34,7 @@ export function bellmanFord({
     prevDistances: {},
     altDistances: {},
     relaxedEdgesId: [],
+    skippedEdgesId: [],
   });
 
   for (let i = 0; i < totalIterations; i++) {
@@ -43,6 +45,21 @@ export function bellmanFord({
       const altDistances: Record<string, number> = {};
 
       if (distances[edge.fromNodeId] === Infinity) {
+        relaxedEdgesId.push(edge.id);
+
+        bellmanFordSteps.push({
+          iteration: i + 1,
+          totalIterations,
+          currentVisitingNodesId: [edge.fromNodeId, edge.toNodeId],
+          currentlyVisitingEdgesId: [edge.id],
+          distances: { ...distances },
+          previousNodes: { ...previousNodes },
+          prevDistances: {},
+          altDistances: {},
+          relaxedEdgesId: [...relaxedEdgesId],
+          skippedEdgesId: [edge.id],
+        });
+
         continue;
       } else {
         const nextDistance = distances[edge.fromNodeId] + edge.weight;
@@ -68,6 +85,7 @@ export function bellmanFord({
         prevDistances: { ...prevDistances },
         altDistances: { ...altDistances },
         relaxedEdgesId: [...relaxedEdgesId],
+        skippedEdgesId: [],
       });
     }
   }
@@ -90,6 +108,7 @@ export function bellmanFord({
     prevDistances: {},
     altDistances: {},
     relaxedEdgesId: [],
+    skippedEdgesId: [],
     hasReachableNegativeCycle: reachableNegativeCycle,
     totalDistance:
       targetNodeId === undefined || reachableNegativeCycle

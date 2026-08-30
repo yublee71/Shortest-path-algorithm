@@ -22,6 +22,16 @@ function hasRelaxedEdge(step: AlgorithmStep, edgeId: string): boolean {
     : false;
 }
 
+function hasSkippedEdge(step: AlgorithmStep | undefined, edgeId: string) {
+  if (!step || !("skippedEdgesId" in step)) {
+    return false;
+  }
+
+  return Array.isArray(step.skippedEdgesId)
+    ? step.skippedEdgesId.includes(edgeId)
+    : false;
+}
+
 export function Edges({
   edges,
   nodeById,
@@ -59,7 +69,13 @@ export function Edges({
         const isRelaxedEdge =
           !isEditable &&
           hasRelaxedEdge(algorithmSteps[currentStepIndex], edge.id);
-        const edgeColor = isRelaxedEdge && !isVisitingEdge ? "grey" : "black";
+        const isSkippedEdge =
+          !isEditable &&
+          hasSkippedEdge(algorithmSteps[currentStepIndex], edge.id);
+        const edgeColor =
+          isSkippedEdge || (isRelaxedEdge && !isVisitingEdge)
+            ? "grey"
+            : "black";
         const arrowLength = isVisitingEdge ? 10 : 8;
         const arrowWidth = isVisitingEdge ? 10 : 8;
         const arrowTipX = toNode.x - unitX * nodeRadius;
