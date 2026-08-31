@@ -24,9 +24,9 @@ function getNextVisitingNodeId(step: AlgorithmStep | undefined) {
 }
 
 function App() {
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
-  const [nextNodeIndex, setNextNodeIndex] = useState(0);
+  const [nodes, setNodes] = useState<Node[]>(exampleGraph.nodes);
+  const [edges, setEdges] = useState<Edge[]>(exampleGraph.edges);
+  const [nextNodeIndex, setNextNodeIndex] = useState(exampleGraph.nodes.length);
   const [isAlgorithmMode, setIsAlgorithmMode] = useState(false);
   const [isRunMode, setIsRunMode] = useState(false);
   const [isPracticeMode, setIsPracticeMode] = useState(false);
