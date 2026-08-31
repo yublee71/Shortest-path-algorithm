@@ -11,6 +11,14 @@ import { isCorrectDistanceInput } from "./models/practiceDistance";
 
 const MAX_NODE_COUNT = 15;
 
+function getNextVisitingNodeId(step: AlgorithmStep | undefined) {
+  if (!step || !("nextVisitingNodeId" in step)) {
+    return undefined;
+  }
+
+  return step.nextVisitingNodeId as string | undefined;
+}
+
 function App() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
@@ -54,13 +62,13 @@ function App() {
     completedPracticeSteps[currentStepIndex] === true;
   const shouldShowFeedback =
     hasCheckedPracticeStep || hasCompletedCurrentPracticeStep;
-  const currentPracticeNextNodeId = currentAlgorithmStep?.nextVisitingNodeId;
+  const currentPracticeNextNodeId =
+    getNextVisitingNodeId(currentAlgorithmStep);
   const needsPracticeNextNode =
     isPracticeMode &&
     currentStepIndex > 0 &&
     currentStepIndex < algorithmSteps.length - 1 &&
-    currentPracticeNextNodeId !== undefined &&
-    currentPracticeNextNodeId !== null;
+    currentPracticeNextNodeId !== undefined;
   const selectedPracticeNextNodeId = practiceNextNodes[currentStepIndex] ?? "";
   const isCurrentPracticeNextNodeCorrect =
     !needsPracticeNextNode ||

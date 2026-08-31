@@ -25,7 +25,6 @@ export interface AlgorithmStep {
   totalDistance?: number;
   path?: string;
   currentlyVisitingEdgesId?: string[];
-  nextVisitingNodeId?: string | null;
 }
 
 export interface AlgorithmInput {

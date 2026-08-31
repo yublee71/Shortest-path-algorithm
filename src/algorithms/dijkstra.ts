@@ -3,7 +3,7 @@ import type { AlgorithmInput, AlgorithmStep } from "../models/Algorithm";
 
 export interface DijkstraStep extends AlgorithmStep {
   isVisitingStep?: boolean;
-  nextVisitingNodeId?: string | null;
+  nextVisitingNodeId?: string;
 }
 
 // export interface DijkstraResult {
@@ -36,7 +36,7 @@ export function dijkstra({
   while (queue.size > 0) {
     const u = getClosestNode(queue, dist);
 
-    if (u === null || dist[u] === Infinity) {
+    if (u === undefined || dist[u] === Infinity) {
       break;
     }
 
@@ -123,8 +123,8 @@ export function dijkstra({
 function getClosestNode(
   queue: Set<string>,
   dist: Record<string, number>
-): string | null {
-  let closestNode: string | null = null;
+): string | undefined {
+  let closestNode: string | undefined = undefined;
   let minDistance = Infinity;
 
   for (const node of queue) {
