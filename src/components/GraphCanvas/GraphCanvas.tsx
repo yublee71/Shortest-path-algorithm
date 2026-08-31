@@ -7,7 +7,11 @@ import { EdgeWeightLabels } from "./EdgeWeightLabels";
 import { Nodes } from "./Nodes";
 import { bellmanFord } from "../../algorithms/bellmanford";
 import { dijkstra } from "../../algorithms/dijkstra";
-import type { AlgorithmId, AlgorithmStep } from "../../models/Algorithm";
+import type {
+  AlgorithmId,
+  AlgorithmResult,
+  AlgorithmStep,
+} from "../../models/Algorithm";
 import { isValidEdgeWeight } from "../../models/edgeWeight";
 
 interface GraphCanvasProps {
@@ -31,6 +35,7 @@ interface GraphCanvasProps {
   onSelectTargetNode: (id: string) => void;
   algorithmSteps: AlgorithmStep[];
   setAlgorithmSteps: (steps: AlgorithmStep[]) => void;
+  setAlgorithmResult: (result: AlgorithmResult | null) => void;
   selectedAlgorithm: AlgorithmId | null;
   currentStepIndex: number;
   isPracticeMode: boolean;
@@ -64,6 +69,10 @@ interface DragState {
   hasMoved: boolean;
 }
 
+function isVisiblePracticeStep(step: AlgorithmStep) {
+  return !("isVisitingStep" in step) || step.isVisitingStep !== false;
+}
+
 export function GraphCanvas({
   className,
   nodes,
@@ -81,6 +90,7 @@ export function GraphCanvas({
   onSelectTargetNode,
   algorithmSteps,
   setAlgorithmSteps,
+  setAlgorithmResult,
   selectedAlgorithm,
   currentStepIndex,
   isPracticeMode,
@@ -222,14 +232,13 @@ export function GraphCanvas({
     if (!isEditable) {
       if (sourceNodeId === null) {
         if (selectedAlgorithm === "bellman-ford") {
-          const bellmanFordSteps = bellmanFord({
+          const bellmanFordResult = bellmanFord({
             nodes,
             edges,
             sourceNodeId: node.id,
           });
-          const lastStep = bellmanFordSteps[bellmanFordSteps.length - 1];
 
-          if (lastStep.hasReachableNegativeCycle === true) {
+          if (bellmanFordResult.hasReachableNegativeCycle === true) {
             window.alert(
               "Bellman-Ford cannot run because a negative cycle is reachable from the selected source node."
             );
@@ -241,28 +250,30 @@ export function GraphCanvas({
         onSelectTargetNode(node.id);
 
         if (selectedAlgorithm === "bellman-ford") {
-          setAlgorithmSteps(
-            bellmanFord({
-              nodes,
-              edges,
-              sourceNodeId,
-              targetNodeId: node.id,
-            })
-          );
+          const bellmanFordResult = bellmanFord({
+            nodes,
+            edges,
+            sourceNodeId,
+            targetNodeId: node.id,
+          });
+
+          setAlgorithmResult(bellmanFordResult);
+          setAlgorithmSteps(bellmanFordResult.steps);
           return;
         }
 
-        const dijkstraSteps = dijkstra({
+        const dijkstraResult = dijkstra({
           nodes,
           edges,
           sourceNodeId: sourceNodeId,
           targetNodeId: node.id,
         });
 
+        setAlgorithmResult(dijkstraResult);
         setAlgorithmSteps(
           isPracticeMode
-            ? dijkstraSteps.filter((step) => step.isVisitingStep !== false)
-            : dijkstraSteps
+            ? dijkstraResult.steps.filter(isVisiblePracticeStep)
+            : dijkstraResult.steps
         );
       }
       return;

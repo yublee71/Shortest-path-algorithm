@@ -1,5 +1,9 @@
 import { buildAdjacencyList } from "../models/Graph";
-import type { AlgorithmInput, AlgorithmStep } from "../models/Algorithm";
+import type {
+  AlgorithmInput,
+  AlgorithmResult,
+  AlgorithmStep,
+} from "../models/Algorithm";
 
 export interface DijkstraStep extends AlgorithmStep {
   isVisitingStep?: boolean;
@@ -16,12 +20,15 @@ export function dijkstra({
   edges,
   sourceNodeId,
   targetNodeId,
-}: AlgorithmInput & { targetNodeId: string }): DijkstraStep[] {
+}: AlgorithmInput & { targetNodeId: string }): AlgorithmResult {
   const adjacencyList = buildAdjacencyList(nodes, edges);
   const dist: Record<string, number> = {};
   const prev: Record<string, string | null> = {};
   const queue: Set<string> = new Set();
   const dijkstraSteps: DijkstraStep[] = [];
+  let path = "";
+  let totalDistance = Infinity;
+  let edgeCheckCount = 0;
 
   for (const v of nodes) {
     dist[v.id] = Infinity;
@@ -46,21 +53,19 @@ export function dijkstra({
       visitedNodesId: [...visitedNodesId],
       distances: { ...dist },
       previousNodes: { ...prev },
-      totalDistance: 0,
-      path: "",
       isVisitingStep: u === sourceNodeId || u === targetNodeId,
     };
 
     if (u === targetNodeId) {
-      const path: string[] = [];
+      const pathNodes: string[] = [];
       let currentNodeId: string | undefined | null = targetNodeId;
 
       while (currentNodeId !== undefined && currentNodeId !== null) {
-        path.push(currentNodeId);
+        pathNodes.push(currentNodeId);
         currentNodeId = prev[currentNodeId];
       }
 
-      path.reverse();
+      pathNodes.reverse();
 
       //   if (prev[currentNodeId] === null && currentNodeId !== sourceNodeId) {
       //     throw new Error(
@@ -68,8 +73,8 @@ export function dijkstra({
       //     );
       //   }
 
-      currentStep.totalDistance = dist[targetNodeId];
-      currentStep.path = path.join(", ");
+      totalDistance = dist[targetNodeId];
+      path = pathNodes.join(", ");
       dijkstraSteps.push(currentStep);
       break;
     }
@@ -94,6 +99,7 @@ export function dijkstra({
       const edgeId = `${u}-${neighbor.nodeId}`;
 
       currentlyVisitingEdgesId.push(edgeId);
+      edgeCheckCount += 1;
       if (alt < dist[neighbor.nodeId]) {
         prevDist[neighbor.nodeId] = dist[neighbor.nodeId];
         dist[neighbor.nodeId] = alt;
@@ -117,7 +123,14 @@ export function dijkstra({
     });
   }
 
-  return dijkstraSteps;
+  return {
+    algorithmId: "dijkstra",
+    steps: dijkstraSteps,
+    path,
+    totalDistance,
+    visitedNodeCount: visitedNodesId.length,
+    edgeCheckCount,
+  };
 }
 
 function getClosestNode(

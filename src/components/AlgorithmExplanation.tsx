@@ -1,6 +1,7 @@
 import { Select } from "@mantine/core";
 import {
   type AlgorithmId,
+  type AlgorithmResult,
   type AlgorithmStep,
   getAlgorithmLabel,
 } from "../models/Algorithm";
@@ -13,6 +14,7 @@ interface AlgorithmExplanationProps {
   nodes: Node[];
   isAlgorithmMode: boolean;
   selectedAlgorithm: AlgorithmId | null;
+  algorithmResult: AlgorithmResult | null;
   isPracticeMode: boolean;
   sourceNodeId: string | null;
   targetNodeId: string | null;
@@ -46,6 +48,7 @@ export function AlgorithmExplanation({
   nodes,
   isAlgorithmMode,
   selectedAlgorithm,
+  algorithmResult,
   isPracticeMode,
   sourceNodeId,
   targetNodeId,
@@ -60,10 +63,7 @@ export function AlgorithmExplanation({
 }: AlgorithmExplanationProps) {
   const currentStep = algorithmSteps[currentStepIndex];
   const isFinalStep = currentStepIndex === algorithmSteps.length - 1;
-  const targetDistance = targetNodeId
-    ? currentStep?.distances[targetNodeId]
-    : undefined;
-  const hasNoPath = isFinalStep && targetNodeId && targetDistance === Infinity;
+  const hasNoPath = isFinalStep && algorithmResult?.path === "";
   const iterationLabel = getIterationLabel(currentStep);
   const algorithm = getAlgorithmLabel(selectedAlgorithm);
   const mode = isPracticeMode ? "Practice Mode" : "Run Mode";
@@ -259,11 +259,8 @@ export function AlgorithmExplanation({
                 </p>
               ) : (
                 <>
-                  <p>Shortest path: {algorithmSteps[currentStepIndex].path}</p>
-                  <p>
-                    Total distance:{" "}
-                    {algorithmSteps[currentStepIndex].totalDistance}
-                  </p>
+                  <p>Shortest path: {algorithmResult?.path}</p>
+                  <p>Total distance: {algorithmResult?.totalDistance}</p>
                 </>
               )}
             </div>

@@ -6,7 +6,11 @@ import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
 import { AlgorithmExplanation } from "./components/AlgorithmExplanation";
 import { Buttons } from "./components/Buttons";
 import { exampleGraph } from "./data/exampleGraph";
-import type { AlgorithmId, AlgorithmStep } from "./models/Algorithm";
+import type {
+  AlgorithmId,
+  AlgorithmResult,
+  AlgorithmStep,
+} from "./models/Algorithm";
 import { isCorrectDistanceInput } from "./models/practiceDistance";
 
 const MAX_NODE_COUNT = 15;
@@ -33,6 +37,8 @@ function App() {
   );
   const [sourceNodeId, setSourceNodeId] = useState<string | null>(null);
   const [targetNodeId, setTargetNodeId] = useState<string | null>(null);
+  const [algorithmResult, setAlgorithmResult] =
+    useState<AlgorithmResult | null>(null);
   //   const [dijkstraResult, setDijkstraResult] = useState<DijkstraResult | null>(
   // null
   //   );
@@ -311,6 +317,7 @@ function App() {
     setIsRunMode(false);
     setIsPracticeMode(false);
     setSelectedAlgorithm(null);
+    setAlgorithmResult(null);
     setAlgorithmSteps([]);
     setCurrentStepIndex(0);
     setPracticeDistances({});
@@ -330,6 +337,7 @@ function App() {
     setIsPracticeMode(false);
     setSelectedAlgorithm(null);
     setNextNodeIndex(0);
+    setAlgorithmResult(null);
     setAlgorithmSteps([]);
     setCurrentStepIndex(0);
     setPracticeDistances({});
@@ -395,6 +403,7 @@ function App() {
           onSelectTargetNode={(id) => setTargetNodeId(id)}
           algorithmSteps={algorithmSteps}
           setAlgorithmSteps={setAlgorithmSteps}
+          setAlgorithmResult={setAlgorithmResult}
           selectedAlgorithm={selectedAlgorithm}
           currentStepIndex={currentStepIndex}
           isPracticeMode={isPracticeMode}
@@ -418,6 +427,7 @@ function App() {
         className="app-explanation"
         isAlgorithmMode={isAlgorithmMode}
         selectedAlgorithm={selectedAlgorithm}
+        algorithmResult={algorithmResult}
         nodes={nodes}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}

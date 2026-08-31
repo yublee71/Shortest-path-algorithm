@@ -1,4 +1,8 @@
-import type { AlgorithmInput, AlgorithmStep } from "../models/Algorithm";
+import type {
+  AlgorithmInput,
+  AlgorithmResult,
+  AlgorithmStep,
+} from "../models/Algorithm";
 
 export interface BellmanFordStep extends AlgorithmStep {
   iteration: number;
@@ -13,11 +17,12 @@ export function bellmanFord({
   edges,
   sourceNodeId,
   targetNodeId,
-}: AlgorithmInput): BellmanFordStep[] {
+}: AlgorithmInput): AlgorithmResult {
   const distances: Record<string, number> = {};
   const previousNodes: Record<string, string | null> = {};
   const bellmanFordSteps: BellmanFordStep[] = [];
   const totalIterations = nodes.length - 1;
+  let edgeCheckCount = 0;
 
   for (const node of nodes) {
     distances[node.id] = node.id === sourceNodeId ? 0 : Infinity;
@@ -46,6 +51,7 @@ export function bellmanFord({
 
       if (distances[edge.fromNodeId] === Infinity) {
         relaxedEdgesId.push(edge.id);
+        edgeCheckCount += 1;
 
         bellmanFordSteps.push({
           iteration: i + 1,
@@ -74,6 +80,7 @@ export function bellmanFord({
       }
 
       relaxedEdgesId.push(edge.id);
+      edgeCheckCount += 1;
 
       bellmanFordSteps.push({
         iteration: i + 1,
@@ -110,6 +117,11 @@ export function bellmanFord({
     relaxedEdgesId: [],
     skippedEdgesId: [],
     hasReachableNegativeCycle: reachableNegativeCycle,
+  });
+
+  return {
+    algorithmId: "bellman-ford",
+    steps: bellmanFordSteps,
     totalDistance:
       targetNodeId === undefined || reachableNegativeCycle
         ? undefined
@@ -118,9 +130,9 @@ export function bellmanFord({
       targetNodeId === undefined || reachableNegativeCycle
         ? undefined
         : createPath(previousNodes, sourceNodeId, targetNodeId).join(", "),
-  });
-
-  return bellmanFordSteps;
+    edgeCheckCount,
+    hasReachableNegativeCycle: reachableNegativeCycle,
+  };
 }
 
 function createPath(

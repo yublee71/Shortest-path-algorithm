@@ -22,8 +22,6 @@ export interface AlgorithmStep {
   previousNodes?: Record<string, string | null>;
   prevDistances?: Record<string, number>;
   altDistances?: Record<string, number>;
-  totalDistance?: number;
-  path?: string;
   currentlyVisitingEdgesId?: string[];
 }
 
@@ -32,4 +30,14 @@ export interface AlgorithmInput {
   edges: Edge[];
   sourceNodeId: string;
   targetNodeId?: string;
+}
+
+export interface AlgorithmResult {
+  algorithmId: AlgorithmId;
+  steps: AlgorithmStep[];
+  path?: string;
+  totalDistance?: number;
+  visitedNodeCount?: number;
+  edgeCheckCount: number;
+  hasReachableNegativeCycle?: boolean;
 }
