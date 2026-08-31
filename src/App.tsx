@@ -387,6 +387,7 @@ function App() {
       ></Buttons>
       <div className="app-canvas-area">
         <GraphCanvas
+          key={isAlgorithmMode ? "algorithm" : "edit"}
           className="app-canvas"
           nodes={nodes}
           edges={edges}
