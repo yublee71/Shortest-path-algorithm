@@ -46,4 +46,5 @@
   padding: 10px;
   box-sizing: border-box;
   overflow-y: auto;
+  background-color: rgb(251, 251, 241);
 }
