@@ -28,6 +28,9 @@ function App() {
   const [isPracticeMode, setIsPracticeMode] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] =
     useState<AlgorithmId | null>(null);
+  const [compareAlgorithmIds, setCompareAlgorithmIds] = useState<AlgorithmId[]>(
+    []
+  );
   const [sourceNodeId, setSourceNodeId] = useState<string | null>(null);
   const [targetNodeId, setTargetNodeId] = useState<string | null>(null);
   //   const [dijkstraResult, setDijkstraResult] = useState<DijkstraResult | null>(
@@ -62,8 +65,7 @@ function App() {
     completedPracticeSteps[currentStepIndex] === true;
   const shouldShowFeedback =
     hasCheckedPracticeStep || hasCompletedCurrentPracticeStep;
-  const currentPracticeNextNodeId =
-    getNextVisitingNodeId(currentAlgorithmStep);
+  const currentPracticeNextNodeId = getNextVisitingNodeId(currentAlgorithmStep);
   const needsPracticeNextNode =
     isPracticeMode &&
     currentStepIndex > 0 &&
@@ -248,10 +250,7 @@ function App() {
   };
 
   const canRunSelectedAlgorithm = (algorithmId: AlgorithmId) => {
-    if (
-      algorithmId === "dijkstra" &&
-      edges.some((edge) => edge.weight < 0)
-    ) {
+    if (algorithmId === "dijkstra" && edges.some((edge) => edge.weight < 0)) {
       alert("Dijkstra cannot run with negative edge weights.");
       return false;
     }
@@ -283,6 +282,28 @@ function App() {
     setIsPracticeMode(true);
   };
 
+  const toggleCompareAlgorithm = (algorithmId: AlgorithmId) => {
+    setCompareAlgorithmIds((currentAlgorithmIds) => {
+      if (currentAlgorithmIds.includes(algorithmId)) {
+        return currentAlgorithmIds.filter(
+          (currentAlgorithmId) => currentAlgorithmId !== algorithmId
+        );
+      }
+
+      if (currentAlgorithmIds.length >= 2) {
+        return currentAlgorithmIds;
+      }
+
+      return [...currentAlgorithmIds, algorithmId];
+    });
+  };
+
+  const onCompareConfirmButtonClick = () => {
+    if (compareAlgorithmIds.length !== 2) {
+      return;
+    }
+  };
+
   const onBackToGraphEditButtonClick = () => {
     setSourceNodeId(null);
     setTargetNodeId(null);
@@ -296,6 +317,7 @@ function App() {
     setHasCheckedPracticeStep(false);
     setCompletedPracticeSteps({});
     setPracticeNextNodes({});
+    setCompareAlgorithmIds([]);
   };
 
   const onClearButtonClick = () => {
@@ -314,6 +336,7 @@ function App() {
     setHasCheckedPracticeStep(false);
     setCompletedPracticeSteps({});
     setPracticeNextNodes({});
+    setCompareAlgorithmIds([]);
   };
 
   const onLoadExampleGraphClick = () => {
@@ -330,6 +353,9 @@ function App() {
         className="app-buttons"
         onRunButtonClick={onRunButtonClick}
         onPracticeButtonClick={onPracticeButtonClick}
+        compareAlgorithmIds={compareAlgorithmIds}
+        onCompareAlgorithmToggle={toggleCompareAlgorithm}
+        onCompareConfirmButtonClick={onCompareConfirmButtonClick}
         onLoadExampleGraphClick={onLoadExampleGraphClick}
         onBackToGraphEditButtonClick={onBackToGraphEditButtonClick}
         onClearButtonClick={onClearButtonClick}

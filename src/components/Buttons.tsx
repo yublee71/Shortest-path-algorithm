@@ -7,6 +7,9 @@ interface ButtonsProps {
   className?: string;
   onRunButtonClick: (algorithmId: AlgorithmId) => void;
   onPracticeButtonClick: (algorithmId: AlgorithmId) => void;
+  compareAlgorithmIds: AlgorithmId[];
+  onCompareAlgorithmToggle: (algorithmId: AlgorithmId) => void;
+  onCompareConfirmButtonClick: () => void;
   onLoadExampleGraphClick: () => void;
   onBackToGraphEditButtonClick: () => void;
   isAlgorithmMode: boolean;
@@ -31,6 +34,9 @@ export function Buttons({
   className,
   onRunButtonClick,
   onPracticeButtonClick,
+  compareAlgorithmIds,
+  onCompareAlgorithmToggle,
+  onCompareConfirmButtonClick,
   onLoadExampleGraphClick,
   onBackToGraphEditButtonClick,
   isAlgorithmMode,
@@ -51,6 +57,7 @@ export function Buttons({
   onClearButtonClick,
 }: ButtonsProps) {
   const isLastStep = currentStepIndex === algorithmSteps.length - 1;
+  const canConfirmCompare = compareAlgorithmIds.length === 2;
   const canAdvancePracticeStep = hasCheckedPracticeStep && canGoToNextStep;
   const isPracticeActionDisabled =
     shouldSelectPracticeNextNode || (canAdvancePracticeStep && isLastStep);
@@ -123,6 +130,54 @@ export function Buttons({
                   {algorithm.label}
                 </Menu.Item>
               ))}
+            </Menu.Dropdown>
+          </Menu>
+        )}
+        {withTooltip(
+          "Select two algorithms to compare",
+          <Menu withinPortal position="bottom-start" closeOnItemClick={false}>
+            <Menu.Target>
+              <Button disabled={isAlgorithmMode}>Compare</Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              {algorithmOptions.map((algorithm) => {
+                const isSelected = compareAlgorithmIds.includes(algorithm.id);
+                const isDisabled =
+                  !isSelected && compareAlgorithmIds.length >= 2;
+                return (
+                  <Menu.Item
+                    key={algorithm.id}
+                    disabled={isDisabled}
+                    leftSection={
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: 16,
+                          color: isSelected ? "#228be6" : "transparent",
+                          fontWeight: 900,
+                          textAlign: "center",
+                        }}
+                      >
+                        ✓
+                      </span>
+                    }
+                    onClick={() => onCompareAlgorithmToggle(algorithm.id)}
+                  >
+                    {algorithm.label}
+                  </Menu.Item>
+                );
+              })}
+              <Menu.Divider />
+              <div style={{ padding: "6px 8px" }}>
+                <Button
+                  fullWidth
+                  size="xs"
+                  disabled={!canConfirmCompare}
+                  onClick={onCompareConfirmButtonClick}
+                >
+                  Confirm
+                </Button>
+              </div>
             </Menu.Dropdown>
           </Menu>
         )}
