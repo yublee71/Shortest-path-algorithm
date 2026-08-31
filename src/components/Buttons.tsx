@@ -92,7 +92,7 @@ export function Buttons({
 
   return (
     <div className={className}>
-      <div style={{ display: "flex", gap: "10px" }}>
+      <div className="algorithm-buttons">
         {withTooltip(
           "Select an algorithm and run it",
           <Menu withinPortal position="bottom-start">
@@ -181,13 +181,6 @@ export function Buttons({
             </Menu.Dropdown>
           </Menu>
         )}
-        {!isAlgorithmMode &&
-          withTooltip(
-            "Load a sample graph",
-            <Button variant="light" onClick={onLoadExampleGraphClick}>
-              Load Example
-            </Button>
-          )}
         {sourceNodeId && targetNodeId && (
           <>
             {!isPracticeMode &&
@@ -246,24 +239,34 @@ export function Buttons({
         )}
       </div>
 
-      <div style={{ display: "flex", gap: "10px" }}>
-        {isAlgorithmMode &&
-          withTooltip(
-            "Return to graph editing mode",
-            <Button
-              variant="light"
-              color="orange"
-              onClick={onBackToGraphEditButtonClick}
-            >
-              Back to graph edit
+      <div className="graph-buttons">
+        <div>
+          {withTooltip(
+            "Load a sample graph",
+            <Button variant="light" onClick={onLoadExampleGraphClick}>
+              Load Example
             </Button>
           )}
-        {withTooltip(
-          "Clear the graph",
-          <Button color="orange" onClick={onClearButtonClick}>
-            Clear
-          </Button>
-        )}
+        </div>
+        <div className="graph-buttons-right">
+          {isAlgorithmMode &&
+            withTooltip(
+              "Return to graph editing mode",
+              <Button
+                variant="light"
+                color="orange"
+                onClick={onBackToGraphEditButtonClick}
+              >
+                Back to graph edit
+              </Button>
+            )}
+          {withTooltip(
+            "Clear the graph",
+            <Button color="orange" onClick={onClearButtonClick}>
+              Clear
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
