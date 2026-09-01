@@ -36,8 +36,15 @@ export interface AlgorithmResult {
   algorithmId: AlgorithmId;
   steps: AlgorithmStep[];
   path?: string;
+  finalPathEdgeIds: string[];
   totalDistance?: number;
   visitedNodeCount?: number;
   edgeCheckCount: number;
   hasReachableNegativeCycle?: boolean;
+}
+
+export function getFinalPathEdgeIds(pathNodeIds: string[]): string[] {
+  return pathNodeIds.slice(0, -1).map((nodeId, index) => {
+    return `${nodeId}-${pathNodeIds[index + 1]}`;
+  });
 }

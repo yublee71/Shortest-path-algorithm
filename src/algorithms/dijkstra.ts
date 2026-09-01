@@ -4,6 +4,7 @@ import type {
   AlgorithmResult,
   AlgorithmStep,
 } from "../models/Algorithm";
+import { getFinalPathEdgeIds } from "../models/Algorithm";
 
 export interface DijkstraStep extends AlgorithmStep {
   isVisitingStep?: boolean;
@@ -29,6 +30,7 @@ export function dijkstra({
   let path = "";
   let totalDistance = Infinity;
   let edgeCheckCount = 0;
+  let finalPathEdgeIds: string[] = [];
 
   for (const v of nodes) {
     dist[v.id] = Infinity;
@@ -75,6 +77,7 @@ export function dijkstra({
 
       totalDistance = dist[targetNodeId];
       path = pathNodes.join(", ");
+      finalPathEdgeIds = getFinalPathEdgeIds(pathNodes);
       dijkstraSteps.push(currentStep);
       break;
     }
@@ -127,6 +130,7 @@ export function dijkstra({
     algorithmId: "dijkstra",
     steps: dijkstraSteps,
     path,
+    finalPathEdgeIds,
     totalDistance,
     visitedNodeCount: visitedNodesId.length,
     edgeCheckCount,

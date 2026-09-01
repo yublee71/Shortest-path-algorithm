@@ -3,6 +3,7 @@ import type {
   AlgorithmResult,
   AlgorithmStep,
 } from "../models/Algorithm";
+import { getFinalPathEdgeIds } from "../models/Algorithm";
 
 export interface BellmanFordStep extends AlgorithmStep {
   iteration: number;
@@ -119,6 +120,11 @@ export function bellmanFord({
     hasReachableNegativeCycle: reachableNegativeCycle,
   });
 
+  const pathNodeIds =
+    targetNodeId === undefined || reachableNegativeCycle
+      ? []
+      : createPath(previousNodes, sourceNodeId, targetNodeId);
+
   return {
     algorithmId: "bellman-ford",
     steps: bellmanFordSteps,
@@ -126,10 +132,8 @@ export function bellmanFord({
       targetNodeId === undefined || reachableNegativeCycle
         ? undefined
         : distances[targetNodeId],
-    path:
-      targetNodeId === undefined || reachableNegativeCycle
-        ? undefined
-        : createPath(previousNodes, sourceNodeId, targetNodeId).join(", "),
+    path: pathNodeIds.length === 0 ? undefined : pathNodeIds.join(", "),
+    finalPathEdgeIds: getFinalPathEdgeIds(pathNodeIds),
     edgeCheckCount,
     hasReachableNegativeCycle: reachableNegativeCycle,
   };

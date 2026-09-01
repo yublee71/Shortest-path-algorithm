@@ -10,6 +10,7 @@ interface EdgesProps {
   algorithmSteps: AlgorithmStep[];
   currentStepIndex: number;
   nodeRadius: number;
+  finalPathEdgeIds: string[];
 }
 
 function hasRelaxedEdge(step: AlgorithmStep, edgeId: string): boolean {
@@ -40,6 +41,7 @@ export function Edges({
   algorithmSteps,
   currentStepIndex,
   nodeRadius,
+  finalPathEdgeIds,
 }: EdgesProps) {
   return (
     <>
@@ -72,12 +74,13 @@ export function Edges({
         const isSkippedEdge =
           !isEditable &&
           hasSkippedEdge(algorithmSteps[currentStepIndex], edge.id);
+        const isFinalPathEdge = finalPathEdgeIds.includes(edge.id);
         const edgeColor =
           isSkippedEdge || (isRelaxedEdge && !isVisitingEdge)
             ? "grey"
             : "black";
-        const arrowLength = isVisitingEdge ? 10 : 8;
-        const arrowWidth = isVisitingEdge ? 10 : 8;
+        const arrowLength = isVisitingEdge || isFinalPathEdge ? 10 : 8;
+        const arrowWidth = isVisitingEdge || isFinalPathEdge ? 10 : 8;
         const arrowTipX = toNode.x - unitX * nodeRadius;
         const arrowTipY = toNode.y - unitY * nodeRadius;
         const controlX =
@@ -144,7 +147,7 @@ export function Edges({
             <path
               d={edgePath}
               stroke={edgeColor}
-              strokeWidth={isVisitingEdge ? 4 : 2}
+              strokeWidth={isFinalPathEdge ? 5 : isVisitingEdge ? 4 : 2}
               fill="none"
               pointerEvents="none"
             />

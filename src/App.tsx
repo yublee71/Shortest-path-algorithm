@@ -405,6 +405,7 @@ function App() {
           algorithmSteps={algorithmSteps}
           setAlgorithmSteps={setAlgorithmSteps}
           setAlgorithmResult={setAlgorithmResult}
+          algorithmResult={algorithmResult}
           selectedAlgorithm={selectedAlgorithm}
           currentStepIndex={currentStepIndex}
           isPracticeMode={isPracticeMode}
