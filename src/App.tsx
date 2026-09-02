@@ -4,7 +4,7 @@ import { type Edge, type Node } from "./models/Graph";
 import { calculateDistanceWeight } from "./models/edgeCalculation";
 import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
 import { AlgorithmExplanation } from "./components/AlgorithmExplanation";
-import { Buttons } from "./components/Buttons";
+import { Buttons } from "./components/Buttons/Buttons";
 import { exampleGraph } from "./data/exampleGraph";
 import type {
   AlgorithmId,
