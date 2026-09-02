@@ -3,7 +3,7 @@ import { useState } from "react";
 import { type Edge, type Node } from "./models/Graph";
 import { calculateDistanceWeight } from "./models/edgeCalculation";
 import { GraphCanvas } from "./components/GraphCanvas/GraphCanvas";
-import { AlgorithmExplanation } from "./components/AlgorithmExplanation";
+import { Information } from "./components/Information/Information";
 import { Buttons } from "./components/Buttons/Buttons";
 import { exampleGraph } from "./data/exampleGraph";
 import type {
@@ -456,7 +456,7 @@ function App() {
             : ""}
         </p>
       </div>
-      <AlgorithmExplanation
+      <Information
         className="app-explanation"
         isAlgorithmMode={isAlgorithmMode}
         selectedAlgorithm={selectedAlgorithm}
