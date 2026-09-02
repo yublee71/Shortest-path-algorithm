@@ -5,7 +5,8 @@ interface ResultProps {
 }
 
 export function Result({ algorithmResult }: ResultProps) {
-  const hasNoPath = algorithmResult?.path === "";
+  const hasNoPath =
+    algorithmResult?.path === undefined || algorithmResult.path === "";
 
   return (
     <div
