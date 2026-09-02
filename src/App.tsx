@@ -43,9 +43,6 @@ function App() {
   const [comparisonResults, setComparisonResults] = useState<AlgorithmResult[]>(
     []
   );
-  //   const [dijkstraResult, setDijkstraResult] = useState<DijkstraResult | null>(
-  // null
-  //   );
   const [algorithmSteps, setAlgorithmSteps] = useState<AlgorithmStep[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [practiceDistances, setPracticeDistances] = useState<
@@ -489,15 +486,6 @@ function App() {
           }));
         }}
       />
-      {/* {dijkstraSteps && (
-        <div style={{ marginTop: "10px" }}>
-          <p>
-            Shortest path from {sourceNodeId} to {targetNodeId}:{" "}
-            {dijkstraSteps.path.join(" → ")}
-          </p>
-          <p>Total distance: {dijkstraSteps.distance}</p>
-        </div>
-      )} */}
     </div>
   );
 }

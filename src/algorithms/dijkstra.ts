@@ -11,11 +11,6 @@ export interface DijkstraStep extends AlgorithmStep {
   nextVisitingNodeId?: string;
 }
 
-// export interface DijkstraResult {
-//   distance: number;
-//   path: string[];
-// }
-
 export function dijkstra({
   nodes,
   edges,
@@ -68,12 +63,6 @@ export function dijkstra({
       }
 
       pathNodes.reverse();
-
-      //   if (prev[currentNodeId] === null && currentNodeId !== sourceNodeId) {
-      //     throw new Error(
-      //       `No path found from source "${sourceNodeId}" to target "${targetNodeId}".`
-      //     );
-      //   }
 
       totalDistance = dist[targetNodeId];
       path = pathNodes.join(", ");
@@ -153,31 +142,3 @@ function getClosestNode(
 
   return closestNode;
 }
-
-//  1  function Dijkstra(Graph, source):
-//  2
-//  3      for each vertex v in Graph.Vertices:
-//  4          dist[v] ← INFINITY
-//  5          prev[v] ← UNDEFINED
-//  6          add v to Q
-//  7      dist[source] ← 0
-//  8
-//  9      while Q is not empty:
-// 10          u ← vertex in Q with minimum dist[u]
-// 11          Q.remove(u)
-// 12
-// 13          for each edge (u, v) in Graph:
-// 14              alt ← dist[u] + Graph.Distance(u,v)
-// 15              if alt < dist[v]:
-// 16                  dist[v] ← alt
-// 17                  prev[v] ← u
-// 18
-// 19      return dist[], prev[]
-// To find the shortest path between vertices source and target, the search terminates after line 10 if u = target. The shortest path from source to target can be obtained by reverse iteration:
-
-// 1  S ← empty sequence
-// 2  u ← target
-// 3  if prev[u] is defined or u = source:    // Proceed if the vertex is reachable
-// 4      while u is defined:                 // Construct shortest path with stack S
-// 5          S.push(u)                       // Push the vertex onto the stack
-// 6          u ← prev[u]                     // Traverse from target to source
