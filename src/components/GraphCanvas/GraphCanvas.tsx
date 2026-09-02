@@ -37,9 +37,12 @@ interface GraphCanvasProps {
   setAlgorithmSteps: (steps: AlgorithmStep[]) => void;
   setAlgorithmResult: (result: AlgorithmResult | null) => void;
   algorithmResult: AlgorithmResult | null;
+  comparisonAlgorithmIds: AlgorithmId[];
+  setComparisonResults: (results: AlgorithmResult[]) => void;
   selectedAlgorithm: AlgorithmId | null;
   currentStepIndex: number;
   isPracticeMode: boolean;
+  isCompareMode: boolean;
   hasCheckedPracticeStep: boolean;
   hasCompletedPracticeStep: boolean;
   practiceDistances: Record<string, string>;
@@ -93,9 +96,12 @@ export function GraphCanvas({
   setAlgorithmSteps,
   setAlgorithmResult,
   algorithmResult,
+  comparisonAlgorithmIds,
+  setComparisonResults,
   selectedAlgorithm,
   currentStepIndex,
   isPracticeMode,
+  isCompareMode,
   hasCheckedPracticeStep,
   hasCompletedPracticeStep,
   practiceDistances,
@@ -238,7 +244,10 @@ export function GraphCanvas({
 
     if (!isEditable) {
       if (sourceNodeId === null) {
-        if (selectedAlgorithm === "bellman-ford") {
+        if (
+          selectedAlgorithm === "bellman-ford" ||
+          (isCompareMode && comparisonAlgorithmIds.includes("bellman-ford"))
+        ) {
           const bellmanFordResult = bellmanFord({
             nodes,
             edges,
@@ -256,6 +265,31 @@ export function GraphCanvas({
       } else if (sourceNodeId !== node.id && targetNodeId === null) {
         onSelectTargetNode(node.id);
 
+        if (isCompareMode && comparisonAlgorithmIds.length === 2) {
+          const comparisonResults = comparisonAlgorithmIds.map(
+            (algorithmId) => {
+              if (algorithmId === "bellman-ford") {
+                return bellmanFord({
+                  nodes,
+                  edges,
+                  sourceNodeId,
+                  targetNodeId: node.id,
+                });
+              }
+
+              return dijkstra({
+                nodes,
+                edges,
+                sourceNodeId,
+                targetNodeId: node.id,
+              });
+            }
+          );
+
+          setComparisonResults(comparisonResults);
+          return;
+        }
+
         if (selectedAlgorithm === "bellman-ford") {
           const bellmanFordResult = bellmanFord({
             nodes,
@@ -266,6 +300,10 @@ export function GraphCanvas({
 
           setAlgorithmResult(bellmanFordResult);
           setAlgorithmSteps(bellmanFordResult.steps);
+          return;
+        }
+
+        if (selectedAlgorithm !== "dijkstra") {
           return;
         }
 

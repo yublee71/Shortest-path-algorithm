@@ -30,6 +30,7 @@ function App() {
   const [isAlgorithmMode, setIsAlgorithmMode] = useState(false);
   const [isRunMode, setIsRunMode] = useState(false);
   const [isPracticeMode, setIsPracticeMode] = useState(false);
+  const [isCompareMode, setIsCompareMode] = useState(false);
   const [selectedAlgorithm, setSelectedAlgorithm] =
     useState<AlgorithmId | null>(null);
   const [compareAlgorithmIds, setCompareAlgorithmIds] = useState<AlgorithmId[]>(
@@ -39,6 +40,9 @@ function App() {
   const [targetNodeId, setTargetNodeId] = useState<string | null>(null);
   const [algorithmResult, setAlgorithmResult] =
     useState<AlgorithmResult | null>(null);
+  const [comparisonResults, setComparisonResults] = useState<AlgorithmResult[]>(
+    []
+  );
   //   const [dijkstraResult, setDijkstraResult] = useState<DijkstraResult | null>(
   // null
   //   );
@@ -308,6 +312,25 @@ function App() {
     if (compareAlgorithmIds.length !== 2) {
       return;
     }
+
+    if (compareAlgorithmIds.includes("a-star")) {
+      alert("A* is not implemented yet.");
+      return;
+    }
+
+    if (
+      !compareAlgorithmIds.every((algorithmId) =>
+        canRunSelectedAlgorithm(algorithmId)
+      )
+    ) {
+      return;
+    }
+
+    if (!canStartAlgorithmMode()) {
+      return;
+    }
+
+    setIsCompareMode(true);
   };
 
   const onBackToGraphEditButtonClick = () => {
@@ -316,8 +339,10 @@ function App() {
     setIsAlgorithmMode(false);
     setIsRunMode(false);
     setIsPracticeMode(false);
+    setIsCompareMode(false);
     setSelectedAlgorithm(null);
     setAlgorithmResult(null);
+    setComparisonResults([]);
     setAlgorithmSteps([]);
     setCurrentStepIndex(0);
     setPracticeDistances({});
@@ -335,9 +360,11 @@ function App() {
     setIsAlgorithmMode(false);
     setIsRunMode(false);
     setIsPracticeMode(false);
+    setIsCompareMode(false);
     setSelectedAlgorithm(null);
     setNextNodeIndex(0);
     setAlgorithmResult(null);
+    setComparisonResults([]);
     setAlgorithmSteps([]);
     setCurrentStepIndex(0);
     setPracticeDistances({});
@@ -370,6 +397,7 @@ function App() {
         isAlgorithmMode={isAlgorithmMode}
         isRunMode={isRunMode}
         isPracticeMode={isPracticeMode}
+        isCompareMode={isCompareMode}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
         algorithmSteps={algorithmSteps}
@@ -406,9 +434,12 @@ function App() {
           setAlgorithmSteps={setAlgorithmSteps}
           setAlgorithmResult={setAlgorithmResult}
           algorithmResult={algorithmResult}
+          comparisonAlgorithmIds={compareAlgorithmIds}
+          setComparisonResults={setComparisonResults}
           selectedAlgorithm={selectedAlgorithm}
           currentStepIndex={currentStepIndex}
           isPracticeMode={isPracticeMode}
+          isCompareMode={isCompareMode}
           hasCheckedPracticeStep={shouldShowFeedback}
           hasCompletedPracticeStep={hasCompletedCurrentPracticeStep}
           practiceDistances={practiceDistances}
@@ -430,12 +461,14 @@ function App() {
         isAlgorithmMode={isAlgorithmMode}
         selectedAlgorithm={selectedAlgorithm}
         algorithmResult={algorithmResult}
+        comparisonResults={comparisonResults}
         nodes={nodes}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
         algorithmSteps={algorithmSteps}
         currentStepIndex={currentStepIndex}
         isPracticeMode={isPracticeMode}
+        isCompareMode={isCompareMode}
         showExplanationTable={shouldShowExplanationTable}
         showPracticeNextNodeSelect={shouldShowPracticeNextNodeSelect}
         hasCompletedPracticeStep={hasCompletedCurrentPracticeStep}

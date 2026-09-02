@@ -1,5 +1,5 @@
 import { Button, Menu, Tooltip } from "@mantine/core";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { algorithmOptions } from "../models/Algorithm";
 import type { AlgorithmId, AlgorithmStep } from "../models/Algorithm";
 
@@ -15,6 +15,7 @@ interface ButtonsProps {
   isAlgorithmMode: boolean;
   isRunMode: boolean;
   isPracticeMode: boolean;
+  isCompareMode: boolean;
   sourceNodeId: string | null;
   targetNodeId: string | null;
   algorithmSteps: AlgorithmStep[];
@@ -42,6 +43,7 @@ export function Buttons({
   isAlgorithmMode,
   isRunMode,
   isPracticeMode,
+  isCompareMode,
   sourceNodeId,
   targetNodeId,
   algorithmSteps,
@@ -56,6 +58,7 @@ export function Buttons({
   onLastStep,
   onClearButtonClick,
 }: ButtonsProps) {
+  const [compareMenuOpened, setCompareMenuOpened] = useState(false);
   const isLastStep = currentStepIndex === algorithmSteps.length - 1;
   const canConfirmCompare = compareAlgorithmIds.length === 2;
   const canAdvancePracticeStep = hasCheckedPracticeStep && canGoToNextStep;
@@ -135,9 +138,17 @@ export function Buttons({
         )}
         {withTooltip(
           "Select two algorithms to compare",
-          <Menu withinPortal position="bottom-start" closeOnItemClick={false}>
+          <Menu
+            withinPortal
+            position="bottom-start"
+            closeOnItemClick={false}
+            opened={compareMenuOpened}
+            onChange={setCompareMenuOpened}
+          >
             <Menu.Target>
-              <Button disabled={isAlgorithmMode}>Compare</Button>
+              <Button disabled={isAlgorithmMode}>
+                {isCompareMode ? "Comparing" : "Compare"}
+              </Button>
             </Menu.Target>
             <Menu.Dropdown>
               {algorithmOptions.map((algorithm) => {
@@ -173,7 +184,10 @@ export function Buttons({
                   fullWidth
                   size="xs"
                   disabled={!canConfirmCompare}
-                  onClick={onCompareConfirmButtonClick}
+                  onClick={() => {
+                    onCompareConfirmButtonClick();
+                    setCompareMenuOpened(false);
+                  }}
                 >
                   Confirm
                 </Button>
@@ -181,7 +195,7 @@ export function Buttons({
             </Menu.Dropdown>
           </Menu>
         )}
-        {sourceNodeId && targetNodeId && (
+        {sourceNodeId && targetNodeId && !isCompareMode && (
           <>
             {!isPracticeMode &&
               withTooltip(
