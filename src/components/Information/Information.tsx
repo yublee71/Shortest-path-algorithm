@@ -18,6 +18,8 @@ interface InformationProps {
   selectedAlgorithm: AlgorithmId | null;
   algorithmResult: AlgorithmResult | null;
   comparisonResults: AlgorithmResult[];
+  selectedComparisonAlgorithmId: AlgorithmId | null;
+  onComparisonPathClick: (algorithmId: AlgorithmId) => void;
   isPracticeMode: boolean;
   isCompareMode: boolean;
   sourceNodeId: string | null;
@@ -54,6 +56,8 @@ export function Information({
   selectedAlgorithm,
   algorithmResult,
   comparisonResults,
+  selectedComparisonAlgorithmId,
+  onComparisonPathClick,
   isPracticeMode,
   isCompareMode,
   sourceNodeId,
@@ -99,7 +103,11 @@ export function Information({
           onPracticeNextNodeChange={onPracticeNextNodeChange}
         />
         {isCompareMode && (
-          <ComparisonTable comparisonResults={comparisonResults} />
+          <ComparisonTable
+            comparisonResults={comparisonResults}
+            selectedComparisonAlgorithmId={selectedComparisonAlgorithmId}
+            onComparisonPathClick={onComparisonPathClick}
+          />
         )}
         {!isCompareMode && showExplanationTable && (
           <>

@@ -37,6 +37,7 @@ interface GraphCanvasProps {
   setAlgorithmSteps: (steps: AlgorithmStep[]) => void;
   setAlgorithmResult: (result: AlgorithmResult | null) => void;
   algorithmResult: AlgorithmResult | null;
+  comparisonFinalPathEdgeIds: string[];
   comparisonAlgorithmIds: AlgorithmId[];
   setComparisonResults: (results: AlgorithmResult[]) => void;
   selectedAlgorithm: AlgorithmId | null;
@@ -96,6 +97,7 @@ export function GraphCanvas({
   setAlgorithmSteps,
   setAlgorithmResult,
   algorithmResult,
+  comparisonFinalPathEdgeIds,
   comparisonAlgorithmIds,
   setComparisonResults,
   selectedAlgorithm,
@@ -113,7 +115,9 @@ export function GraphCanvas({
   const nodeById = new Map(nodes.map((node) => [node.id, node]));
   const isLastStep =
     algorithmSteps.length > 0 && currentStepIndex === algorithmSteps.length - 1;
-  const finalPathEdgeIds = isLastStep
+  const finalPathEdgeIds = isCompareMode
+    ? comparisonFinalPathEdgeIds
+    : isLastStep
     ? algorithmResult?.finalPathEdgeIds ?? []
     : [];
   const [draftEdge, setDraftEdge] = useState<DraftEdgeState | null>(null);

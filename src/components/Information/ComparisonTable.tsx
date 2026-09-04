@@ -1,11 +1,14 @@
 import {
   algorithmOptions,
   getAlgorithmLabel,
+  type AlgorithmId,
   type AlgorithmResult,
 } from "../../models/Algorithm";
 
 interface ComparisonTableProps {
   comparisonResults: AlgorithmResult[];
+  selectedComparisonAlgorithmId: AlgorithmId | null;
+  onComparisonPathClick: (algorithmId: AlgorithmId) => void;
 }
 
 function formatResultDistance(distance: number | undefined) {
@@ -24,7 +27,11 @@ function formatResultPath(path: string | undefined) {
   return path;
 }
 
-export function ComparisonTable({ comparisonResults }: ComparisonTableProps) {
+export function ComparisonTable({
+  comparisonResults,
+  selectedComparisonAlgorithmId,
+  onComparisonPathClick,
+}: ComparisonTableProps) {
   const sortedComparisonResults = algorithmOptions
     .map((algorithmOption) =>
       comparisonResults.find(
@@ -41,10 +48,16 @@ export function ComparisonTable({ comparisonResults }: ComparisonTableProps) {
     <table
       style={{
         width: "100%",
+        tableLayout: "fixed",
         borderCollapse: "collapse",
         marginBottom: "10px",
       }}
     >
+      <colgroup>
+        <col style={{ width: "34%" }} />
+        <col style={{ width: "33%" }} />
+        <col style={{ width: "33%" }} />
+      </colgroup>
       <thead>
         <tr>
           <th style={{ border: "1px solid #ccc" }}></th>
@@ -69,14 +82,25 @@ export function ComparisonTable({ comparisonResults }: ComparisonTableProps) {
         </tr>
         <tr>
           <th style={{ border: "1px solid #ccc" }}>Path</th>
-          {sortedComparisonResults.map((result) => (
-            <td
-              key={`${result.algorithmId}-path`}
-              style={{ border: "1px solid #ccc" }}
-            >
-              {formatResultPath(result.path)}
-            </td>
-          ))}
+          {sortedComparisonResults.map((result) => {
+            const isSelected =
+              result.algorithmId === selectedComparisonAlgorithmId;
+
+            return (
+              <td
+                key={`${result.algorithmId}-path`}
+                onClick={() => onComparisonPathClick(result.algorithmId)}
+                style={{
+                  border: "1px solid #ccc",
+                  cursor: "pointer",
+                  fontWeight: isSelected ? 900 : "normal",
+                  textDecoration: "underline",
+                }}
+              >
+                {formatResultPath(result.path)}
+              </td>
+            );
+          })}
         </tr>
         <tr>
           <th style={{ border: "1px solid #ccc" }}>Visited nodes</th>

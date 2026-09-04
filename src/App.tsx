@@ -43,6 +43,8 @@ function App() {
   const [comparisonResults, setComparisonResults] = useState<AlgorithmResult[]>(
     []
   );
+  const [selectedComparisonAlgorithmId, setSelectedComparisonAlgorithmId] =
+    useState<AlgorithmId | null>(null);
   const [algorithmSteps, setAlgorithmSteps] = useState<AlgorithmStep[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
   const [practiceDistances, setPracticeDistances] = useState<
@@ -92,6 +94,11 @@ function App() {
     (hasCheckedPracticeStep && isCurrentPracticeStepCorrect);
   const canGoToNextPracticeStep =
     hasCompletedCurrentPracticeStep || isCurrentPracticeAnswerCorrect;
+  const selectedComparisonResult = comparisonResults.find(
+    (result) => result.algorithmId === selectedComparisonAlgorithmId
+  );
+  const comparisonFinalPathEdgeIds =
+    selectedComparisonResult?.finalPathEdgeIds ?? [];
 
   const goToFirstStep = () => {
     setHasCheckedPracticeStep(false);
@@ -328,6 +335,7 @@ function App() {
     }
 
     setIsCompareMode(true);
+    setSelectedComparisonAlgorithmId(null);
   };
 
   const onBackToGraphEditButtonClick = () => {
@@ -340,6 +348,7 @@ function App() {
     setSelectedAlgorithm(null);
     setAlgorithmResult(null);
     setComparisonResults([]);
+    setSelectedComparisonAlgorithmId(null);
     setAlgorithmSteps([]);
     setCurrentStepIndex(0);
     setPracticeDistances({});
@@ -362,6 +371,7 @@ function App() {
     setNextNodeIndex(0);
     setAlgorithmResult(null);
     setComparisonResults([]);
+    setSelectedComparisonAlgorithmId(null);
     setAlgorithmSteps([]);
     setCurrentStepIndex(0);
     setPracticeDistances({});
@@ -431,6 +441,7 @@ function App() {
           setAlgorithmSteps={setAlgorithmSteps}
           setAlgorithmResult={setAlgorithmResult}
           algorithmResult={algorithmResult}
+          comparisonFinalPathEdgeIds={comparisonFinalPathEdgeIds}
           comparisonAlgorithmIds={compareAlgorithmIds}
           setComparisonResults={setComparisonResults}
           selectedAlgorithm={selectedAlgorithm}
@@ -459,6 +470,8 @@ function App() {
         selectedAlgorithm={selectedAlgorithm}
         algorithmResult={algorithmResult}
         comparisonResults={comparisonResults}
+        selectedComparisonAlgorithmId={selectedComparisonAlgorithmId}
+        onComparisonPathClick={setSelectedComparisonAlgorithmId}
         nodes={nodes}
         sourceNodeId={sourceNodeId}
         targetNodeId={targetNodeId}
