@@ -1,7 +1,7 @@
 import { TextInput } from "@mantine/core";
 import type { AlgorithmStep } from "../../models/Algorithm";
 import type { Node } from "../../models/Graph";
-import { isCorrectDistanceInput } from "../../models/practiceDistance";
+import { isCorrectDistanceInput } from "../../models/Practice";
 
 interface NodesProps {
   nodes: Node[];
@@ -18,6 +18,7 @@ interface NodesProps {
   hasCheckedPracticeStep: boolean;
   hasCompletedPracticeStep: boolean;
   practiceDistances: Record<string, string>;
+  practiceHintNumbers: Record<string, number>;
   onPracticeDistanceChange: (nodeId: string, distance: string) => void;
 }
 
@@ -36,6 +37,7 @@ export function Nodes({
   hasCheckedPracticeStep,
   hasCompletedPracticeStep,
   practiceDistances,
+  practiceHintNumbers,
   onPracticeDistanceChange,
 }: NodesProps) {
   const currentStep = algorithmSteps[currentStepIndex];
@@ -146,7 +148,9 @@ export function Nodes({
             hasCheckedPracticeStep &&
             actualDistance !== undefined &&
             !isCorrect;
-          const feedbackIcon = isCorrect ? "✓" : isWrong ? "×" : "";
+          const hintNumber = practiceHintNumbers[node.id];
+          const feedbackIcon =
+            isCorrect ? "✓" : isWrong && hintNumber ? hintNumber : "";
 
           return (
             <g key={`${node.id}-practice-distance`}>

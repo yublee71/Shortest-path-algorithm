@@ -47,6 +47,7 @@ interface GraphCanvasProps {
   hasCheckedPracticeStep: boolean;
   hasCompletedPracticeStep: boolean;
   practiceDistances: Record<string, string>;
+  practiceHintNumbers: Record<string, number>;
   onPracticeDistanceChange: (nodeId: string, distance: string) => void;
 }
 
@@ -107,6 +108,7 @@ export function GraphCanvas({
   hasCheckedPracticeStep,
   hasCompletedPracticeStep,
   practiceDistances,
+  practiceHintNumbers,
   onPracticeDistanceChange,
 }: GraphCanvasProps) {
   const width = 680;
@@ -458,6 +460,7 @@ export function GraphCanvas({
         hasCheckedPracticeStep={hasCheckedPracticeStep}
         hasCompletedPracticeStep={hasCompletedPracticeStep}
         practiceDistances={practiceDistances}
+        practiceHintNumbers={practiceHintNumbers}
         onPracticeDistanceChange={onPracticeDistanceChange}
       />
       <EdgeWeightLabels

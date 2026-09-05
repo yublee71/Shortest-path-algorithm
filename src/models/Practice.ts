@@ -1,3 +1,11 @@
+export interface PracticeHint {
+  hintNumber: number;
+  nodeId: string;
+  currentDistance: number;
+  alternativeDistance?: number;
+  expectedDistance: number;
+}
+
 export function isInfinityInput(value: string) {
   const normalizedValue = value.trim().toLowerCase();
 

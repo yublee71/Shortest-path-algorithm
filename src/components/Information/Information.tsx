@@ -5,11 +5,13 @@ import {
   getAlgorithmLabel,
 } from "../../models/Algorithm";
 import type { Node } from "../../models/Graph";
+import type { PracticeHint } from "../../models/Practice";
 import { InformationHeader } from "./InformationHeader";
 import { ComparisonTable } from "./ComparisonTable";
 import { Result } from "./Result";
 import { DistanceTable } from "./DistanceTable";
 import { NodeSelection, type PracticeNextNodeStatus } from "./NodeSelection";
+import { PracticeHints } from "./PracticeHints";
 
 interface InformationProps {
   className?: string;
@@ -29,6 +31,8 @@ interface InformationProps {
   showExplanationTable: boolean;
   showPracticeNextNodeSelect: boolean;
   hasCompletedPracticeStep: boolean;
+  practiceHints: PracticeHint[];
+  showPracticeCorrectAnswer: boolean;
   practiceNextNodeValue: string;
   practiceNextNodeStatus: PracticeNextNodeStatus;
   onPracticeNextNodeChange: (nodeId: string) => void;
@@ -67,6 +71,8 @@ export function Information({
   showExplanationTable,
   showPracticeNextNodeSelect,
   hasCompletedPracticeStep,
+  practiceHints,
+  showPracticeCorrectAnswer,
   practiceNextNodeValue,
   practiceNextNodeStatus,
   onPracticeNextNodeChange,
@@ -107,6 +113,12 @@ export function Information({
             comparisonResults={comparisonResults}
             selectedComparisonAlgorithmId={selectedComparisonAlgorithmId}
             onComparisonPathClick={onComparisonPathClick}
+          />
+        )}
+        {!isCompareMode && isPracticeMode && (
+          <PracticeHints
+            hints={practiceHints}
+            showCorrectAnswer={showPracticeCorrectAnswer}
           />
         )}
         {!isCompareMode && showExplanationTable && (

@@ -11,7 +11,7 @@ import type {
   AlgorithmResult,
   AlgorithmStep,
 } from "./models/Algorithm";
-import { isCorrectDistanceInput } from "./models/practiceDistance";
+import { isCorrectDistanceInput, type PracticeHint } from "./models/Practice";
 
 const MAX_NODE_COUNT = 15;
 
@@ -53,6 +53,9 @@ function App() {
   const [hasCheckedPracticeStep, setHasCheckedPracticeStep] = useState(false);
   const [completedPracticeSteps, setCompletedPracticeSteps] = useState<
     Record<number, boolean>
+  >({});
+  const [practiceWrongCheckCounts, setPracticeWrongCheckCounts] = useState<
+    Record<number, number>
   >({});
   const [practiceNextNodes, setPracticeNextNodes] = useState<
     Record<number, string>
@@ -99,6 +102,45 @@ function App() {
   );
   const comparisonFinalPathEdgeIds =
     selectedComparisonResult?.finalPathEdgeIds ?? [];
+  const practiceHints: PracticeHint[] = [];
+
+  if (isPracticeMode && hasCheckedPracticeStep && currentAlgorithmStep) {
+    for (const node of nodes) {
+      const expectedDistance = currentAlgorithmStep.distances[node.id];
+      const selectedDistance =
+        practiceDistances[`${currentStepIndex}:${node.id}`];
+
+      if (
+        expectedDistance === undefined ||
+        isCorrectDistanceInput(selectedDistance, expectedDistance)
+      ) {
+        continue;
+      }
+
+      const previousDistance = currentAlgorithmStep.prevDistances?.[node.id];
+      const alternativeDistance =
+        previousDistance !== undefined
+          ? expectedDistance
+          : currentAlgorithmStep.altDistances?.[node.id];
+      const currentDistance =
+        previousDistance ?? currentAlgorithmStep.distances[node.id];
+
+      practiceHints.push({
+        hintNumber: practiceHints.length + 1,
+        nodeId: node.id,
+        currentDistance,
+        alternativeDistance,
+        expectedDistance,
+      });
+    }
+  }
+  const practiceHintNumbers: Record<string, number> = {};
+
+  for (const hint of practiceHints) {
+    practiceHintNumbers[hint.nodeId] = hint.hintNumber;
+  }
+  const shouldShowPracticeCorrectAnswer =
+    (practiceWrongCheckCounts[currentStepIndex] ?? 0) >= 2;
 
   const goToFirstStep = () => {
     setHasCheckedPracticeStep(false);
@@ -156,6 +198,11 @@ function App() {
       setCompletedPracticeSteps((currentSteps) => ({
         ...currentSteps,
         [currentStepIndex]: true,
+      }));
+    } else {
+      setPracticeWrongCheckCounts((currentCounts) => ({
+        ...currentCounts,
+        [currentStepIndex]: (currentCounts[currentStepIndex] ?? 0) + 1,
       }));
     }
   };
@@ -354,6 +401,7 @@ function App() {
     setPracticeDistances({});
     setHasCheckedPracticeStep(false);
     setCompletedPracticeSteps({});
+    setPracticeWrongCheckCounts({});
     setPracticeNextNodes({});
     setCompareAlgorithmIds([]);
   };
@@ -377,6 +425,7 @@ function App() {
     setPracticeDistances({});
     setHasCheckedPracticeStep(false);
     setCompletedPracticeSteps({});
+    setPracticeWrongCheckCounts({});
     setPracticeNextNodes({});
     setCompareAlgorithmIds([]);
   };
@@ -451,6 +500,7 @@ function App() {
           hasCheckedPracticeStep={shouldShowFeedback}
           hasCompletedPracticeStep={hasCompletedCurrentPracticeStep}
           practiceDistances={practiceDistances}
+          practiceHintNumbers={practiceHintNumbers}
           onPracticeDistanceChange={(nodeId, distance) => {
             setPracticeDistances((currentDistances) => ({
               ...currentDistances,
@@ -482,6 +532,8 @@ function App() {
         showExplanationTable={shouldShowExplanationTable}
         showPracticeNextNodeSelect={shouldShowPracticeNextNodeSelect}
         hasCompletedPracticeStep={hasCompletedCurrentPracticeStep}
+        practiceHints={practiceHints}
+        showPracticeCorrectAnswer={shouldShowPracticeCorrectAnswer}
         practiceNextNodeValue={selectedPracticeNextNodeId}
         practiceNextNodeStatus={
           shouldShowPracticeNextNodeSelect
