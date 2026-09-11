@@ -40,7 +40,7 @@ export function ModeButtons({
 
   const practiceAlgorithm = (algorithmId: AlgorithmId) => {
     if (algorithmId === "a-star") {
-      window.alert("This algorithm is not implemented yet.");
+      window.alert("A* is not implemented yet.");
       return;
     }
 
